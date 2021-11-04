@@ -6,6 +6,8 @@ Both need an [Expo](https://expo.dev/) account and the [Expo CLI](https://docs.e
 
 ### Expo-CLI
 
+See [Expo CLI build docs](https://docs.expo.dev/classic/building-standalone-apps/).
+
 ```
 expo login
 
@@ -16,6 +18,8 @@ wget https://<URL-from-build-logs>.apk
 ```
 
 ### Turtle
+
+See [Turtle CLI build docs](https://docs.expo.dev/classic/turtle-cli/#turtle-cli).
 
 ```
 # use Java 8
