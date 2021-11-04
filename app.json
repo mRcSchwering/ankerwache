@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "test",
-    "slug": "test",
-    "version": "1.0.0",
+    "name": "ankerwache",
+    "slug": "ankerwache",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -15,14 +15,18 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vordeck.ankerwache",
+      "buildNumber": "0.0.1"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions": ["ACCESS_BACKGROUND_LOCATION", "ACCESS_FINE_LOCATION"]
+      "permissions": ["ACCESS_BACKGROUND_LOCATION", "ACCESS_FINE_LOCATION"],
+      "package": "com.vordeck.ankerwache",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
