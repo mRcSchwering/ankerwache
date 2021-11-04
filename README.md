@@ -3,6 +3,19 @@
 ## Build
 
 Both need an [Expo](https://expo.dev/) account and the [Expo CLI](https://docs.expo.dev/workflow/expo-cli/).
+I also need the [Android SDK Tools](https://guides.codepath.com/android/installing-android-sdk-tools) for `adb`.
+I did it the manual way. Didn't work exactly as described:
+
+- extracted it to `~/android-sdk/cmdline-tools/latest/`
+- had to move `bin/` and `lib/` under `latest/` (from the sdk root they need to be under `cmdline-tools/latest/`)
+- then after running the 3 described commands there are various directories under `~/android-sdk/`
+- had to update my `~/.bashrc` like below to make `adb --verion` work
+
+```
+export ANDROID_SDK_ROOT=/home/marc/android-sdk/
+export PATH=$PATH:$ANDROID_SDK_ROOT/tools/
+export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools/
+```
 
 ### Expo-CLI
 
@@ -16,6 +29,8 @@ expo build:android -t apk --no-publish
 
 wget https://<URL-from-build-logs>.apk
 ```
+
+I auto-generated the key store and fetched it (`expo fetch:android:keystore`) later.
 
 ### Turtle
 
