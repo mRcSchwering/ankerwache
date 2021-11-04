@@ -26,3 +26,22 @@ export function formatLocationAcc(acc: number | null): string {
 export function formatLocationTs(ts: number): string {
   return `${new Date(ts).toISOString()}`;
 }
+
+export function deg2rad(deg: number): number {
+  return deg * (Math.PI / 180);
+}
+
+export function getDistanceFromLatLonInM(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const p = 0.017453292519943295; // Math.PI / 180
+  const c = Math.cos;
+  const a =
+    0.5 -
+    c((lat2 - lat1) * p) / 2 +
+    (c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
+  return 12742000 * Math.asin(Math.sqrt(a));
+}
