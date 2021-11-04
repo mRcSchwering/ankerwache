@@ -6,39 +6,13 @@ import {
   getCurrentPositionAsync,
   LocationObject,
 } from "expo-location";
-
-function H1(props: { children?: React.ReactNode }): JSX.Element {
-  return <Text style={styles.h1}>{props.children}</Text>;
-}
-
-export function toDMS(coordinate: number): string {
-  const absolute = Math.abs(coordinate);
-  const degrees = Math.floor(absolute);
-  const mins = (absolute - degrees) * 60;
-  const minsFlrd = Math.floor(mins);
-  const seconds = Math.floor((mins - minsFlrd) * 60);
-  return degrees + "° " + minsFlrd + "' " + seconds + "''";
-}
-
-export function convertLatDMS(lng: number): string {
-  const val = toDMS(lng);
-  const card = lng >= 0 ? "N" : "S";
-  return val + " " + card;
-}
-
-export function convertLngDMS(lng: number): string {
-  const val = toDMS(lng);
-  const card = lng >= 0 ? "E" : "W";
-  return val + " " + card;
-}
-
-export function formatLocationAcc(acc: number | null): string {
-  return acc ? `${Math.floor(acc)} m` : "unknown";
-}
-
-export function formatLocationTs(ts: number): string {
-  return `${new Date(ts).toISOString()}`;
-}
+import {
+  convertLatDMS,
+  convertLngDMS,
+  formatLocationAcc,
+  formatLocationTs,
+} from "./src/util";
+import { Txt, H1, ErrTxt } from "./src/components";
 
 export default function App() {
   const [errorMsg, setErrorMsg] = React.useState<any>(null);
@@ -62,14 +36,14 @@ export default function App() {
     <View style={styles.container}>
       <H1>Ankerwache</H1>
       <View>
-        <Text>Lat: {location && convertLatDMS(location.coords.latitude)}</Text>
-        <Text>Lng: {location && convertLngDMS(location.coords.longitude)}</Text>
-        <Text>
+        <Txt>Lat: {location && convertLatDMS(location.coords.latitude)}</Txt>
+        <Txt>Lng: {location && convertLngDMS(location.coords.longitude)}</Txt>
+        <Txt>
           Acc: {location && formatLocationAcc(location.coords.accuracy)}
-        </Text>
-        <Text>Time: {location && formatLocationTs(location.timestamp)}</Text>
+        </Txt>
+        <Txt>Time: {location && formatLocationTs(location.timestamp)}</Txt>
       </View>
-      <Text style={styles.errorMsg}>{errorMsg}</Text>
+      <ErrTxt>{errorMsg}</ErrTxt>
       <StatusBar />
     </View>
   );
@@ -81,13 +55,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-  },
-  errorMsg: {
-    color: "red",
-  },
-  h1: {
-    fontFamily: "Arial, Helvetica, sans-serif",
-    fontSize: 30,
-    fontWeight: "bold",
   },
 });

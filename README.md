@@ -1,5 +1,11 @@
 # Ankerwache
 
+## Develop
+
+```
+yarn start
+```
+
 ## Build
 
 Both need an [Expo](https://expo.dev/) account and the [Expo CLI](https://docs.expo.dev/workflow/expo-cli/).
