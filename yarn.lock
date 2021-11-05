@@ -2470,16 +2470,6 @@ expo-status-bar@~1.1.0:
   resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.1.0.tgz#b1015a69c8563b7cadcb5b6c726227397610725d"
   integrity sha512-XgAbGfDV/Q6br2h4yzQwcZRYi37bZ/nvc06vvaJ7i7w9tRxb05OJmXBxl7ywkKlFCMcN6q3Miaf2wnzEgMwJoQ==
 
-expo-task-manager@^10.0.3:
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/expo-task-manager/-/expo-task-manager-10.0.3.tgz#06bd46f41841b2208794154994ca1639f069f7a9"
-  integrity sha512-KZT2bMsmOec+NR10OuAeVlw17BScz5nB4ah9T7FYdK/0pGUxs1M40Szi2GqMAsV0jit1/ZJMwNbneOUT6hyZ1A==
-  dependencies:
-    "@expo/config-plugins" "^4.0.2"
-    expo-modules-core "~0.4.4"
-    unimodules-app-loader "~3.0.0"
-    unimodules-task-manager-interface "7.0.3"
-
 expo@~43.0.0:
   version "43.0.1"
   resolved "https://registry.yarnpkg.com/expo/-/expo-43.0.1.tgz#accd4998846e5d3c7ea743c7cf333ce918af150a"
@@ -5268,11 +5258,6 @@ unicode-property-aliases-ecmascript@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/unicode-property-aliases-ecmascript/-/unicode-property-aliases-ecmascript-2.0.0.tgz#0a36cb9a585c4f6abd51ad1deddb285c165297c8"
   integrity sha512-5Zfuy9q/DFr4tfO7ZPeVXb1aPoeQSdeFMLpYuFebehDAhbuevLs5yxSZmIFN1tP5F9Wl4IpJrYojg85/zgyZHQ==
-
-unimodules-app-loader@~3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/unimodules-app-loader/-/unimodules-app-loader-3.0.0.tgz#a92cf7fdf617ea2ad01e441f9ffedcf72abd7ea7"
-  integrity sha512-PIcqwfMsKD9NyUEU62n2AwcaD3jNnJA2/xaialk7AzKM+pNwxW08h/tA3t9IoePZj5kWXTYLp49f4M6+puCKPw==
 
 unimodules-task-manager-interface@7.0.3:
   version "7.0.3"

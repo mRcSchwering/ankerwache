@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, View, ActivityIndicator } from "react-native";
+import { StyleSheet, View, ActivityIndicator, Button } from "react-native";
+import * as Location from "expo-location";
 import {
   convertLatDMS,
   convertLngDMS,
@@ -9,8 +10,6 @@ import {
   getDistanceFromLatLonInM,
 } from "./src/util";
 import { Txt, H1, ErrTxt } from "./src/components";
-import { useCurrentLocation } from "./src/hooks";
-import StartAnchorWatchButton from "./src/StartAnchorWatch";
 
 interface Position {
   latitude: number;
@@ -33,46 +32,36 @@ function CurrentPositionView(props: CurrentPositionViewProps): JSX.Element {
   );
 }
 
-function AnchorWatchView(props: {
-  anchor: Position;
-  current: Position;
-}): JSX.Element {
-  const dist = getDistanceFromLatLonInM(
-    props.anchor.latitude,
-    props.anchor.longitude,
-    props.current.latitude,
-    props.current.longitude
-  );
-  return (
-    <View>
-      <Txt>Distance: {Math.round(dist)} m</Txt>
-    </View>
-  );
-}
-
 export default function App() {
   const radius = 30;
   const anchor = { latitude: 52.557, longitude: 13.378 };
-  const { error: locError, location } = useCurrentLocation();
+  const [errorMsg, setErrorMsg] = React.useState<null | string>(null);
+  const [loc, setLoc] = React.useState<Location.LocationObject | null>(null);
+
+  async function updateLocation() {
+    setLoc(null);
+    console.log("update");
+
+    const resp = await Location.requestForegroundPermissionsAsync();
+    if (!resp.granted) {
+      setErrorMsg("Persmission to get location was not granted");
+      return;
+    }
+
+    const loc = await Location.getCurrentPositionAsync();
+    setLoc(loc);
+  }
 
   return (
     <View style={styles.container}>
       <H1>Ankerwache</H1>
-      {location ? (
-        <CurrentPositionView
-          timestamp={location.timestamp}
-          {...location.coords}
-        />
+      {loc ? (
+        <CurrentPositionView timestamp={loc.timestamp} {...loc.coords} />
       ) : (
         <ActivityIndicator />
       )}
-      {location && (
-        <StartAnchorWatchButton region={{ radius, ...location.coords }} />
-      )}
-      {location && (
-        <AnchorWatchView anchor={anchor} current={location.coords} />
-      )}
-      {locError && <ErrTxt>{locError}</ErrTxt>}
+      <Button onPress={updateLocation} title="update" />
+      {errorMsg && <ErrTxt>{errorMsg}</ErrTxt>}
       <StatusBar />
     </View>
   );
