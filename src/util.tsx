@@ -3,7 +3,7 @@ export function toDMS(coordinate: number): string {
   const degrees = Math.floor(absolute);
   const mins = (absolute - degrees) * 60;
   const minsFlrd = Math.floor(mins);
-  const seconds = Math.floor((mins - minsFlrd) * 60);
+  const seconds = Math.floor((mins - minsFlrd) * 6000) / 100;
   return degrees + "° " + minsFlrd + "' " + seconds + "''";
 }
 
@@ -24,7 +24,7 @@ export function formatLocationAcc(acc: number | null): string {
 }
 
 export function formatLocationTs(ts: number): string {
-  return `${new Date(ts).toISOString()}`;
+  return `${new Date(ts).toTimeString().slice(0, 12)}`;
 }
 
 export function deg2rad(deg: number): number {

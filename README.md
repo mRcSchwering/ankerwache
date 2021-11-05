@@ -31,7 +31,7 @@ See [Expo CLI build docs](https://docs.expo.dev/classic/building-standalone-apps
 expo login
 
 # -t [app-bundle|apk]
-expo build:android -t apk --no-publish
+expo build:android -t apk
 
 wget https://<URL-from-build-logs>.apk
 ```
