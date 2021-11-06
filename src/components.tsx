@@ -9,6 +9,7 @@ import {
   TextStyle,
   useColorScheme,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import {
   convertLatDMS,
   convertLngDMS,
@@ -20,12 +21,25 @@ import {
 
 export function Txt(props: {
   children?: React.ReactNode;
+  disabled?: boolean;
   style?: StyleProp<TextStyle>;
 }): JSX.Element {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme !== "light";
   const themedText = isDarkMode ? styles.darkTxt : styles.lightTxt;
-  return <Text style={[themedText, props.style]}>{props.children}</Text>;
+
+  let disabledTheme = {};
+  if (props.disabled !== undefined ? props.disabled : false) {
+    disabledTheme = isDarkMode
+      ? styles.darkDisabledTxt
+      : styles.lightDisabledTxt;
+  }
+
+  return (
+    <Text style={[themedText, props.style, disabledTheme]}>
+      {props.children}
+    </Text>
+  );
 }
 
 export function H2(props: { children?: React.ReactNode }): JSX.Element {
@@ -52,13 +66,24 @@ interface BtnProps {
 }
 
 export function Btn(props: BtnProps): JSX.Element {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme !== "light";
+
+  const isDisabled = props.disabled !== undefined ? props.disabled : false;
+  let disabledTheme = {};
+  if (isDisabled) {
+    disabledTheme = isDarkMode
+      ? styles.darkDisabledButton
+      : styles.lightDisabledButton;
+  }
+
   return (
     <Pressable
       onPress={props.onPress}
-      disabled={props.disabled !== undefined ? props.disabled : false}
-      style={[styles.button, props.style]}
+      disabled={isDisabled}
+      style={[styles.button, props.style, disabledTheme]}
     >
-      <Txt>{props.label}</Txt>
+      <Txt disabled={isDisabled}>{props.label}</Txt>
     </Pressable>
   );
 }
@@ -117,12 +142,40 @@ export function DistanceView(props: {
   );
 }
 
+interface NumberSelectionProps {
+  num: number;
+  nums: number[];
+  onSelect: (d: number) => void;
+  disabled?: boolean;
+}
+
+export function NumberSelection(props: NumberSelectionProps): JSX.Element {
+  return (
+    <Picker
+      selectedValue={props.num}
+      onValueChange={(d) => props.onSelect(d)}
+      enabled={props.disabled !== undefined ? !props.disabled : true}
+      style={styles.numberSelection}
+    >
+      {props.nums.map((d) => (
+        <Picker.Item label={`${d} m`} value={d} key={d} />
+      ))}
+    </Picker>
+  );
+}
+
 const styles = StyleSheet.create({
   darkTxt: {
     color: "#fff",
   },
+  darkDisabledTxt: {
+    color: "#e9e9e9",
+  },
   lightTxt: {
     color: "#000000",
+  },
+  lightDisabledTxt: {
+    color: "#898989",
   },
   h2: {
     fontSize: 20,
@@ -138,6 +191,9 @@ const styles = StyleSheet.create({
   errorMsg: {
     color: "red",
   },
+  numberSelection: {
+    margin: 10,
+  },
   button: {
     padding: 10,
     margin: 5,
@@ -145,7 +201,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: "#adadad",
+  },
+  darkDisabledButton: {
+    backgroundColor: "#e9e9e9",
+  },
+  lightDisabledButton: {
+    backgroundColor: "#e9e9e9",
   },
   positionViewContainer: {
     maxWidth: 200,
