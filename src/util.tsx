@@ -45,3 +45,9 @@ export function getDistanceFromLatLonInM(
     (c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
   return 12742000 * Math.asin(Math.sqrt(a));
 }
+
+export function formatDistance(d: number | null, err: number | null): string {
+  if (d === null) return "-";
+  const e = err !== null ? ` (+/- ${Math.round(err)})` : "";
+  return `${Math.round(d)}${e} m`;
+}
