@@ -68,6 +68,10 @@ function AnchorWatchView(props: AnchorWatchViewProps): JSX.Element {
   );
 }
 
+function MoveAnchorView(): JSX.Element {
+  return <View style={styles.moveAnchorContainer}></View>;
+}
+
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
   const { loc: currentLoc, errorMsg: currentLocErr } = useCurrentLocation();
   const { setAnchor, retrieveAnchor, anchorLoc } = useAnchor();
@@ -103,6 +107,7 @@ function HomeView(props: { isDarkMode: boolean }): JSX.Element {
           style={themedAnchorBtn}
         />
       </View>
+      <MoveAnchorView />
       <AnchorWatchView
         location={anchorLoc?.coords}
         isDarkMode={props.isDarkMode}
@@ -152,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#c5ceff",
   },
   darkAnchorBtn: {
-    backgroundColor: "#a9b0d5",
+    backgroundColor: "#6f7bbf",
   },
   lightWatchBtn: {
     backgroundColor: "#ff9f9f",
@@ -160,7 +165,9 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   darkWatchBtn: {
-    backgroundColor: "#a9b0d5",
+    backgroundColor: "#c56565",
+    paddingHorizontal: 50,
+    paddingVertical: 15,
   },
   anchorWatchContainer: {
     paddingVertical: 10,
@@ -170,5 +177,8 @@ const styles = StyleSheet.create({
   },
   anchorWatchHandle: {
     flexDirection: "row",
+  },
+  moveAnchorContainer: {
+    paddingVertical: 10,
   },
 });

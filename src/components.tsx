@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   darkDisabledTxt: {
-    color: "#e9e9e9",
+    color: "#9d9d9d",
   },
   lightTxt: {
     color: "#000000",
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   darkDisabledButton: {
-    backgroundColor: "#e9e9e9",
+    backgroundColor: "#484848",
   },
   lightDisabledButton: {
     backgroundColor: "#e9e9e9",
