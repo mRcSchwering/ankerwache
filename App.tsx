@@ -1,10 +1,38 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
+import * as TaskManager from "expo-task-manager";
+import { LocationGeofencingEventType, LocationRegion } from "expo-location";
 import { Btn, ErrTxt } from "./src/components";
 import { useCurrentLocation, useAnchor } from "./src/hooks";
 import PositionDistanceView from "./src/PositionDistanceView";
-import AnchorWatchView from "./src/AnchorWatchView";
+import AnchorWatchView, { ANCHOR_WATCH_TASK } from "./src/AnchorWatchView";
+
+interface AnchorWatchTaskExecutorBody {
+  data: any;
+  error: TaskManager.TaskManagerError | null;
+}
+
+TaskManager.defineTask(
+  ANCHOR_WATCH_TASK,
+  ({ data, error }: AnchorWatchTaskExecutorBody) => {
+    const eventType: LocationGeofencingEventType = data.eventType;
+    const region: LocationRegion = data.region;
+
+    if (error) {
+      console.log("background task error", error);
+      return;
+    }
+    if (data) {
+      console.log("background task data", data);
+    }
+    if (eventType === LocationGeofencingEventType.Enter) {
+      console.log("You've entered region:", region);
+    } else if (eventType === LocationGeofencingEventType.Exit) {
+      console.log("You've left region:", region);
+    }
+  }
+);
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
   const { loc: currentLoc, errorMsg: currentLocErr } = useCurrentLocation();
