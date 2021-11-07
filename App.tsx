@@ -1,70 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
-import { Btn, ErrTxt, PositionView, DistanceView, Txt } from "./src/components";
+import { Btn, ErrTxt } from "./src/components";
 import { useCurrentLocation, useAnchor } from "./src/hooks";
-import DistanceSelection from "./src/DistanceSelection";
-
-interface Location {
-  latitude: number;
-  longitude: number;
-}
-
-interface AnchorWatchViewProps {
-  location?: Location | null;
-  isDarkMode: boolean;
-}
-
-function AnchorWatchView(props: AnchorWatchViewProps): JSX.Element {
-  const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-
-  const [radius, setRadius] = React.useState(RADII[2]);
-  const [watching, setWatching] = React.useState(false);
-
-  const themedBtn = props.isDarkMode
-    ? styles.darkWatchBtn
-    : styles.lightWatchBtn;
-
-  React.useEffect(() => {
-    if (!props.location) {
-      setWatching(false);
-    }
-  }, [props.location]);
-
-  function toggleWatch() {
-    if (props.location) {
-      setWatching((d) => !d);
-      console.log(props.location);
-    }
-  }
-
-  return (
-    <View style={styles.anchorWatchContainer}>
-      <View style={styles.anchorWatchHandle}>
-        <Btn
-          onPress={toggleWatch}
-          label={watching ? "Stop" : "Start"}
-          disabled={!props.location}
-          style={themedBtn}
-        />
-        <DistanceSelection
-          num={radius}
-          nums={RADII}
-          onSelect={setRadius}
-          disabled={!props.location || watching}
-        />
-      </View>
-
-      <Txt style={{ fontWeight: "bold" }}>
-        {watching ? "Watching..." : "Not watching."}
-      </Txt>
-    </View>
-  );
-}
-
-function MoveAnchorView(): JSX.Element {
-  return <View style={styles.moveAnchorContainer}></View>;
-}
+import PositionDistanceView from "./src/PositionDistanceView";
+import AnchorWatchView from "./src/AnchorWatchView";
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
   const { loc: currentLoc, errorMsg: currentLocErr } = useCurrentLocation();
@@ -76,17 +16,7 @@ function HomeView(props: { isDarkMode: boolean }): JSX.Element {
 
   return (
     <View>
-      <PositionView
-        pos={currentLoc?.coords}
-        ts={currentLoc?.timestamp}
-        label="Current"
-      />
-      <PositionView
-        pos={anchorLoc?.coords}
-        ts={anchorLoc?.timestamp}
-        label="Anchor"
-      />
-      <DistanceView pos1={currentLoc?.coords} pos2={anchorLoc?.coords} />
+      <PositionDistanceView currentLoc={currentLoc} anchorLoc={anchorLoc} />
       <View style={styles.anchorButtonsContainer}>
         <Btn
           onPress={() => setAnchor(currentLoc)}
@@ -101,11 +31,7 @@ function HomeView(props: { isDarkMode: boolean }): JSX.Element {
           style={themedAnchorBtn}
         />
       </View>
-      <MoveAnchorView />
-      <AnchorWatchView
-        location={anchorLoc?.coords}
-        isDarkMode={props.isDarkMode}
-      />
+      <AnchorWatchView location={anchorLoc?.coords} />
       {currentLocErr && <ErrTxt>{currentLocErr}</ErrTxt>}
     </View>
   );
@@ -130,7 +56,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     alignItems: "center",
     justifyContent: "center",
   },
@@ -152,25 +77,6 @@ const styles = StyleSheet.create({
   },
   darkAnchorBtn: {
     backgroundColor: "#6f7bbf",
-  },
-  lightWatchBtn: {
-    backgroundColor: "#ff9f9f",
-    paddingHorizontal: 50,
-    paddingVertical: 15,
-  },
-  darkWatchBtn: {
-    backgroundColor: "#c56565",
-    paddingHorizontal: 50,
-    paddingVertical: 15,
-  },
-  anchorWatchContainer: {
-    paddingVertical: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-  },
-  anchorWatchHandle: {
-    flexDirection: "row",
   },
   moveAnchorContainer: {
     paddingVertical: 10,
