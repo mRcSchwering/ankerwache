@@ -8,7 +8,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { Txt } from "./components";
+import { Txt, Btn } from "./components";
 
 interface DistanceSelectionProps {
   num: number;
@@ -24,6 +24,9 @@ export default function DistanceSelection(
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme !== "light";
 
+  const themedSelBtn = isDarkMode
+    ? styles.darkSelectBtn
+    : styles.lightSelectBtn;
   const themedSelOpt = isDarkMode
     ? styles.darkSelectOption
     : styles.lightSelectOption;
@@ -58,17 +61,23 @@ export default function DistanceSelection(
           tint={isDarkMode ? "light" : "dark"}
         >
           <View style={styles.flatListContainer}>
-            <FlatList data={props.nums} renderItem={renderItem} />
+            <Txt style={styles.infoText}>
+              Take the length of your chain plus the distance error
+            </Txt>
+            <FlatList
+              data={props.nums}
+              renderItem={renderItem}
+              keyExtractor={(d) => d.toString()}
+            />
           </View>
         </BlurView>
       </Modal>
-      <Pressable
+      <Btn
         disabled={props.disabled}
         onPress={() => setIsVisible((d) => !d)}
-        style={styles.selectButton}
-      >
-        <Txt disabled={props.disabled}>{`${props.num} m`}</Txt>
-      </Pressable>
+        label={`${props.num} m`}
+        style={themedSelBtn}
+      />
     </>
   );
 }
@@ -81,15 +90,20 @@ const styles = StyleSheet.create({
   flatListContainer: {
     alignItems: "center",
   },
-  selectButton: {
-    borderRadius: 4,
-    borderWidth: 2,
-    borderStyle: "solid",
+  infoText: {
+    maxWidth: 200,
+    textAlign: "center",
+    marginVertical: 20,
+  },
+  lightSelectBtn: {
     borderColor: "gray",
-    margin: 5,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    borderStyle: "solid",
+    borderWidth: 2,
+  },
+  darkSelectBtn: {
+    borderColor: "gray",
+    borderStyle: "solid",
+    borderWidth: 2,
   },
   selectOption: {
     borderRadius: 4,
