@@ -17,6 +17,7 @@ import {
   formatLocationTs,
   getDistanceFromLatLonInM,
   formatDistance,
+  addErrs,
 } from "./util";
 
 export function Txt(props: {
@@ -126,7 +127,7 @@ export function DistanceView(props: {
     );
     let err = null;
     if (props.pos1.accuracy !== null && props.pos2.accuracy !== null) {
-      err = (props.pos1.accuracy + props.pos2.accuracy) / 2;
+      err = addErrs(props.pos1.accuracy, props.pos2.accuracy);
     } else if (props.pos1 !== null) {
       err = props.pos1.accuracy;
     } else if (props.pos2 !== null) {

@@ -69,7 +69,7 @@ Ubuntu prerequesites include _android-sdk-platform-tools-common_ and the `plugde
 1. (PC) `adb connect <ip-adress>:<port>`
 1. (PC) `adb devices -l` and note _transport_id_
 1. (mobile) enable _Install via USB_
-1. (PC) `adb -t <transport-id> install myapp.apk
+1. (PC) `adb -t <transport-id> install myapp.apk`
 
 After testing,
 on the mobile go to _Wireless debugging_ and forget device,

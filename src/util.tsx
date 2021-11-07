@@ -4,7 +4,9 @@ export function toDMS(coordinate: number): string {
   const mins = (absolute - degrees) * 60;
   const minsFlrd = Math.floor(mins);
   const seconds = Math.floor((mins - minsFlrd) * 6000) / 100;
-  return degrees + "° " + minsFlrd + "' " + seconds + "''";
+  const s1 = degrees < 100 ? " " : "";
+  const s2 = degrees < 10 ? " " : "";
+  return s1 + s2 + degrees + "° " + minsFlrd + "' " + seconds + "''";
 }
 
 export function convertLatDMS(lng: number): string {
@@ -44,6 +46,10 @@ export function getDistanceFromLatLonInM(
     c((lat2 - lat1) * p) / 2 +
     (c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
   return 12742000 * Math.asin(Math.sqrt(a));
+}
+
+export function addErrs(e1: number, e2: number): number {
+  return Math.sqrt(Math.pow(e1, 2) + Math.pow(e2, 2));
 }
 
 export function formatDistance(d: number | null, err: number | null): string {
