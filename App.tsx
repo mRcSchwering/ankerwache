@@ -1,15 +1,9 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
-import {
-  Btn,
-  ErrTxt,
-  PositionView,
-  DistanceView,
-  Txt,
-  NumberSelection,
-} from "./src/components";
+import { Btn, ErrTxt, PositionView, DistanceView, Txt } from "./src/components";
 import { useCurrentLocation, useAnchor } from "./src/hooks";
+import DistanceSelection from "./src/DistanceSelection";
 
 interface Location {
   latitude: number;
@@ -22,7 +16,7 @@ interface AnchorWatchViewProps {
 }
 
 function AnchorWatchView(props: AnchorWatchViewProps): JSX.Element {
-  const RADII = [10, 20, 30, 40, 50, 60, 70];
+  const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
   const [radius, setRadius] = React.useState(RADII[2]);
   const [watching, setWatching] = React.useState(false);
@@ -53,7 +47,7 @@ function AnchorWatchView(props: AnchorWatchViewProps): JSX.Element {
           disabled={!props.location}
           style={themedBtn}
         />
-        <NumberSelection
+        <DistanceSelection
           num={radius}
           nums={RADII}
           onSelect={setRadius}

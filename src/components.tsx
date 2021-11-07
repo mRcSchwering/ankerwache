@@ -9,7 +9,6 @@ import {
   TextStyle,
   useColorScheme,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import {
   convertLatDMS,
   convertLngDMS,
@@ -140,28 +139,6 @@ export function DistanceView(props: {
     <View>
       <H4>Distance: {txt}</H4>
     </View>
-  );
-}
-
-interface NumberSelectionProps {
-  num: number;
-  nums: number[];
-  onSelect: (d: number) => void;
-  disabled?: boolean;
-}
-
-export function NumberSelection(props: NumberSelectionProps): JSX.Element {
-  return (
-    <Picker
-      selectedValue={props.num}
-      onValueChange={(d) => props.onSelect(d)}
-      enabled={props.disabled !== undefined ? !props.disabled : true}
-      style={styles.numberSelection}
-    >
-      {props.nums.map((d) => (
-        <Picker.Item label={`${d} m`} value={d} key={d} />
-      ))}
-    </Picker>
   );
 }
 
