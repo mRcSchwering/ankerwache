@@ -2,9 +2,13 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
 import * as TaskManager from "expo-task-manager";
-import { LocationGeofencingEventType, LocationRegion } from "expo-location";
+import {
+  LocationGeofencingEventType,
+  LocationRegion,
+  LocationObject,
+} from "expo-location";
 import { Btn, ErrTxt } from "./src/components";
-import { useCurrentLocation, useAnchor } from "./src/hooks";
+import { useCurrentLocation, useAnchor, usePermissions } from "./src/hooks";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView, { ANCHOR_WATCH_TASK } from "./src/AnchorWatchView";
 
@@ -16,26 +20,19 @@ interface AnchorWatchTaskExecutorBody {
 TaskManager.defineTask(
   ANCHOR_WATCH_TASK,
   ({ data, error }: AnchorWatchTaskExecutorBody) => {
-    const eventType: LocationGeofencingEventType = data.eventType;
-    const region: LocationRegion = data.region;
+    const locations: LocationObject[] = data.locations;
 
     if (error) {
-      console.log("background task error", error);
+      console.log(error.message);
       return;
     }
-    if (data) {
-      console.log("background task data", data);
-    }
-    if (eventType === LocationGeofencingEventType.Enter) {
-      console.log("You've entered region:", region);
-    } else if (eventType === LocationGeofencingEventType.Exit) {
-      console.log("You've left region:", region);
-    }
+    console.log("Received new locations", locations);
   }
 );
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
-  const { loc: currentLoc, errorMsg: currentLocErr } = useCurrentLocation();
+  const { error, granted } = usePermissions();
+  const { loc: currentLoc } = useCurrentLocation(granted);
   const { setAnchor, retrieveAnchor, anchorLoc } = useAnchor();
 
   const themedAnchorBtn = props.isDarkMode
@@ -59,8 +56,8 @@ function HomeView(props: { isDarkMode: boolean }): JSX.Element {
           style={themedAnchorBtn}
         />
       </View>
-      <AnchorWatchView location={anchorLoc?.coords} />
-      {currentLocErr && <ErrTxt>{currentLocErr}</ErrTxt>}
+      <AnchorWatchView location={anchorLoc?.coords} granted={granted} />
+      {error && <ErrTxt>{error}</ErrTxt>}
     </View>
   );
 }

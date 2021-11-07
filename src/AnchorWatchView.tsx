@@ -12,6 +12,7 @@ interface AnchorWatchView {
     latitude: number;
     longitude: number;
   } | null;
+  granted: boolean;
 }
 
 export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
@@ -19,57 +20,43 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
 
   const [radius, setRadius] = React.useState(RADII[2]);
   const [watching, setWatching] = React.useState(false);
-  const [errorMsg, setErrorMsg] = React.useState<null | string>(null);
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme !== "light";
 
   const themedBtn = isDarkMode ? styles.darkWatchBtn : styles.lightWatchBtn;
 
-  async function getPermission() {
-    const resp = await Location.requestBackgroundPermissionsAsync();
-    if (!resp.granted) {
-      setErrorMsg(
-        "Persmission to get current location while in background was denied"
-      );
-      return;
-    } else {
-      setErrorMsg(null);
-    }
+  async function stopWatch() {
+    setWatching(false);
+    TaskManager.unregisterAllTasksAsync();
   }
 
   React.useEffect(() => {
-    getPermission();
-  }, []);
-
-  React.useEffect(() => {
     if (!props.location) {
-      setWatching(false);
-      // Location.stopGeofencingAsync(ANCHOR_WATCH_TASK);
-      TaskManager.unregisterAllTasksAsync();
+      stopWatch();
     }
   }, [props.location]);
 
   function toggleWatch() {
-    if (props.location) {
-      setWatching((d) => {
-        if (d) {
-          if (props.location) {
-            const region = {
-              latitude: props.location.latitude,
-              longitude: props.location.longitude,
-              radius: radius,
-            };
-            if (errorMsg === null) {
-              Location.startGeofencingAsync(ANCHOR_WATCH_TASK, [region]);
-            }
-          }
-        } else {
-          // Location.stopGeofencingAsync(ANCHOR_WATCH_TASK);
-          TaskManager.unregisterAllTasksAsync();
-        }
-        return !d;
-      });
+    if (watching) {
+      stopWatch();
+      return;
+    }
+    if (props.location && !watching && props.granted) {
+      const opts = {
+        accuracy: Location.Accuracy.Highest,
+        timeInterval: 5000,
+        foregroundService: {
+          notificationTitle: "Watching anchor...",
+          notificationBody:
+            "Regularly checks current location. Raises alarm if outside of distance.",
+          notificationColor: "#b2b2b2",
+        },
+        pausesUpdatesAutomatically: false,
+        distanceInterval: 1,
+      };
+      Location.startLocationUpdatesAsync(ANCHOR_WATCH_TASK, opts);
+      setWatching(true);
     }
   }
 
