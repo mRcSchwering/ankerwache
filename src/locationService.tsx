@@ -65,32 +65,47 @@ function LocationService(): LocationServiceType {
 
 export const locationService = LocationService();
 
-export async function subscribeLocationUpdates(
-  locationSubscription: (location: LocationType) => void
-) {
-  locationService.subscribe(locationSubscription);
-  const { status } = await Location.requestForegroundPermissionsAsync();
+interface subscribeLocationUpdatesProps {
+  locationSubscription: (location: LocationType) => void;
+  errorMsgSubscription: (msg: string | null) => void;
+}
 
-  if (status === "granted") {
-    const opts = {
-      accuracy: Location.Accuracy.Highest,
-      timeInterval: 5000,
-      foregroundService: {
-        notificationTitle: "Watching anchor...",
-        notificationBody:
-          "Regularly checks current location. Raises alarm if too far away.",
-        notificationColor: "#b2b2b2",
-      },
-      pausesUpdatesAutomatically: false,
-      distanceInterval: 1,
-    };
-    await Location.startLocationUpdatesAsync(ANCHOR_WATCH_TASK, opts);
+export async function subscribeLocationUpdates({
+  locationSubscription,
+  errorMsgSubscription,
+}: subscribeLocationUpdatesProps) {
+  let resp: Location.LocationPermissionResponse | null = null;
+  try {
+    resp = await Location.requestForegroundPermissionsAsync();
+  } catch (err) {
+    // @ts-ignore
+    errorMsgSubscription(err.message);
+    return;
   }
+  if (!resp.granted) {
+    errorMsgSubscription("Persmission to get current location was denied");
+    return;
+  }
+
+  locationService.subscribe(locationSubscription);
+  const opts = {
+    accuracy: Location.Accuracy.Highest,
+    timeInterval: 5000,
+    foregroundService: {
+      notificationTitle: "Watching anchor...",
+      notificationBody:
+        "Regularly checks current location. Raises alarm if too far away.",
+      notificationColor: "#b2b2b2",
+    },
+    pausesUpdatesAutomatically: false,
+    distanceInterval: 1,
+  };
+  Location.startLocationUpdatesAsync(ANCHOR_WATCH_TASK, opts);
 }
 
 export async function unsubscribeLocationUpdates(
   locationSubscription: (location: LocationType) => void
 ) {
   locationService.unsubscribe(locationSubscription);
-  await Location.stopLocationUpdatesAsync(ANCHOR_WATCH_TASK);
+  Location.stopLocationUpdatesAsync(ANCHOR_WATCH_TASK);
 }

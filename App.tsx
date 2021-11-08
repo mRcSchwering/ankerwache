@@ -16,6 +16,7 @@ import {
 } from "./src/locationContext";
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
+  const [err, setErr] = React.useState<string | null>(null);
   const { setAnchor, retrieveAnchor, anchorLoc } = useAnchor();
   const { loc, updateLoc } = React.useContext(LocationContext);
 
@@ -23,14 +24,13 @@ function HomeView(props: { isDarkMode: boolean }): JSX.Element {
     ? styles.darkAnchorBtn
     : styles.lightAnchorBtn;
 
-  function onLocationUpdate(location: LocationType) {
-    updateLoc(location);
-  }
-
   React.useEffect(() => {
-    subscribeLocationUpdates(onLocationUpdate);
+    subscribeLocationUpdates({
+      locationSubscription: updateLoc,
+      errorMsgSubscription: setErr,
+    });
     return () => {
-      unsubscribeLocationUpdates(onLocationUpdate);
+      unsubscribeLocationUpdates(updateLoc);
     };
   }, []);
 
@@ -52,6 +52,7 @@ function HomeView(props: { isDarkMode: boolean }): JSX.Element {
         />
       </View>
       <AnchorWatchView loc={anchorLoc} granted={false} />
+      {err && <ErrTxt>{err}</ErrTxt>}
     </View>
   );
 }
