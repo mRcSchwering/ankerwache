@@ -48,7 +48,7 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
         <Btn
           onPress={toggleWatch}
           label={watching ? "Stop" : "Start"}
-          disabled={!props.loc}
+          disabled={!props.loc || !props.granted}
           style={themedBtn}
         />
         <DistanceSelection

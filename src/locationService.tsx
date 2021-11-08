@@ -92,9 +92,8 @@ export async function subscribeLocationUpdates({
     accuracy: Location.Accuracy.Highest,
     timeInterval: 5000,
     foregroundService: {
-      notificationTitle: "Watching anchor...",
-      notificationBody:
-        "Regularly checks current location. Raises alarm if too far away.",
+      notificationTitle: "Watching location...",
+      notificationBody: "Regularly requests current location to check drift.",
       notificationColor: "#b2b2b2",
     },
     pausesUpdatesAutomatically: false,

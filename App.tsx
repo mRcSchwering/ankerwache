@@ -7,7 +7,7 @@ import {
   subscribeLocationUpdates,
   unsubscribeLocationUpdates,
 } from "./src/locationService";
-import { useCurrentLocation, useAnchor, usePermissions } from "./src/hooks";
+import { useAnchor } from "./src/hooks";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
 import {
