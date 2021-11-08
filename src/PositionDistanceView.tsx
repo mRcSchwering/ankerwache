@@ -9,6 +9,7 @@ import {
   addErrs,
 } from "./util";
 import { Pre, H4 } from "./components";
+import { LocationContext } from "./locationContext";
 
 export interface LocationType {
   lat: number;
@@ -61,15 +62,13 @@ function DistanceView(props: {
   );
 }
 
-export default function PositionDistanceView(props: {
-  currentLoc: LocationType | null;
-  anchorLoc: LocationType | null;
-}): JSX.Element {
+export default function PositionDistanceView(): JSX.Element {
+  const { current, anchor } = React.useContext(LocationContext);
   return (
     <>
-      <LocationView loc={props.currentLoc} label="Current" />
-      <LocationView loc={props.anchorLoc} label="Anchor" />
-      <DistanceView pos1={props.currentLoc} pos2={props.anchorLoc} />
+      <LocationView loc={current} label="Current" />
+      <LocationView loc={anchor} label="Anchor" />
+      <DistanceView pos1={current} pos2={anchor} />
     </>
   );
 }

@@ -8,13 +8,17 @@ export interface LocationType {
 }
 
 type LocationContextType = {
-  loc: LocationType | null;
-  updateLoc: (d: LocationType | null) => void;
+  current: LocationType | null;
+  anchor: LocationType | null;
+  setCurrent: (d: LocationType | null) => void;
+  setAnchor: (d: LocationType | null) => void;
 };
 
 const defaultContext = {
-  loc: null,
-  updateLoc: () => {},
+  current: null,
+  anchor: null,
+  setCurrent: () => {},
+  setAnchor: () => {},
 };
 
 export const LocationContext =
@@ -25,14 +29,13 @@ type LocationContextProviderProps = {
 };
 
 export function LocationContextProvider(props: LocationContextProviderProps) {
-  const [state, setState] = React.useState<LocationType | null>(null);
-
-  function updateLoc(loc: LocationType | null) {
-    setState(loc);
-  }
+  const [current, setCurrent] = React.useState<LocationType | null>(null);
+  const [anchor, setAnchor] = React.useState<LocationType | null>(null);
 
   return (
-    <LocationContext.Provider value={{ loc: state, updateLoc }}>
+    <LocationContext.Provider
+      value={{ current, anchor, setCurrent, setAnchor }}
+    >
       {props.children}
     </LocationContext.Provider>
   );

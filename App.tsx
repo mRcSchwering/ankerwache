@@ -6,7 +6,6 @@ import {
   subscribeLocationUpdates,
   unsubscribeLocationUpdates,
 } from "./src/locationService";
-import { useAnchor } from "./src/hooks";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
 import {
@@ -16,41 +15,44 @@ import {
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
   const [err, setErr] = React.useState<string | null>(null);
-  const { setAnchor, retrieveAnchor, anchorLoc } = useAnchor();
-  const { loc, updateLoc } = React.useContext(LocationContext);
+  const { current, setCurrent, setAnchor } = React.useContext(LocationContext);
 
   const themedAnchorBtn = props.isDarkMode
     ? styles.darkAnchorBtn
     : styles.lightAnchorBtn;
 
+  function retrieveAnchor() {
+    setAnchor(null);
+  }
+
   React.useEffect(() => {
     subscribeLocationUpdates({
-      locationSubscription: updateLoc,
+      locationSubscription: setCurrent,
       errorMsgSubscription: setErr,
     });
     return () => {
-      unsubscribeLocationUpdates(updateLoc);
+      unsubscribeLocationUpdates(setCurrent);
     };
   }, []);
 
   return (
     <View>
-      <PositionDistanceView currentLoc={loc} anchorLoc={anchorLoc} />
+      <PositionDistanceView />
       <View style={styles.anchorButtonsContainer}>
         <Btn
-          onPress={() => setAnchor(loc)}
-          disabled={loc === null}
+          onPress={() => setAnchor(current)}
+          disabled={current === null}
           label="Set"
           style={themedAnchorBtn}
         />
         <Btn
           onPress={retrieveAnchor}
-          disabled={loc === null}
+          disabled={current === null}
           label="Retrieve"
           style={themedAnchorBtn}
         />
       </View>
-      <AnchorWatchView loc={anchorLoc} granted={false} />
+      <AnchorWatchView granted={err === null} />
       {err && <ErrTxt>{err}</ErrTxt>}
     </View>
   );

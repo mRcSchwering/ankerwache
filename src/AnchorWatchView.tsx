@@ -3,6 +3,7 @@ import { StyleSheet, View, useColorScheme } from "react-native";
 import { Btn, Txt } from "./components";
 import DistanceSelection from "./DistanceSelection";
 import { useAnchorWatch } from "./hooks";
+import { LocationContext } from "./locationContext";
 
 export interface LocationType {
   lat: number;
@@ -12,13 +13,13 @@ export interface LocationType {
 }
 
 interface AnchorWatchView {
-  loc?: LocationType | null;
   granted: boolean;
 }
 
 export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
+  const { anchor } = React.useContext(LocationContext);
   const [radius, setRadius] = React.useState(RADII[2]);
   const { watching, startWatch, stopWatch } = useAnchorWatch();
 
@@ -29,16 +30,16 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   function toggleWatch() {
     if (watching) {
       stopWatch();
-    } else if (props.granted && props.loc) {
+    } else if (props.granted && anchor) {
       startWatch();
     }
   }
 
   React.useEffect(() => {
-    if (!props.loc && watching) {
+    if (!anchor && watching) {
       stopWatch();
     }
-  }, [props.loc]);
+  }, [anchor]);
 
   return (
     <View style={styles.anchorWatchContainer}>
@@ -46,14 +47,14 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
         <Btn
           onPress={toggleWatch}
           label={watching ? "Stop" : "Start"}
-          disabled={!props.loc || !props.granted}
+          disabled={!anchor || !props.granted}
           style={themedBtn}
         />
         <DistanceSelection
           num={radius}
           nums={RADII}
           onSelect={setRadius}
-          disabled={!props.loc || watching}
+          disabled={!anchor || watching}
         />
       </View>
 

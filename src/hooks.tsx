@@ -9,24 +9,6 @@ export interface LocationType {
   acc: number | null;
 }
 
-export function useAnchor(): {
-  setAnchor: (loc: LocationType | null) => void;
-  retrieveAnchor: () => void;
-  anchorLoc: LocationType | null;
-} {
-  const [anchorLoc, setanchorLoc] = React.useState<LocationType | null>(null);
-
-  function setAnchor(loc: LocationType | null) {
-    setanchorLoc(loc);
-  }
-
-  function retrieveAnchor() {
-    setanchorLoc(null);
-  }
-
-  return { setAnchor, retrieveAnchor, anchorLoc };
-}
-
 export const ANCHOR_WATCH_TASK = "anchor-watch-background-task";
 
 export function useAnchorWatch() {
