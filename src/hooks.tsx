@@ -1,7 +1,6 @@
 import React from "react";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
-import { ANCHOR_WATCH_TASK } from "./tasks";
 
 export function usePermissions(): { granted: boolean; error: string | null } {
   const [error, setError] = React.useState<null | string>(null);
@@ -72,6 +71,8 @@ export function useAnchor(): {
 
   return { setAnchor, retrieveAnchor, anchorLoc };
 }
+
+export const ANCHOR_WATCH_TASK = "anchor-watch-background-task";
 
 export function useAnchorWatch() {
   const [watching, setWatching] = React.useState(false);

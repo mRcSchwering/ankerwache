@@ -65,4 +65,4 @@ Ubuntu prerequesites include _android-sdk-platform-tools-common_ and the `plugde
 After testing,
 on the mobile go to _Wireless debugging_ and forget device,
 then remove special permissions **Wireless debugging** and **Install via USB** again.
-On the PC run `adb kill-server`.
+On the PC run `adb disconnect && adb kill-server`.

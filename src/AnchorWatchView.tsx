@@ -33,10 +33,10 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   }
 
   React.useEffect(() => {
-    if (!location && watching) {
+    if (!props.location && watching) {
       stopWatch();
     }
-  }, [location]);
+  }, [props.location]);
 
   return (
     <View style={styles.anchorWatchContainer}>

@@ -2,12 +2,14 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
 import { Btn, ErrTxt } from "./src/components";
+import {
+  LocationType,
+  subscribeLocationUpdates,
+  unsubscribeLocationUpdates,
+} from "./src/locationService";
 import { useCurrentLocation, useAnchor, usePermissions } from "./src/hooks";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
-import defineTasks from "./src/tasks";
-
-defineTasks();
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
   const { error, granted } = usePermissions();
@@ -44,6 +46,23 @@ function HomeView(props: { isDarkMode: boolean }): JSX.Element {
 export default function App() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme !== "light";
+
+  const [location, setLocation] = React.useState<LocationType | null>(null);
+
+  function onLocationUpdate(location: LocationType) {
+    setLocation(location);
+  }
+
+  React.useEffect(() => {
+    console.log("in app:", location);
+  }, [location]);
+
+  React.useEffect(() => {
+    subscribeLocationUpdates(onLocationUpdate);
+    return () => {
+      unsubscribeLocationUpdates(onLocationUpdate);
+    };
+  }, []);
 
   const themedContainer = isDarkMode
     ? styles.darkContainer
