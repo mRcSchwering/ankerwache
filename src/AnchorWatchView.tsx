@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
-import { Btn, Txt } from "./components";
+import { Btn, Txt, ErrTxt } from "./components";
 import DistanceSelection from "./DistanceSelection";
 import { useAnchorWatch } from "./hooks";
 import { LocationContext } from "./locationContext";
@@ -17,11 +17,17 @@ interface AnchorWatchView {
 }
 
 export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
+  const MARGIN = 3;
   const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
-  const { anchor } = React.useContext(LocationContext);
+  const { anchor, current } = React.useContext(LocationContext);
   const [radius, setRadius] = React.useState(RADII[2]);
-  const { watching, startWatch, stopWatch } = useAnchorWatch();
+  const { hit, watching, startWatch, stopWatch } = useAnchorWatch(
+    radius,
+    current,
+    anchor
+  );
+  const [warn, setWarn] = React.useState<string | null>(null);
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme !== "light";
@@ -41,6 +47,14 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
     }
   }, [anchor]);
 
+  React.useEffect(() => {
+    if (hit >= MARGIN) {
+      setWarn("Anchor dragging!");
+    } else {
+      setWarn(null);
+    }
+  }, [hit]);
+
   return (
     <View style={styles.anchorWatchContainer}>
       <View style={styles.anchorWatchHandle}>
@@ -57,10 +71,10 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
           disabled={!anchor || watching}
         />
       </View>
-
       <Txt style={{ fontWeight: "bold" }}>
         {watching ? "Watching..." : "Not watching."}
       </Txt>
+      {warn && <ErrTxt>{warn}</ErrTxt>}
     </View>
   );
 }

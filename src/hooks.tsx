@@ -1,6 +1,5 @@
 import React from "react";
-import * as Location from "expo-location";
-import * as TaskManager from "expo-task-manager";
+import { getDistanceFromLatLonInM } from "./util";
 
 export interface LocationType {
   lat: number;
@@ -9,34 +8,41 @@ export interface LocationType {
   acc: number | null;
 }
 
-export const ANCHOR_WATCH_TASK = "anchor-watch-background-task";
-
-export function useAnchorWatch() {
+export function useAnchorWatch(
+  radius: number,
+  current: LocationType | null,
+  anchor: LocationType | null
+) {
   const [watching, setWatching] = React.useState(false);
+  const [hit, setHit] = React.useState(0);
 
   async function stopWatch() {
     setWatching(false);
-    TaskManager.unregisterAllTasksAsync();
+    setHit(0);
   }
 
   async function startWatch() {
     if (!watching) {
-      const opts = {
-        accuracy: Location.Accuracy.Highest,
-        timeInterval: 5000,
-        foregroundService: {
-          notificationTitle: "Watching anchor...",
-          notificationBody:
-            "Regularly checks current location. Raises alarm if too far away.",
-          notificationColor: "#b2b2b2",
-        },
-        pausesUpdatesAutomatically: false,
-        distanceInterval: 1,
-      };
-      Location.startLocationUpdatesAsync(ANCHOR_WATCH_TASK, opts);
       setWatching(true);
+      setHit(0);
     }
   }
 
-  return { watching, startWatch, stopWatch };
+  React.useEffect(() => {
+    if (watching && current && anchor) {
+      const d = getDistanceFromLatLonInM(
+        current.lat,
+        current.lng,
+        anchor.lat,
+        anchor.lng
+      );
+      if (d > radius) {
+        setHit((d) => d + 1);
+      } else {
+        setHit((d) => Math.max(d - 1, 0));
+      }
+    }
+  }, [current, anchor, radius]);
+
+  return { watching, startWatch, stopWatch, hit };
 }
