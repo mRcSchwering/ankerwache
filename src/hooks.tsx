@@ -1,5 +1,7 @@
 import React from "react";
 import * as Location from "expo-location";
+import * as TaskManager from "expo-task-manager";
+import { ANCHOR_WATCH_TASK } from "./tasks";
 
 export function usePermissions(): { granted: boolean; error: string | null } {
   const [error, setError] = React.useState<null | string>(null);
@@ -69,4 +71,34 @@ export function useAnchor(): {
   }
 
   return { setAnchor, retrieveAnchor, anchorLoc };
+}
+
+export function useAnchorWatch() {
+  const [watching, setWatching] = React.useState(false);
+
+  async function stopWatch() {
+    setWatching(false);
+    TaskManager.unregisterAllTasksAsync();
+  }
+
+  async function startWatch() {
+    if (!watching) {
+      const opts = {
+        accuracy: Location.Accuracy.Highest,
+        timeInterval: 5000,
+        foregroundService: {
+          notificationTitle: "Watching anchor...",
+          notificationBody:
+            "Regularly checks current location. Raises alarm if too far away.",
+          notificationColor: "#b2b2b2",
+        },
+        pausesUpdatesAutomatically: false,
+        distanceInterval: 1,
+      };
+      Location.startLocationUpdatesAsync(ANCHOR_WATCH_TASK, opts);
+      setWatching(true);
+    }
+  }
+
+  return { watching, startWatch, stopWatch };
 }

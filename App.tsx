@@ -1,34 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
-import * as TaskManager from "expo-task-manager";
-import {
-  LocationGeofencingEventType,
-  LocationRegion,
-  LocationObject,
-} from "expo-location";
 import { Btn, ErrTxt } from "./src/components";
 import { useCurrentLocation, useAnchor, usePermissions } from "./src/hooks";
 import PositionDistanceView from "./src/PositionDistanceView";
-import AnchorWatchView, { ANCHOR_WATCH_TASK } from "./src/AnchorWatchView";
+import AnchorWatchView from "./src/AnchorWatchView";
+import defineTasks from "./src/tasks";
 
-interface AnchorWatchTaskExecutorBody {
-  data: any;
-  error: TaskManager.TaskManagerError | null;
-}
-
-TaskManager.defineTask(
-  ANCHOR_WATCH_TASK,
-  ({ data, error }: AnchorWatchTaskExecutorBody) => {
-    const locations: LocationObject[] = data.locations;
-
-    if (error) {
-      console.log(error.message);
-      return;
-    }
-    console.log("Received new locations", locations);
-  }
-);
+defineTasks();
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
   const { error, granted } = usePermissions();
