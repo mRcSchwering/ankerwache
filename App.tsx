@@ -2,57 +2,47 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
 import { Btn, ErrTxt } from "./src/components";
-import {
-  subscribeLocationUpdates,
-  unsubscribeLocationUpdates,
-} from "./src/locationService";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
 import {
   LocationContextProvider,
   LocationContext,
 } from "./src/locationContext";
+import { useCurrentLocation } from "./src/hooks";
+
+interface LocationType {
+  lat: number;
+  lng: number;
+  ts: number | null;
+  acc: number | null;
+}
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
-  const [err, setErr] = React.useState<string | null>(null);
-  const { current, setCurrent, setAnchor } = React.useContext(LocationContext);
+  const { err, loc } = useCurrentLocation();
+  const [anchor, setAnchor] = React.useState<LocationType | null>(null);
 
   const themedAnchorBtn = props.isDarkMode
     ? styles.darkAnchorBtn
     : styles.lightAnchorBtn;
 
-  function retrieveAnchor() {
-    setAnchor(null);
-  }
-
-  React.useEffect(() => {
-    subscribeLocationUpdates({
-      locationSubscription: setCurrent,
-      errorMsgSubscription: setErr,
-    });
-    return () => {
-      unsubscribeLocationUpdates(setCurrent);
-    };
-  }, []);
-
   return (
     <View>
-      <PositionDistanceView />
+      <PositionDistanceView loc={loc} anchor={anchor} />
       <View style={styles.anchorButtonsContainer}>
         <Btn
-          onPress={() => setAnchor(current)}
-          disabled={current === null}
+          onPress={() => setAnchor(loc)}
+          disabled={loc === null}
           label="Set"
           style={themedAnchorBtn}
         />
         <Btn
-          onPress={retrieveAnchor}
-          disabled={current === null}
+          onPress={() => setAnchor(null)}
+          disabled={loc === null}
           label="Retrieve"
           style={themedAnchorBtn}
         />
       </View>
-      <AnchorWatchView granted={err === null} />
+      <AnchorWatchView anchor={anchor} granted={err === null} />
       {err && <ErrTxt>{err}</ErrTxt>}
     </View>
   );

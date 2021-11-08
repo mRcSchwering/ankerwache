@@ -62,13 +62,15 @@ function DistanceView(props: {
   );
 }
 
-export default function PositionDistanceView(): JSX.Element {
-  const { current, anchor } = React.useContext(LocationContext);
+export default function PositionDistanceView(props: {
+  loc: LocationType | null;
+  anchor: LocationType | null;
+}): JSX.Element {
   return (
     <>
-      <LocationView loc={current} label="Current" />
-      <LocationView loc={anchor} label="Anchor" />
-      <DistanceView pos1={current} pos2={anchor} />
+      <LocationView loc={props.loc} label="Current" />
+      <LocationView loc={props.anchor} label="Anchor" />
+      <DistanceView pos1={props.loc} pos2={props.anchor} />
     </>
   );
 }

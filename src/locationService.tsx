@@ -85,15 +85,16 @@ export async function subscribeLocationUpdates({
     accuracy: Location.Accuracy.Highest,
     timeInterval: 5000,
     foregroundService: {
-      notificationTitle: "Watching location...",
-      notificationBody: "Regularly requests current location to check drift.",
-      notificationColor: "#b2b2b2",
+      notificationTitle: "Regular location updates...",
+      notificationBody:
+        "Will sound alarm if drift is persistently higher than radius",
     },
     pausesUpdatesAutomatically: false,
     distanceInterval: 1,
   };
 
   try {
+    await TaskManager.unregisterAllTasksAsync();
     await Location.startLocationUpdatesAsync(WATCH_LOCATION_TASK, opts);
   } catch (err) {
     // @ts-ignore
@@ -106,5 +107,6 @@ export async function unsubscribeLocationUpdates(
   locationSubscription: (location: LocationType) => void
 ) {
   locationService.unsubscribe(locationSubscription);
-  Location.stopLocationUpdatesAsync(WATCH_LOCATION_TASK);
+  await Location.stopLocationUpdatesAsync(WATCH_LOCATION_TASK);
+  await TaskManager.unregisterAllTasksAsync();
 }

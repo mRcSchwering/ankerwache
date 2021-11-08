@@ -8,17 +8,13 @@ export interface LocationType {
 }
 
 type LocationContextType = {
-  current: LocationType | null;
-  anchor: LocationType | null;
-  setCurrent: (d: LocationType | null) => void;
-  setAnchor: (d: LocationType | null) => void;
+  currentBkg: LocationType | null;
+  setCurrentBkg: (d: LocationType | null) => void;
 };
 
 const defaultContext = {
-  current: null,
-  anchor: null,
-  setCurrent: () => {},
-  setAnchor: () => {},
+  currentBkg: null,
+  setCurrentBkg: () => {},
 };
 
 export const LocationContext =
@@ -29,13 +25,10 @@ type LocationContextProviderProps = {
 };
 
 export function LocationContextProvider(props: LocationContextProviderProps) {
-  const [current, setCurrent] = React.useState<LocationType | null>(null);
-  const [anchor, setAnchor] = React.useState<LocationType | null>(null);
+  const [currentBkg, setCurrentBkg] = React.useState<LocationType | null>(null);
 
   return (
-    <LocationContext.Provider
-      value={{ current, anchor, setCurrent, setAnchor }}
-    >
+    <LocationContext.Provider value={{ currentBkg, setCurrentBkg }}>
       {props.children}
     </LocationContext.Provider>
   );

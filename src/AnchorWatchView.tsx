@@ -4,6 +4,10 @@ import { Btn, Txt, ErrTxt } from "./components";
 import DistanceSelection from "./DistanceSelection";
 import { useAnchorWatch } from "./hooks";
 import { LocationContext } from "./locationContext";
+import {
+  subscribeLocationUpdates,
+  unsubscribeLocationUpdates,
+} from "./locationService";
 
 export interface LocationType {
   lat: number;
@@ -13,6 +17,7 @@ export interface LocationType {
 }
 
 interface AnchorWatchView {
+  anchor: LocationType | null;
   granted: boolean;
 }
 
@@ -20,12 +25,13 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   const MARGIN = 3;
   const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
-  const { anchor, current } = React.useContext(LocationContext);
+  const [err, setErr] = React.useState<string | null>(null);
+  const { currentBkg, setCurrentBkg } = React.useContext(LocationContext);
   const [radius, setRadius] = React.useState(RADII[2]);
   const { hit, watching, startWatch, stopWatch } = useAnchorWatch(
     radius,
-    current,
-    anchor
+    currentBkg,
+    props.anchor
   );
   const [warn, setWarn] = React.useState<string | null>(null);
 
@@ -36,16 +42,22 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   function toggleWatch() {
     if (watching) {
       stopWatch();
-    } else if (props.granted && anchor) {
+      unsubscribeLocationUpdates(setCurrentBkg);
+    } else if (props.granted && props.anchor) {
       startWatch();
+      subscribeLocationUpdates({
+        locationSubscription: setCurrentBkg,
+        errorMsgSubscription: setErr,
+      });
     }
   }
 
   React.useEffect(() => {
-    if (!anchor && watching) {
+    if (!props.anchor && watching) {
       stopWatch();
+      unsubscribeLocationUpdates(setCurrentBkg);
     }
-  }, [anchor]);
+  }, [props.anchor]);
 
   React.useEffect(() => {
     if (hit >= MARGIN) {
@@ -61,20 +73,21 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
         <Btn
           onPress={toggleWatch}
           label={watching ? "Stop" : "Start"}
-          disabled={!anchor || !props.granted}
+          disabled={!props.anchor || !props.granted}
           style={themedBtn}
         />
         <DistanceSelection
           num={radius}
           nums={RADII}
           onSelect={setRadius}
-          disabled={!anchor || watching}
+          disabled={!props.anchor || watching}
         />
       </View>
       <Txt style={{ fontWeight: "bold" }}>
         {watching ? "Watching..." : "Not watching."}
       </Txt>
       {warn && <ErrTxt>{warn}</ErrTxt>}
+      {err && <ErrTxt>{err}</ErrTxt>}
     </View>
   );
 }
