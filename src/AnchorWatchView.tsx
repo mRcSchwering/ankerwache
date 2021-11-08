@@ -6,11 +6,15 @@ import { useAnchorWatch } from "./hooks";
 
 export const ANCHOR_WATCH_TASK = "anchor-watch-background-task";
 
+export interface LocationType {
+  lat: number;
+  lng: number;
+  ts: number | null;
+  acc: number | null;
+}
+
 interface AnchorWatchView {
-  location?: {
-    latitude: number;
-    longitude: number;
-  } | null;
+  loc?: LocationType | null;
   granted: boolean;
 }
 
@@ -27,16 +31,16 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   function toggleWatch() {
     if (watching) {
       stopWatch();
-    } else if (props.granted && props.location) {
+    } else if (props.granted && props.loc) {
       startWatch();
     }
   }
 
   React.useEffect(() => {
-    if (!props.location && watching) {
+    if (!props.loc && watching) {
       stopWatch();
     }
-  }, [props.location]);
+  }, [props.loc]);
 
   return (
     <View style={styles.anchorWatchContainer}>
@@ -44,14 +48,14 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
         <Btn
           onPress={toggleWatch}
           label={watching ? "Stop" : "Start"}
-          disabled={!props.location}
+          disabled={!props.loc}
           style={themedBtn}
         />
         <DistanceSelection
           num={radius}
           nums={RADII}
           onSelect={setRadius}
-          disabled={!props.location || watching}
+          disabled={!props.loc || watching}
         />
       </View>
 

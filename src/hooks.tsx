@@ -53,15 +53,21 @@ export function useCurrentLocation(granted: boolean): {
   return { loc };
 }
 
-export function useAnchor(): {
-  setAnchor: (loc: Location.LocationObject | null) => void;
-  retrieveAnchor: () => void;
-  anchorLoc: Location.LocationObject | null;
-} {
-  const [anchorLoc, setanchorLoc] =
-    React.useState<Location.LocationObject | null>(null);
+export interface LocationType {
+  lat: number;
+  lng: number;
+  ts: number | null;
+  acc: number | null;
+}
 
-  function setAnchor(loc: Location.LocationObject | null) {
+export function useAnchor(): {
+  setAnchor: (loc: LocationType | null) => void;
+  retrieveAnchor: () => void;
+  anchorLoc: LocationType | null;
+} {
+  const [anchorLoc, setanchorLoc] = React.useState<LocationType | null>(null);
+
+  function setAnchor(loc: LocationType | null) {
     setanchorLoc(loc);
   }
 

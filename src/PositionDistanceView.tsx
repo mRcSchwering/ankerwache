@@ -9,48 +9,47 @@ import {
   addErrs,
 } from "./util";
 import { Pre, H4 } from "./components";
-import { LocationObject } from "expo-location";
 
-interface Position {
-  latitude: number;
-  longitude: number;
-  accuracy: number | null;
+export interface LocationType {
+  lat: number;
+  lng: number;
+  ts: number | null;
+  acc: number | null;
 }
 
-function PositionView(props: {
-  pos: Position | null | undefined;
-  ts: number | null | undefined;
+function LocationView(props: {
+  loc?: LocationType | null;
   label: string;
 }): JSX.Element {
   return (
     <View style={styles.positionViewContainer}>
       <H4>{props.label}</H4>
-      <Pre>Lat: {props.pos ? convertLatDMS(props.pos.latitude) : "-"}</Pre>
-      <Pre>Lng: {props.pos ? convertLngDMS(props.pos.longitude) : "-"}</Pre>
-      <Pre>Time: {props.ts ? formatLocationTs(props.ts) : "-"}</Pre>
+      <Pre>Lat: {props.loc ? convertLatDMS(props.loc.lat) : "-"}</Pre>
+      <Pre>Lng: {props.loc ? convertLngDMS(props.loc.lng) : "-"}</Pre>
+      <Pre>Time: {props.loc?.ts ? formatLocationTs(props.loc?.ts) : "-"}</Pre>
     </View>
   );
 }
 
 function DistanceView(props: {
-  pos1: Position | null | undefined;
-  pos2: Position | null | undefined;
+  pos1?: LocationType | null;
+  pos2?: LocationType | null;
 }): JSX.Element {
   let txt = "-";
   if (props.pos1 && props.pos2) {
     const d = getDistanceFromLatLonInM(
-      props.pos1.latitude,
-      props.pos1.longitude,
-      props.pos2.latitude,
-      props.pos2.longitude
+      props.pos1.lat,
+      props.pos1.lng,
+      props.pos2.lat,
+      props.pos2.lng
     );
     let err = null;
-    if (props.pos1.accuracy !== null && props.pos2.accuracy !== null) {
-      err = addErrs(props.pos1.accuracy, props.pos2.accuracy);
-    } else if (props.pos1 !== null) {
-      err = props.pos1.accuracy;
-    } else if (props.pos2 !== null) {
-      err = props.pos2.accuracy;
+    if (props.pos1.acc !== null && props.pos2.acc !== null) {
+      err = addErrs(props.pos1.acc, props.pos2.acc);
+    } else if (props.pos1.acc !== null) {
+      err = props.pos1.acc;
+    } else if (props.pos2.acc !== null) {
+      err = props.pos2.acc;
     }
     txt = formatDistance(d, err);
   }
@@ -63,25 +62,14 @@ function DistanceView(props: {
 }
 
 export default function PositionDistanceView(props: {
-  currentLoc: LocationObject | null;
-  anchorLoc: LocationObject | null;
+  currentLoc: LocationType | null;
+  anchorLoc: LocationType | null;
 }): JSX.Element {
   return (
     <>
-      <PositionView
-        pos={props.currentLoc?.coords}
-        ts={props.currentLoc?.timestamp}
-        label="Current"
-      />
-      <PositionView
-        pos={props.anchorLoc?.coords}
-        ts={props.anchorLoc?.timestamp}
-        label="Anchor"
-      />
-      <DistanceView
-        pos1={props.currentLoc?.coords}
-        pos2={props.anchorLoc?.coords}
-      />
+      <LocationView loc={props.currentLoc} label="Current" />
+      <LocationView loc={props.anchorLoc} label="Anchor" />
+      <DistanceView pos1={props.currentLoc} pos2={props.anchorLoc} />
     </>
   );
 }

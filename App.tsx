@@ -10,52 +10,22 @@ import {
 import { useCurrentLocation, useAnchor, usePermissions } from "./src/hooks";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
+import {
+  LocationContextProvider,
+  LocationContext,
+} from "./src/locationContext";
 
 function HomeView(props: { isDarkMode: boolean }): JSX.Element {
-  const { error, granted } = usePermissions();
-  const { loc: currentLoc } = useCurrentLocation(granted);
   const { setAnchor, retrieveAnchor, anchorLoc } = useAnchor();
+  const { loc, updateLoc } = React.useContext(LocationContext);
 
   const themedAnchorBtn = props.isDarkMode
     ? styles.darkAnchorBtn
     : styles.lightAnchorBtn;
 
-  return (
-    <View>
-      <PositionDistanceView currentLoc={currentLoc} anchorLoc={anchorLoc} />
-      <View style={styles.anchorButtonsContainer}>
-        <Btn
-          onPress={() => setAnchor(currentLoc)}
-          disabled={currentLoc === null}
-          label="Set"
-          style={themedAnchorBtn}
-        />
-        <Btn
-          onPress={retrieveAnchor}
-          disabled={currentLoc === null}
-          label="Retrieve"
-          style={themedAnchorBtn}
-        />
-      </View>
-      <AnchorWatchView location={anchorLoc?.coords} granted={granted} />
-      {error && <ErrTxt>{error}</ErrTxt>}
-    </View>
-  );
-}
-
-export default function App() {
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme !== "light";
-
-  const [location, setLocation] = React.useState<LocationType | null>(null);
-
   function onLocationUpdate(location: LocationType) {
-    setLocation(location);
+    updateLoc(location);
   }
-
-  React.useEffect(() => {
-    console.log("in app:", location);
-  }, [location]);
 
   React.useEffect(() => {
     subscribeLocationUpdates(onLocationUpdate);
@@ -64,15 +34,43 @@ export default function App() {
     };
   }, []);
 
+  return (
+    <View>
+      <PositionDistanceView currentLoc={loc} anchorLoc={anchorLoc} />
+      <View style={styles.anchorButtonsContainer}>
+        <Btn
+          onPress={() => setAnchor(loc)}
+          disabled={loc === null}
+          label="Set"
+          style={themedAnchorBtn}
+        />
+        <Btn
+          onPress={retrieveAnchor}
+          disabled={loc === null}
+          label="Retrieve"
+          style={themedAnchorBtn}
+        />
+      </View>
+      <AnchorWatchView loc={anchorLoc} granted={false} />
+    </View>
+  );
+}
+
+export default function App() {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme !== "light";
+
   const themedContainer = isDarkMode
     ? styles.darkContainer
     : styles.lightContainer;
 
   return (
-    <View style={[styles.container, themedContainer]}>
-      <HomeView isDarkMode={isDarkMode} />
-      <StatusBar />
-    </View>
+    <LocationContextProvider>
+      <View style={[styles.container, themedContainer]}>
+        <HomeView isDarkMode={isDarkMode} />
+        <StatusBar />
+      </View>
+    </LocationContextProvider>
   );
 }
 
