@@ -3,7 +3,6 @@ import React from "react";
 import { StyleSheet, View, useColorScheme } from "react-native";
 import { Btn, ErrTxt } from "./src/components";
 import {
-  LocationType,
   subscribeLocationUpdates,
   unsubscribeLocationUpdates,
 } from "./src/locationService";

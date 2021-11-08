@@ -4,8 +4,6 @@ import { Btn, Txt } from "./components";
 import DistanceSelection from "./DistanceSelection";
 import { useAnchorWatch } from "./hooks";
 
-export const ANCHOR_WATCH_TASK = "anchor-watch-background-task";
-
 export interface LocationType {
   lat: number;
   lng: number;

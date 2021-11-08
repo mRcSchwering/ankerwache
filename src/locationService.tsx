@@ -1,6 +1,7 @@
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
-import { ANCHOR_WATCH_TASK } from "./hooks";
+
+const WATCH_LOCATION_TASK = "watch-location-task";
 
 interface AnchorWatchTaskExecutorBody {
   data: any;
@@ -8,12 +9,12 @@ interface AnchorWatchTaskExecutorBody {
 }
 
 TaskManager.defineTask(
-  ANCHOR_WATCH_TASK,
+  WATCH_LOCATION_TASK,
   ({ data, error }: AnchorWatchTaskExecutorBody) => {
     const location: Location.LocationObject = data.locations[0];
 
     if (error) {
-      console.log("Error in ANCHOR_WATCH_TASK", error.message);
+      console.log("Error in WATCH_LOCATION_TASK", error.message);
       return;
     }
 
@@ -99,12 +100,19 @@ export async function subscribeLocationUpdates({
     pausesUpdatesAutomatically: false,
     distanceInterval: 1,
   };
-  Location.startLocationUpdatesAsync(ANCHOR_WATCH_TASK, opts);
+
+  try {
+    await Location.startLocationUpdatesAsync(WATCH_LOCATION_TASK, opts);
+  } catch (err) {
+    // @ts-ignore
+    errorMsgSubscription(err.message);
+    return;
+  }
 }
 
 export async function unsubscribeLocationUpdates(
   locationSubscription: (location: LocationType) => void
 ) {
   locationService.unsubscribe(locationSubscription);
-  Location.stopLocationUpdatesAsync(ANCHOR_WATCH_TASK);
+  Location.stopLocationUpdatesAsync(WATCH_LOCATION_TASK);
 }
