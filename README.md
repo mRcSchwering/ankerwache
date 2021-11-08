@@ -1,6 +1,13 @@
 # Ankerwache
 
+Anchor watch app. Set an anchor somewhere, define a radius, and let it wake you up if your boat drifts away at night.
+This app is similar to [AnkerAlarm](https://ankeralarm.app/en/) but I will not add many features and instead focus on reliability.
+Built with [React Native](https://reactnative.dev/) and [Expo](https://expo.dev/).
+
 ## Develop
+
+See [React Native docs](https://reactnative.dev/docs/components-and-apis) and [Expo docs](https://docs.expo.dev/)
+for APIs and components.
 
 ```
 yarn start
@@ -8,7 +15,7 @@ yarn start
 
 ## Build
 
-Both need an [Expo](https://expo.dev/) account and the [Expo CLI](https://docs.expo.dev/workflow/expo-cli/).
+Needs an [Expo](https://expo.dev/) account and the [Expo CLI](https://docs.expo.dev/workflow/expo-cli/).
 I also need the [Android SDK Tools](https://guides.codepath.com/android/installing-android-sdk-tools) for `adb`.
 I did it the manual way. Didn't work exactly as described:
 
@@ -23,8 +30,9 @@ export PATH=$PATH:$ANDROID_SDK_ROOT/tools/
 export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools/
 ```
 
-### Expo-CLI
+### Standalone App with Expo-CLI
 
+Creates an _.apk_ for testing on an Android device.
 See [Expo CLI build docs](https://docs.expo.dev/classic/building-standalone-apps/).
 
 ```
@@ -36,24 +44,7 @@ expo build:android -t apk
 wget https://<URL-from-build-logs>.apk
 ```
 
-I auto-generated the key store and fetched it (`expo fetch:android:keystore`) later.
-
-### Turtle
-
-See [Turtle CLI build docs](https://docs.expo.dev/classic/turtle-cli/#turtle-cli).
-
-```
-# use Java 8
-update-java-alternatives --list
-sudo update-java-alternatives --set /path/to/java/version8
-
-# setup
-turtle setup:android
-
-# -t [app-bundle|apk]
-# -m [release|debug]
-turtle build:android -t apk -m debug -u <user> -p <password>
-```
+I auto-generated the key store and fetched it (`expo fetch:android:keystore`) afterwards as backup.
 
 ## Test on Device
 
