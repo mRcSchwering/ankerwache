@@ -45,19 +45,11 @@ interface LocationServiceType {
 
 function LocationService(): LocationServiceType {
   let subscribers: SubscriptionType[] = [];
-  let thisLocation: LocationType = {
-    lat: 0,
-    lng: 0,
-    ts: null,
-    acc: null,
-  };
 
   return {
     subscribe: (sub: SubscriptionType) => subscribers.push(sub),
-    setLocation: (location: LocationType) => {
-      thisLocation = location; // TODO: needed?
-      subscribers.forEach((sub) => sub(location));
-    },
+    setLocation: (location: LocationType) =>
+      subscribers.forEach((sub) => sub(location)),
     unsubscribe: (sub: SubscriptionType) => {
       subscribers = subscribers.filter((_sub) => _sub !== sub);
     },
