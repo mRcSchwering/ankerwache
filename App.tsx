@@ -7,6 +7,7 @@ import AnchorWatchView from "./src/AnchorWatchView";
 import { BkgLocationContextProvider } from "./src/bkgLocationContext";
 import { useCurrentLocation, useDarkMode, usePermissions } from "./src/hooks";
 import { stopDanglingTasks } from "./src/bkgLocationService";
+import AnchorSettingView from "./src/AnchorSettingView";
 
 interface LocationType {
   lat: number;
@@ -16,31 +17,13 @@ interface LocationType {
 }
 
 function MainView(): JSX.Element {
-  const darkMode = useDarkMode();
   const loc = useCurrentLocation();
-  const [anchor, setAnchor] = React.useState<LocationType | null>(null);
-
-  const themedAnchorBtn = darkMode
-    ? styles.darkAnchorBtn
-    : styles.lightAnchorBtn;
+  const [anchor, setAnchor] = React.useState<LocationType>();
 
   return (
     <View>
       <PositionDistanceView loc={loc} anchor={anchor} />
-      <View style={styles.anchorButtonsContainer}>
-        <Btn
-          onPress={() => setAnchor(loc)}
-          disabled={loc === null}
-          label="Set"
-          style={themedAnchorBtn}
-        />
-        <Btn
-          onPress={() => setAnchor(null)}
-          disabled={loc === null}
-          label="Retrieve"
-          style={themedAnchorBtn}
-        />
-      </View>
+      <AnchorSettingView loc={loc} onSetAnchor={setAnchor} />
       <AnchorWatchView anchor={anchor} />
     </View>
   );
@@ -50,8 +33,9 @@ function PermissionsMissingView(): JSX.Element {
   return (
     <View style={styles.permissionsMsgContainer}>
       <ErrTxt>
-        This app needs location permissions. Please allow this app to get
-        location updates while in use.
+        This app needs location permissions. Please allow "location updates
+        while using app". Location updates are used to determine the distance
+        between you and the (virtual) anchor. All data stays on your phone.
       </ErrTxt>
     </View>
   );
@@ -102,21 +86,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     maxWidth: 300,
-  },
-  anchorButtonsContainer: {
-    paddingVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-  },
-  lightAnchorBtn: {
-    backgroundColor: "#c5ceff",
-  },
-  darkAnchorBtn: {
-    backgroundColor: "#6f7bbf",
-  },
-  moveAnchorContainer: {
-    paddingVertical: 10,
   },
 });

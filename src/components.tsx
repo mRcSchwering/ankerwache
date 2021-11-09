@@ -29,20 +29,36 @@ export function Txt(props: {
   );
 }
 
-export function H2(props: { children?: React.ReactNode }): JSX.Element {
-  return <Txt style={styles.h2}>{props.children}</Txt>;
+export function H2(props: {
+  children?: React.ReactNode;
+  style?: StyleProp<TextStyle>;
+}): JSX.Element {
+  return <Txt style={[styles.h2, props.style]}>{props.children}</Txt>;
 }
 
-export function H4(props: { children?: React.ReactNode }): JSX.Element {
-  return <Txt style={styles.h4}>{props.children}</Txt>;
+export function H4(props: {
+  children?: React.ReactNode;
+  style?: StyleProp<TextStyle>;
+}): JSX.Element {
+  return <Txt style={[styles.h4, props.style]}>{props.children}</Txt>;
 }
 
 export function ErrH2(props: { children?: React.ReactNode }): JSX.Element {
   return <Txt style={styles.errh2}>{props.children}</Txt>;
 }
 
-export function Pre(props: { children?: React.ReactNode }): JSX.Element {
-  return <Txt style={styles.pre}>{props.children}</Txt>;
+export function Pre(props: {
+  children?: React.ReactNode;
+  style?: StyleProp<TextStyle>;
+}): JSX.Element {
+  return <Txt style={[styles.pre, props.style]}>{props.children}</Txt>;
+}
+
+export function PreH2(props: {
+  children?: React.ReactNode;
+  style?: StyleProp<TextStyle>;
+}): JSX.Element {
+  return <Txt style={[styles.preh2, props.style]}>{props.children}</Txt>;
 }
 
 export function ErrTxt(props: { children?: React.ReactNode }): JSX.Element {
@@ -105,6 +121,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   pre: {
+    fontFamily: "monospace",
+  },
+  preh2: {
+    fontSize: 20,
+    fontWeight: "bold",
     fontFamily: "monospace",
   },
   errorMsg: {

@@ -53,8 +53,8 @@ export function usePermissions(): usePermissionsState {
   return state;
 }
 
-export function useCurrentLocation(): LocationType | null {
-  const [loc, setLoc] = React.useState<LocationType | null>(null);
+export function useCurrentLocation(): LocationType | undefined {
+  const [loc, setLoc] = React.useState<LocationType>();
 
   async function updateLocation() {
     const posOpts = { accuracy: Location.Accuracy.Highest };
@@ -74,6 +74,38 @@ export function useCurrentLocation(): LocationType | null {
   }, []);
 
   return loc;
+}
+
+interface HeadingType {
+  mag: number;
+  tru: number;
+}
+
+export function useCurrentHeading(active: boolean): HeadingType | undefined {
+  const [head, setHead] = React.useState<HeadingType>();
+  const [id, setId] = React.useState<NodeJS.Timer>();
+
+  async function updateHeading() {
+    const res = await Location.getHeadingAsync();
+    setHead({
+      mag: res.magHeading,
+      tru: res.trueHeading,
+    });
+  }
+
+  React.useEffect(() => {
+    if (active) {
+      setId(setInterval(updateHeading, 1000));
+      updateHeading();
+    } else {
+      if (id) clearInterval(id);
+    }
+    return () => {
+      if (id) clearInterval(id);
+    };
+  }, [active]);
+
+  return head;
 }
 
 interface useAlarmType {

@@ -33,6 +33,10 @@ export function deg2rad(deg: number): number {
   return deg * (Math.PI / 180);
 }
 
+export function rad2deg(rad: number): number {
+  return rad * (180 / Math.PI);
+}
+
 export function getDistanceFromLatLonInM(
   lat1: number,
   lon1: number,
@@ -56,4 +60,55 @@ export function formatDistance(d: number | null, err: number | null): string {
   if (d === null) return "-";
   const e = err !== null ? ` (+/- ${Math.round(err)})` : "";
   return `${Math.round(d)}${e} m`;
+}
+
+export function formatHeading(d?: number | null): string {
+  if (d === undefined || d === null) return "-";
+  if (d >= 100) return `${Math.round(d)}°`;
+  if (d >= 10) return ` ${Math.round(d)}°`;
+  return `  ${Math.round(d)}°`;
+}
+
+interface Coords {
+  lat: number;
+  lng: number;
+}
+
+const R_EARTH = 6371.01; // Earth's average radius in km
+const EPS = 0.000001; // threshold for floating-point equality
+
+/**
+ *
+ * Inspired by https://stackoverflow.com/questions/877524/calculating-coordinates-given-a-bearing-and-a-distance
+ */
+export function getCoordsFromVector(
+  bear: number,
+  dist: number,
+  lat: number,
+  lng: number
+): Coords {
+  const rlat = deg2rad(lat);
+  const rlng = deg2rad(lng);
+  const rbearing = deg2rad(bear);
+  const rdist = dist / R_EARTH; // normalize linear distance to radian angle
+
+  const rlat2 = Math.asin(
+    Math.sin(rlat) * Math.cos(rdist) +
+      Math.cos(rlat) * Math.sin(rdist) * Math.cos(rbearing)
+  );
+
+  let rlng2;
+  if (Math.cos(rlat2) === 0 || Math.abs(Math.cos(rlat2)) < EPS) {
+    // Endpoint a pole
+    rlng2 = rlng;
+  } else {
+    rlng2 =
+      ((rlng -
+        Math.asin((Math.sin(rbearing) * Math.sin(rdist)) / Math.cos(rlat2)) +
+        Math.PI) %
+        (2 * Math.PI)) -
+      Math.PI;
+  }
+
+  return { lat: rad2deg(rlat2), lng: rad2deg(rlng2) };
 }

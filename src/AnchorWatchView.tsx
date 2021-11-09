@@ -21,7 +21,7 @@ interface useAnchorWatchType {
 
 function useAnchorWatch(
   radius: number,
-  target: LocationType | null
+  target?: LocationType
 ): useAnchorWatchType {
   const [locErr, setLocErr] = React.useState<string>();
   const [warn, setWarn] = React.useState<string>();
@@ -80,10 +80,10 @@ export interface LocationType {
 }
 
 interface AnchorWatchViewProps {
-  anchor: LocationType | null;
+  anchor?: LocationType;
 }
 
-const RADII = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; //TODO: rm 0
+const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 export default function AnchorWatchView(
   props: AnchorWatchViewProps

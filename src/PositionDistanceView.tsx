@@ -18,7 +18,7 @@ export interface LocationType {
 }
 
 function LocationView(props: {
-  loc?: LocationType | null;
+  loc?: LocationType;
   label: string;
 }): JSX.Element {
   return (
@@ -32,8 +32,8 @@ function LocationView(props: {
 }
 
 function DistanceView(props: {
-  pos1?: LocationType | null;
-  pos2?: LocationType | null;
+  pos1?: LocationType;
+  pos2?: LocationType;
 }): JSX.Element {
   let txt = "-";
   if (props.pos1 && props.pos2) {
@@ -62,8 +62,8 @@ function DistanceView(props: {
 }
 
 export default function PositionDistanceView(props: {
-  loc: LocationType | null;
-  anchor: LocationType | null;
+  loc?: LocationType;
+  anchor?: LocationType;
 }): JSX.Element {
   return (
     <>
