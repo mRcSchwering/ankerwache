@@ -81,7 +81,6 @@ export interface LocationType {
 
 interface AnchorWatchViewProps {
   anchor: LocationType | null;
-  granted: boolean;
 }
 
 const RADII = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; //TODO: rm 0
@@ -103,7 +102,7 @@ export default function AnchorWatchView(
     if (watching) {
       setWatching(false);
       stopWatch();
-    } else if (props.granted && props.anchor) {
+    } else if (props.anchor) {
       setWatching(true);
       startWatch();
     }
@@ -122,7 +121,7 @@ export default function AnchorWatchView(
         <Btn
           onPress={toggleWatch}
           label={watching ? "Stop" : "Start"}
-          disabled={!props.anchor || !props.granted}
+          disabled={!props.anchor}
           style={themedBtn}
         />
         <DistanceSelection

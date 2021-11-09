@@ -1,11 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { Btn, ErrTxt } from "./src/components";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
 import { BkgLocationContextProvider } from "./src/bkgLocationContext";
-import { useCurrentLocation, useDarkMode } from "./src/hooks";
+import { useCurrentLocation, useDarkMode, usePermissions } from "./src/hooks";
 import { stopDanglingTasks } from "./src/bkgLocationService";
 
 interface LocationType {
@@ -15,9 +15,9 @@ interface LocationType {
   acc: number | null;
 }
 
-function HomeView(): JSX.Element {
+function MainView(): JSX.Element {
   const darkMode = useDarkMode();
-  const { err, loc } = useCurrentLocation();
+  const loc = useCurrentLocation();
   const [anchor, setAnchor] = React.useState<LocationType | null>(null);
 
   const themedAnchorBtn = darkMode
@@ -41,15 +41,27 @@ function HomeView(): JSX.Element {
           style={themedAnchorBtn}
         />
       </View>
-      <AnchorWatchView anchor={anchor} granted={err === null} />
-      {err && <ErrTxt>{err}</ErrTxt>}
+      <AnchorWatchView anchor={anchor} />
+    </View>
+  );
+}
+
+function PermissionsMissingView(): JSX.Element {
+  return (
+    <View style={styles.permissionsMsgContainer}>
+      <ErrTxt>
+        This app needs location permissions. Please allow this app to get
+        location updates while in use.
+      </ErrTxt>
     </View>
   );
 }
 
 export default function App() {
+  const { err, granted, loading } = usePermissions();
   const darkMode = useDarkMode();
 
+  const themedCol = darkMode ? "white" : "black";
   const themedContainer = darkMode
     ? styles.darkContainer
     : styles.lightContainer;
@@ -64,7 +76,10 @@ export default function App() {
   return (
     <BkgLocationContextProvider>
       <View style={[styles.container, themedContainer]}>
-        <HomeView />
+        {loading && <ActivityIndicator size="large" color={themedCol} />}
+        {granted && !loading && <MainView />}
+        {!granted && !loading && <PermissionsMissingView />}
+        {err && <ErrTxt>{err}</ErrTxt>}
         <StatusBar />
       </View>
     </BkgLocationContextProvider>
@@ -82,6 +97,11 @@ const styles = StyleSheet.create({
   },
   darkContainer: {
     backgroundColor: "#000000",
+  },
+  permissionsMsgContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    maxWidth: 300,
   },
   anchorButtonsContainer: {
     paddingVertical: 10,

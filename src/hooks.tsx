@@ -10,28 +10,53 @@ export interface LocationType {
   acc: number | null;
 }
 
-interface useCurrentLocationType {
-  err: string | null;
-  loc: LocationType | null;
+interface usePermissionsState {
+  granted: boolean;
+  loading: boolean;
+  err?: string;
 }
 
-export function useCurrentLocation(): useCurrentLocationType {
-  const [err, setErr] = React.useState<null | string>(null);
-  const [loc, setLoc] = React.useState<LocationType | null>(null);
+export function usePermissions(): usePermissionsState {
+  const [state, setState] = React.useState<usePermissionsState>({
+    granted: false,
+    loading: true,
+  });
 
-  async function updateLocation() {
+  async function requestPermissions() {
     let resp: Location.LocationPermissionResponse | null = null;
     try {
       resp = await Location.requestForegroundPermissionsAsync();
     } catch (err) {
-      // @ts-ignore
-      setErr(err.message);
+      setState({
+        // @ts-ignore
+        err: `Error requesting permissions: ${err.message}`,
+        granted: false,
+        loading: false,
+      });
       return;
     }
     if (!resp.granted) {
-      setErr("Persmission to get current location was denied");
-      return;
+      setState({
+        err: "Persmission to get current location was denied",
+        granted: false,
+        loading: false,
+      });
+    } else {
+      setState({ granted: true, loading: false });
     }
+  }
+
+  React.useEffect(() => {
+    requestPermissions();
+  }, []);
+
+  return state;
+}
+
+export function useCurrentLocation(): LocationType | null {
+  const [loc, setLoc] = React.useState<LocationType | null>(null);
+
+  async function updateLocation() {
     const posOpts = { accuracy: Location.Accuracy.Highest };
     const res = await Location.getCurrentPositionAsync(posOpts);
     setLoc({
@@ -48,7 +73,7 @@ export function useCurrentLocation(): useCurrentLocationType {
     return () => clearInterval(interval);
   }, []);
 
-  return { err, loc };
+  return loc;
 }
 
 interface useAlarmType {
