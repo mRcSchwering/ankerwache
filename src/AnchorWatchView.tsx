@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { Audio } from "expo-av";
 import { Btn, Txt, ErrTxt } from "./components";
 import DistanceSelection from "./DistanceSelection";
 import { useAnchorWatch, useDarkMode } from "./hooks";
@@ -35,13 +36,35 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
     props.anchor
   );
 
+  const [sound, setSound] = React.useState<Audio.Sound>();
+
   const darkMode = useDarkMode();
   const themedBtn = darkMode ? styles.darkWatchBtn : styles.lightWatchBtn;
+
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../assets/ring.mp3")
+    );
+    setSound(sound);
+    await sound.playAsync();
+  }
+
+  async function unloadSound() {
+    console.log("unloading sound");
+    if (sound) sound.unloadAsync();
+  }
+
+  React.useEffect(() => {
+    return () => {
+      unloadSound();
+    };
+  }, [sound]);
 
   function toggleWatch() {
     if (watching) {
       stopWatch();
       unsubscribeBkgLocationUpdates(setLoc);
+      unloadSound();
     } else if (props.granted && props.anchor) {
       startWatch();
       subscribeBkgLocationUpdates({
@@ -55,12 +78,14 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
     if (!props.anchor && watching) {
       stopWatch();
       unsubscribeBkgLocationUpdates(setLoc);
+      unloadSound();
     }
   }, [props.anchor]);
 
   React.useEffect(() => {
     if (hit >= MARGIN) {
       setWarn("Anchor dragging!");
+      playSound();
     } else {
       setWarn(null);
     }
