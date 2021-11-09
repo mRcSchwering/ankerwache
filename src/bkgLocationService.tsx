@@ -19,7 +19,7 @@ TaskManager.defineTask(
     }
 
     const { latitude, longitude, accuracy } = location.coords;
-    locationService.setLocation({
+    bkgLocationService.setLocation({
       lat: latitude,
       lng: longitude,
       acc: accuracy,
@@ -37,13 +37,13 @@ export interface LocationType {
 
 type SubscriptionType = (location: LocationType) => void;
 
-interface LocationServiceType {
+interface BkgLocationServiceType {
   subscribe: (sub: SubscriptionType) => void;
   setLocation: (location: LocationType) => void;
   unsubscribe: (sub: SubscriptionType) => void;
 }
 
-function LocationService(): LocationServiceType {
+function BkgLocationService(): BkgLocationServiceType {
   let subscribers: SubscriptionType[] = [];
 
   return {
@@ -56,17 +56,17 @@ function LocationService(): LocationServiceType {
   };
 }
 
-export const locationService = LocationService();
+export const bkgLocationService = BkgLocationService();
 
-interface subscribeLocationUpdatesProps {
+interface subscribeBkgLocationUpdatesProps {
   locationSubscription: (location: LocationType) => void;
   errorMsgSubscription: (msg: string | null) => void;
 }
 
-export async function subscribeLocationUpdates({
+export async function subscribeBkgLocationUpdates({
   locationSubscription,
   errorMsgSubscription,
-}: subscribeLocationUpdatesProps) {
+}: subscribeBkgLocationUpdatesProps) {
   let resp: Location.LocationPermissionResponse | null = null;
   try {
     resp = await Location.requestForegroundPermissionsAsync();
@@ -80,7 +80,7 @@ export async function subscribeLocationUpdates({
     return;
   }
 
-  locationService.subscribe(locationSubscription);
+  bkgLocationService.subscribe(locationSubscription);
   const opts = {
     accuracy: Location.Accuracy.Highest,
     timeInterval: 5000,
@@ -94,7 +94,7 @@ export async function subscribeLocationUpdates({
   };
 
   try {
-    await TaskManager.unregisterAllTasksAsync();
+    await stopDanglingTasks();
     await Location.startLocationUpdatesAsync(WATCH_LOCATION_TASK, opts);
   } catch (err) {
     // @ts-ignore
@@ -103,10 +103,15 @@ export async function subscribeLocationUpdates({
   }
 }
 
-export async function unsubscribeLocationUpdates(
+export async function unsubscribeBkgLocationUpdates(
   locationSubscription: (location: LocationType) => void
 ) {
-  locationService.unsubscribe(locationSubscription);
+  bkgLocationService.unsubscribe(locationSubscription);
   await Location.stopLocationUpdatesAsync(WATCH_LOCATION_TASK);
-  await TaskManager.unregisterAllTasksAsync();
+}
+
+export async function stopDanglingTasks() {
+  if (await TaskManager.isTaskRegisteredAsync(WATCH_LOCATION_TASK)) {
+    await TaskManager.unregisterTaskAsync(WATCH_LOCATION_TASK);
+  }
 }

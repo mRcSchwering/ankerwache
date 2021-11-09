@@ -9,7 +9,6 @@ import {
   addErrs,
 } from "./util";
 import { Pre, H4 } from "./components";
-import { LocationContext } from "./locationContext";
 
 export interface LocationType {
   lat: number;

@@ -4,11 +4,9 @@ import { StyleSheet, View, useColorScheme } from "react-native";
 import { Btn, ErrTxt } from "./src/components";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
-import {
-  LocationContextProvider,
-  LocationContext,
-} from "./src/locationContext";
+import { BkgLocationContextProvider } from "./src/bkgLocationContext";
 import { useCurrentLocation } from "./src/hooks";
+import { stopDanglingTasks } from "./src/bkgLocationService";
 
 interface LocationType {
   lat: number;
@@ -56,13 +54,20 @@ export default function App() {
     ? styles.darkContainer
     : styles.lightContainer;
 
+  React.useEffect(() => {
+    stopDanglingTasks();
+    return () => {
+      stopDanglingTasks();
+    };
+  }, []);
+
   return (
-    <LocationContextProvider>
+    <BkgLocationContextProvider>
       <View style={[styles.container, themedContainer]}>
         <HomeView isDarkMode={isDarkMode} />
         <StatusBar />
       </View>
-    </LocationContextProvider>
+    </BkgLocationContextProvider>
   );
 }
 

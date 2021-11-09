@@ -3,11 +3,11 @@ import { StyleSheet, View, useColorScheme } from "react-native";
 import { Btn, Txt, ErrTxt } from "./components";
 import DistanceSelection from "./DistanceSelection";
 import { useAnchorWatch } from "./hooks";
-import { LocationContext } from "./locationContext";
+import { BkgLocationContext } from "./bkgLocationContext";
 import {
-  subscribeLocationUpdates,
-  unsubscribeLocationUpdates,
-} from "./locationService";
+  subscribeBkgLocationUpdates,
+  unsubscribeBkgLocationUpdates,
+} from "./bkgLocationService";
 
 export interface LocationType {
   lat: number;
@@ -21,19 +21,19 @@ interface AnchorWatchView {
   granted: boolean;
 }
 
-export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
-  const MARGIN = 3;
-  const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const MARGIN = 3;
+const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
+export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   const [err, setErr] = React.useState<string | null>(null);
-  const { currentBkg, setCurrentBkg } = React.useContext(LocationContext);
+  const { loc, setLoc } = React.useContext(BkgLocationContext);
   const [radius, setRadius] = React.useState(RADII[2]);
+  const [warn, setWarn] = React.useState<string | null>(null);
   const { hit, watching, startWatch, stopWatch } = useAnchorWatch(
     radius,
-    currentBkg,
+    loc,
     props.anchor
   );
-  const [warn, setWarn] = React.useState<string | null>(null);
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme !== "light";
@@ -42,11 +42,11 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   function toggleWatch() {
     if (watching) {
       stopWatch();
-      unsubscribeLocationUpdates(setCurrentBkg);
+      unsubscribeBkgLocationUpdates(setLoc);
     } else if (props.granted && props.anchor) {
       startWatch();
-      subscribeLocationUpdates({
-        locationSubscription: setCurrentBkg,
+      subscribeBkgLocationUpdates({
+        locationSubscription: setLoc,
         errorMsgSubscription: setErr,
       });
     }
@@ -55,7 +55,7 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
   React.useEffect(() => {
     if (!props.anchor && watching) {
       stopWatch();
-      unsubscribeLocationUpdates(setCurrentBkg);
+      unsubscribeBkgLocationUpdates(setLoc);
     }
   }, [props.anchor]);
 
