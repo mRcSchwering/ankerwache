@@ -1,11 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Btn, ErrTxt } from "./src/components";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
 import { BkgLocationContextProvider } from "./src/bkgLocationContext";
-import { useCurrentLocation } from "./src/hooks";
+import { useCurrentLocation, useDarkMode } from "./src/hooks";
 import { stopDanglingTasks } from "./src/bkgLocationService";
 
 interface LocationType {
@@ -15,11 +15,12 @@ interface LocationType {
   acc: number | null;
 }
 
-function HomeView(props: { isDarkMode: boolean }): JSX.Element {
+function HomeView(): JSX.Element {
+  const darkMode = useDarkMode();
   const { err, loc } = useCurrentLocation();
   const [anchor, setAnchor] = React.useState<LocationType | null>(null);
 
-  const themedAnchorBtn = props.isDarkMode
+  const themedAnchorBtn = darkMode
     ? styles.darkAnchorBtn
     : styles.lightAnchorBtn;
 
@@ -47,10 +48,9 @@ function HomeView(props: { isDarkMode: boolean }): JSX.Element {
 }
 
 export default function App() {
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme !== "light";
+  const darkMode = useDarkMode();
 
-  const themedContainer = isDarkMode
+  const themedContainer = darkMode
     ? styles.darkContainer
     : styles.lightContainer;
 
@@ -64,7 +64,7 @@ export default function App() {
   return (
     <BkgLocationContextProvider>
       <View style={[styles.container, themedContainer]}>
-        <HomeView isDarkMode={isDarkMode} />
+        <HomeView />
         <StatusBar />
       </View>
     </BkgLocationContextProvider>

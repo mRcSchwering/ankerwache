@@ -1,4 +1,5 @@
 import React from "react";
+import { useColorScheme } from "react-native";
 import * as Location from "expo-location";
 import { getDistanceFromLatLonInM } from "./util";
 
@@ -87,4 +88,9 @@ export function useAnchorWatch(
   }, [actual, target, radius]);
 
   return { watching, startWatch, stopWatch, hit };
+}
+
+export function useDarkMode(): boolean {
+  const colorScheme = useColorScheme();
+  return colorScheme !== "light";
 }

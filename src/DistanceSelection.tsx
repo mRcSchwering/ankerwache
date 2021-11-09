@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { Txt, Btn } from "./components";
+import { useDarkMode } from "./hooks";
 
 interface DistanceSelectionProps {
   num: number;
@@ -21,13 +22,11 @@ export default function DistanceSelection(
   props: DistanceSelectionProps
 ): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme !== "light";
+  const darkMode = useDarkMode();
 
-  const themedSelBtn = isDarkMode
-    ? styles.darkSelectBtn
-    : styles.lightSelectBtn;
-  const themedSelOpt = isDarkMode
+  const themedInfoTxt = darkMode ? styles.darkInfoText : styles.lightInfoText;
+  const themedSelBtn = darkMode ? styles.darkSelectBtn : styles.lightSelectBtn;
+  const themedSelOpt = darkMode
     ? styles.darkSelectOption
     : styles.lightSelectOption;
 
@@ -58,10 +57,10 @@ export default function DistanceSelection(
         <BlurView
           intensity={70}
           style={styles.modalBkg}
-          tint={isDarkMode ? "light" : "dark"}
+          tint={darkMode ? "light" : "dark"}
         >
           <View style={styles.flatListContainer}>
-            <Txt style={styles.infoText}>
+            <Txt style={themedInfoTxt}>
               Take the length of your chain plus the distance error
             </Txt>
             <FlatList
@@ -90,20 +89,31 @@ const styles = StyleSheet.create({
   flatListContainer: {
     alignItems: "center",
   },
-  infoText: {
+  lightInfoText: {
     maxWidth: 200,
     textAlign: "center",
     marginVertical: 20,
+    fontWeight: "bold",
+    color: "white",
+  },
+  darkInfoText: {
+    maxWidth: 200,
+    textAlign: "center",
+    marginVertical: 20,
+    fontWeight: "bold",
+    color: "black",
   },
   lightSelectBtn: {
     borderColor: "gray",
     borderStyle: "solid",
     borderWidth: 2,
+    backgroundColor: "white",
   },
   darkSelectBtn: {
     borderColor: "gray",
     borderStyle: "solid",
     borderWidth: 2,
+    backgroundColor: "black",
   },
   selectOption: {
     borderRadius: 4,

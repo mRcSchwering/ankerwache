@@ -6,23 +6,20 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
-  useColorScheme,
 } from "react-native";
+import { useDarkMode } from "./hooks";
 
 export function Txt(props: {
   children?: React.ReactNode;
   disabled?: boolean;
   style?: StyleProp<TextStyle>;
 }): JSX.Element {
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme !== "light";
-  const themedText = isDarkMode ? styles.darkTxt : styles.lightTxt;
+  const darkMode = useDarkMode();
+  const themedText = darkMode ? styles.darkTxt : styles.lightTxt;
 
   let disabledTheme = {};
   if (props.disabled !== undefined ? props.disabled : false) {
-    disabledTheme = isDarkMode
-      ? styles.darkDisabledTxt
-      : styles.lightDisabledTxt;
+    disabledTheme = darkMode ? styles.darkDisabledTxt : styles.lightDisabledTxt;
   }
 
   return (
@@ -56,13 +53,12 @@ interface BtnProps {
 }
 
 export function Btn(props: BtnProps): JSX.Element {
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme !== "light";
+  const darkMode = useDarkMode();
 
   const isDisabled = props.disabled !== undefined ? props.disabled : false;
   let disabledTheme = {};
   if (isDisabled) {
-    disabledTheme = isDarkMode
+    disabledTheme = darkMode
       ? styles.darkDisabledButton
       : styles.lightDisabledButton;
   }

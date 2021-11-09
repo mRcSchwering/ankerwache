@@ -1,8 +1,8 @@
 import React from "react";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Btn, Txt, ErrTxt } from "./components";
 import DistanceSelection from "./DistanceSelection";
-import { useAnchorWatch } from "./hooks";
+import { useAnchorWatch, useDarkMode } from "./hooks";
 import { BkgLocationContext } from "./bkgLocationContext";
 import {
   subscribeBkgLocationUpdates,
@@ -35,9 +35,8 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
     props.anchor
   );
 
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme !== "light";
-  const themedBtn = isDarkMode ? styles.darkWatchBtn : styles.lightWatchBtn;
+  const darkMode = useDarkMode();
+  const themedBtn = darkMode ? styles.darkWatchBtn : styles.lightWatchBtn;
 
   function toggleWatch() {
     if (watching) {

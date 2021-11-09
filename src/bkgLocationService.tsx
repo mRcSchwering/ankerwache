@@ -87,7 +87,7 @@ export async function subscribeBkgLocationUpdates({
     foregroundService: {
       notificationTitle: "Regular location updates...",
       notificationBody:
-        "Will sound alarm if drift is persistently higher than radius",
+        "Sounds alarm if drift is persistently higher than radius",
     },
     pausesUpdatesAutomatically: false,
     distanceInterval: 1,
