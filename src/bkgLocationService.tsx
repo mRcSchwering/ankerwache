@@ -60,7 +60,7 @@ export const bkgLocationService = BkgLocationService();
 
 interface subscribeBkgLocationUpdatesProps {
   locationSubscription: (location: LocationType) => void;
-  errorMsgSubscription: (msg: string | null) => void;
+  errorMsgSubscription: (msg?: string) => void;
 }
 
 export async function subscribeBkgLocationUpdates({
@@ -107,7 +107,9 @@ export async function unsubscribeBkgLocationUpdates(
   locationSubscription: (location: LocationType) => void
 ) {
   bkgLocationService.unsubscribe(locationSubscription);
-  await Location.stopLocationUpdatesAsync(WATCH_LOCATION_TASK);
+  if (await TaskManager.isTaskRegisteredAsync(WATCH_LOCATION_TASK)) {
+    await TaskManager.unregisterTaskAsync(WATCH_LOCATION_TASK);
+  }
 }
 
 export async function stopDanglingTasks() {

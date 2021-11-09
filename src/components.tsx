@@ -37,6 +37,10 @@ export function H4(props: { children?: React.ReactNode }): JSX.Element {
   return <Txt style={styles.h4}>{props.children}</Txt>;
 }
 
+export function ErrH2(props: { children?: React.ReactNode }): JSX.Element {
+  return <Txt style={styles.errh2}>{props.children}</Txt>;
+}
+
 export function Pre(props: { children?: React.ReactNode }): JSX.Element {
   return <Txt style={styles.pre}>{props.children}</Txt>;
 }
@@ -90,6 +94,11 @@ const styles = StyleSheet.create({
   h2: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  errh2: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "red",
   },
   h4: {
     fontSize: 15,

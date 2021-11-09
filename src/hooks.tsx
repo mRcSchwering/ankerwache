@@ -1,7 +1,7 @@
 import React from "react";
 import { useColorScheme } from "react-native";
 import * as Location from "expo-location";
-import { getDistanceFromLatLonInM } from "./util";
+import { Audio } from "expo-av";
 
 export interface LocationType {
   lat: number;
@@ -51,43 +51,53 @@ export function useCurrentLocation(): useCurrentLocationType {
   return { err, loc };
 }
 
-export function useAnchorWatch(
-  radius: number,
-  actual: LocationType | null,
-  target: LocationType | null
-) {
-  const [watching, setWatching] = React.useState(false);
-  const [hit, setHit] = React.useState(0);
+interface useAlarmType {
+  startAlarm: () => void;
+  stopAlarm: () => void;
+  err?: string;
+}
 
-  async function stopWatch() {
-    setWatching(false);
-    setHit(0);
+interface useAlarmStateType {
+  err?: string;
+  sound?: Audio.Sound;
+}
+
+export function useAlarm(): useAlarmType {
+  const [state, setState] = React.useState<useAlarmStateType>({});
+
+  async function startAlarm() {
+    if (!state.sound) {
+      try {
+        await Audio.setAudioModeAsync({
+          staysActiveInBackground: true,
+        });
+        const { sound } = await Audio.Sound.createAsync(
+          require("../assets/ring.mp3")
+        );
+        sound.setStatusAsync({ isLooping: true });
+        sound.playAsync();
+        setState({ sound });
+      } catch (err) {
+        // @ts-ignore
+        setState({ err: `Error starting audio: ${err.message}` });
+      }
+    }
   }
 
-  async function startWatch() {
-    if (!watching) {
-      setWatching(true);
-      setHit(0);
+  async function stopAlarm() {
+    if (state.sound) {
+      state.sound.unloadAsync();
     }
+    setState({});
   }
 
   React.useEffect(() => {
-    if (watching && actual && target) {
-      const d = getDistanceFromLatLonInM(
-        actual.lat,
-        actual.lng,
-        target.lat,
-        target.lng
-      );
-      if (d > radius) {
-        setHit((d) => d + 1);
-      } else {
-        setHit((d) => Math.max(d - 1, 0));
-      }
-    }
-  }, [actual, target, radius]);
+    return () => {
+      stopAlarm();
+    };
+  }, []);
 
-  return { watching, startWatch, stopWatch, hit };
+  return { startAlarm, stopAlarm, err: state.err };
 }
 
 export function useDarkMode(): boolean {

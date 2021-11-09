@@ -1,14 +1,76 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Audio } from "expo-av";
-import { Btn, Txt, ErrTxt } from "./components";
+import { Btn, Txt, ErrTxt, ErrH2 } from "./components";
 import DistanceSelection from "./DistanceSelection";
-import { useAnchorWatch, useDarkMode } from "./hooks";
+import { useDarkMode, useAlarm } from "./hooks";
+import { getDistanceFromLatLonInM } from "./util";
 import { BkgLocationContext } from "./bkgLocationContext";
 import {
   subscribeBkgLocationUpdates,
   unsubscribeBkgLocationUpdates,
 } from "./bkgLocationService";
+
+const ANCHOR_WATCH_MARGIN = 3;
+
+interface useAnchorWatchType {
+  err?: string;
+  warn?: string;
+  startWatch: () => void;
+  stopWatch: () => void;
+}
+
+function useAnchorWatch(
+  radius: number,
+  target: LocationType | null
+): useAnchorWatchType {
+  const [locErr, setLocErr] = React.useState<string>();
+  const [warn, setWarn] = React.useState<string>();
+  const [hit, setHit] = React.useState(0);
+  const { loc, setLoc } = React.useContext(BkgLocationContext);
+  const { startAlarm, stopAlarm, err: alarmErr } = useAlarm();
+
+  async function stopWatch() {
+    setHit(0);
+    stopAlarm();
+    unsubscribeBkgLocationUpdates(setLoc);
+  }
+
+  async function startWatch() {
+    setHit(0);
+    subscribeBkgLocationUpdates({
+      locationSubscription: setLoc,
+      errorMsgSubscription: setLocErr,
+    });
+  }
+
+  React.useEffect(() => {
+    if (loc && target) {
+      const d = getDistanceFromLatLonInM(
+        loc.lat,
+        loc.lng,
+        target.lat,
+        target.lng
+      );
+      if (d > radius) {
+        setHit((d) => d + 1);
+      } else {
+        setHit((d) => Math.max(d - 1, 0));
+      }
+    }
+  }, [loc, target, radius]);
+
+  React.useEffect(() => {
+    if (hit >= ANCHOR_WATCH_MARGIN) {
+      setWarn("Anchor dragging!");
+      startAlarm();
+    } else {
+      setWarn(undefined);
+      stopAlarm();
+    }
+  }, [hit]);
+
+  return { err: alarmErr || locErr, warn, startWatch, stopWatch };
+}
 
 export interface LocationType {
   lat: number;
@@ -17,79 +79,42 @@ export interface LocationType {
   acc: number | null;
 }
 
-interface AnchorWatchView {
+interface AnchorWatchViewProps {
   anchor: LocationType | null;
   granted: boolean;
 }
 
-const MARGIN = 3;
-const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const RADII = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; //TODO: rm 0
 
-export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
-  const [err, setErr] = React.useState<string | null>(null);
-  const { loc, setLoc } = React.useContext(BkgLocationContext);
+export default function AnchorWatchView(
+  props: AnchorWatchViewProps
+): JSX.Element {
+  const [watching, setWatching] = React.useState(false);
   const [radius, setRadius] = React.useState(RADII[2]);
-  const [warn, setWarn] = React.useState<string | null>(null);
-  const { hit, watching, startWatch, stopWatch } = useAnchorWatch(
+  const { err, warn, startWatch, stopWatch } = useAnchorWatch(
     radius,
-    loc,
     props.anchor
   );
-
-  const [sound, setSound] = React.useState<Audio.Sound>();
 
   const darkMode = useDarkMode();
   const themedBtn = darkMode ? styles.darkWatchBtn : styles.lightWatchBtn;
 
-  async function playSound() {
-    const { sound } = await Audio.Sound.createAsync(
-      require("../assets/ring.mp3")
-    );
-    setSound(sound);
-    await sound.playAsync();
-  }
-
-  async function unloadSound() {
-    console.log("unloading sound");
-    if (sound) sound.unloadAsync();
-  }
-
-  React.useEffect(() => {
-    return () => {
-      unloadSound();
-    };
-  }, [sound]);
-
   function toggleWatch() {
     if (watching) {
+      setWatching(false);
       stopWatch();
-      unsubscribeBkgLocationUpdates(setLoc);
-      unloadSound();
     } else if (props.granted && props.anchor) {
+      setWatching(true);
       startWatch();
-      subscribeBkgLocationUpdates({
-        locationSubscription: setLoc,
-        errorMsgSubscription: setErr,
-      });
     }
   }
 
   React.useEffect(() => {
-    if (!props.anchor && watching) {
+    if (!props.anchor) {
+      setWatching(false);
       stopWatch();
-      unsubscribeBkgLocationUpdates(setLoc);
-      unloadSound();
     }
   }, [props.anchor]);
-
-  React.useEffect(() => {
-    if (hit >= MARGIN) {
-      setWarn("Anchor dragging!");
-      playSound();
-    } else {
-      setWarn(null);
-    }
-  }, [hit]);
 
   return (
     <View style={styles.anchorWatchContainer}>
@@ -110,8 +135,8 @@ export default function AnchorWatchView(props: AnchorWatchView): JSX.Element {
       <Txt style={{ fontWeight: "bold" }}>
         {watching ? "Watching..." : "Not watching."}
       </Txt>
-      {warn && <ErrTxt>{warn}</ErrTxt>}
       {err && <ErrTxt>{err}</ErrTxt>}
+      {warn && <ErrH2>{warn}</ErrH2>}
     </View>
   );
 }
