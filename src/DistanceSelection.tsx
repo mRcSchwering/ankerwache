@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Pressable, View, Modal, FlatList } from "react-native";
-import { BlurView } from "expo-blur";
 import { Txt, Btn } from "./components";
 import { useTheme } from "./hooks";
 
