@@ -1,10 +1,12 @@
 import React from "react";
-import { StyleSheet, Pressable, View, Modal, FlatList } from "react-native";
+import { StyleSheet, View, Modal } from "react-native";
 import { Txt, Btn } from "./components";
+import { ThemedSelect } from "./ScrollSelectionPicker";
 import { formatHeading, getCoordsFromVector } from "./util";
 import { useTheme, useCurrentHeading } from "./hooks";
 
-const DISTANCES = [0, 5, 10, 15, 20, 25, 30, 35, 40];
+const DISTANCES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
+const DIST_ITEMS = DISTANCES.map((d) => ({ value: d, label: `${d} m` }));
 
 interface LocationType {
   lat: number;
@@ -22,28 +24,21 @@ export default function AnchorSettingView(
   props: AnchorSettingViewProps
 ): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
+  const [dist, setDist] = React.useState(0);
   const head = useCurrentHeading(isVisible);
   const { bkgCol, blueBkg } = useTheme();
 
-  function handleSelect(d: number) {
+  function handleSet() {
     if (head && props.loc) {
       const res = getCoordsFromVector(
         head.tru,
-        d / 1000,
+        dist / 1000,
         props.loc.lat,
         props.loc.lng
       );
       props.onSetAnchor({ ...res, ts: props.loc.ts, acc: props.loc.acc });
     }
     setIsVisible(false);
-  }
-
-  function renderItem({ item }: { item: number }): JSX.Element {
-    return (
-      <Pressable onPress={() => handleSelect(item)} style={styles.selectOpt}>
-        <Txt>{`${item} m`}</Txt>
-      </Pressable>
-    );
   }
 
   return (
@@ -82,13 +77,9 @@ export default function AnchorSettingView(
               you payed out. Select one to "set" anchor position.
             </Txt>
           </View>
+          <ThemedSelect items={DIST_ITEMS} onScroll={(d) => setDist(d)} />
           <View style={styles.section}>
-            <FlatList
-              data={DISTANCES}
-              renderItem={renderItem}
-              keyExtractor={(d) => d.toString()}
-              numColumns={3}
-            />
+            <Btn onPress={handleSet} label="Set Anchor" style={blueBkg} />
           </View>
         </View>
       </Modal>

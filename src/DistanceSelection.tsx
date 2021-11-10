@@ -1,34 +1,25 @@
 import React from "react";
 import { StyleSheet, Pressable, View, Modal, FlatList } from "react-native";
+import { ThemedSelect } from "./ScrollSelectionPicker";
 import { Txt, Btn } from "./components";
 import { useTheme } from "./hooks";
 
 interface DistanceSelectionProps {
-  num: number;
-  nums: number[];
+  radius: number;
   onSelect: (d: number) => void;
   disabled?: boolean;
 }
+
+const RADII = [
+  10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150,
+];
+const RAD_ITEMS = RADII.map((d) => ({ value: d, label: `${d} m` }));
 
 export default function DistanceSelection(
   props: DistanceSelectionProps
 ): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
   const { bkgCol } = useTheme();
-
-  function handleSelect(d: number) {
-    props.onSelect(d);
-    setIsVisible((d) => !d);
-  }
-
-  function renderItem({ item }: { item: number }): JSX.Element {
-    return (
-      <Pressable onPress={() => handleSelect(item)} style={styles.selectOpt}>
-        <Txt>{`${item} m`}</Txt>
-      </Pressable>
-    );
-  }
-
   return (
     <>
       <Modal
@@ -43,20 +34,25 @@ export default function DistanceSelection(
               Take the length of your chain plus the distance error
             </Txt>
           </View>
+          <ThemedSelect
+            items={RAD_ITEMS}
+            onScroll={(d) => props.onSelect(d)}
+            scrollTo={RADII.indexOf(props.radius)}
+          />
           <View style={styles.section}>
-            <FlatList
-              data={props.nums}
-              renderItem={renderItem}
-              keyExtractor={(d) => d.toString()}
-              numColumns={3}
+            <Btn
+              disabled={props.disabled}
+              onPress={() => setIsVisible(false)}
+              label="Select"
+              style={styles.selectBtn}
             />
           </View>
         </View>
       </Modal>
       <Btn
         disabled={props.disabled}
-        onPress={() => setIsVisible((d) => !d)}
-        label={`${props.num} m`}
+        onPress={() => setIsVisible(true)}
+        label={`${props.radius} m`}
         style={styles.selectBtn}
       />
     </>

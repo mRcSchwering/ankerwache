@@ -83,13 +83,11 @@ interface AnchorWatchViewProps {
   anchor?: LocationType;
 }
 
-const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90];
-
 export default function AnchorWatchView(
   props: AnchorWatchViewProps
 ): JSX.Element {
   const [watching, setWatching] = React.useState(false);
-  const [radius, setRadius] = React.useState(RADII[2]);
+  const [radius, setRadius] = React.useState(30);
   const { err, warn, startWatch, stopWatch } = useAnchorWatch(
     radius,
     props.anchor
@@ -102,6 +100,7 @@ export default function AnchorWatchView(
       setWatching(false);
       stopWatch();
     } else if (props.anchor) {
+      console.log("start watch with radius", radius);
       setWatching(true);
       startWatch();
     }
@@ -124,8 +123,7 @@ export default function AnchorWatchView(
           style={[styles.watchBtn, redBkg]}
         />
         <DistanceSelection
-          num={radius}
-          nums={RADII}
+          radius={radius}
           onSelect={setRadius}
           disabled={!props.anchor || watching}
         />

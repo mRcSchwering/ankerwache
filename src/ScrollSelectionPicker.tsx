@@ -187,6 +187,7 @@ const DARK_BOT_GRAD = [
 interface ThemedSelectProps {
   items: ItemType[];
   onScroll: (d: number) => void;
+  scrollTo?: number;
 }
 
 export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
@@ -198,7 +199,7 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
       onScroll={(d) => props.onScroll(d.item.value)}
       width={200}
       height={200}
-      scrollTo={2}
+      scrollTo={props.scrollTo || 2}
       transparentRows={3}
       itemCol={darkMode ? "white" : "black"}
       borderCol="gray"

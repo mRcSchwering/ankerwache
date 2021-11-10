@@ -8,7 +8,6 @@ import { BkgLocationContextProvider } from "./src/bkgLocationContext";
 import { useCurrentLocation, useTheme, usePermissions } from "./src/hooks";
 import { stopDanglingTasks } from "./src/bkgLocationService";
 import AnchorSettingView from "./src/AnchorSettingView";
-import { ThemedSelect } from "./src/ScrollSelectionPicker";
 
 interface LocationType {
   lat: number;
@@ -21,23 +20,6 @@ function MainView(): JSX.Element {
   const loc = useCurrentLocation();
   const [anchor, setAnchor] = React.useState<LocationType>();
 
-  const items = [
-    { value: 0, label: "0 m" },
-    { value: 10, label: "10 m" },
-    { value: 20, label: "20 m" },
-    { value: 30, label: "30 m" },
-    { value: 40, label: "40 m" },
-    { value: 50, label: "50 m" },
-    { value: 60, label: "60 m" },
-    { value: 70, label: "70 m" },
-    { value: 80, label: "80 m" },
-    { value: 90, label: "90 m" },
-    { value: 100, label: "100 m" },
-  ];
-
-  return <ThemedSelect items={items} onScroll={(d) => console.log(d)} />;
-
-  /*
   return (
     <View>
       <PositionDistanceView loc={loc} anchor={anchor} />
@@ -45,7 +27,6 @@ function MainView(): JSX.Element {
       <AnchorWatchView anchor={anchor} />
     </View>
   );
-  */
 }
 
 function PermissionsMissingView(): JSX.Element {

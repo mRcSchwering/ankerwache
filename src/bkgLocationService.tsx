@@ -8,8 +8,6 @@ interface AnchorWatchTaskExecutorBody {
   error: TaskManager.TaskManagerError | null;
 }
 
-// TODO: put back in
-/*
 TaskManager.defineTask(
   WATCH_LOCATION_TASK,
   ({ data, error }: AnchorWatchTaskExecutorBody) => {
@@ -29,7 +27,6 @@ TaskManager.defineTask(
     });
   }
 );
-*/
 
 export interface LocationType {
   lat: number;
@@ -110,17 +107,13 @@ export async function unsubscribeBkgLocationUpdates(
   locationSubscription: (location: LocationType) => void
 ) {
   bkgLocationService.unsubscribe(locationSubscription);
-  /* // TODO: put back in
   if (await TaskManager.isTaskRegisteredAsync(WATCH_LOCATION_TASK)) {
     await TaskManager.unregisterTaskAsync(WATCH_LOCATION_TASK);
   }
-  */
 }
 
 export async function stopDanglingTasks() {
-  /* // TODO: put back in
   if (await TaskManager.isTaskRegisteredAsync(WATCH_LOCATION_TASK)) {
     await TaskManager.unregisterTaskAsync(WATCH_LOCATION_TASK);
   }
-  */
 }
