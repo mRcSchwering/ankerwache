@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Btn, Txt } from "./components";
 import DistanceSelection from "./DistanceSelection";
-import { useDarkMode, useAlarm } from "./hooks";
+import { useTheme, useAlarm } from "./hooks";
 import { getDistanceFromLatLonInM } from "./util";
 import { BkgLocationContext } from "./bkgLocationContext";
 import {
@@ -83,7 +83,7 @@ interface AnchorWatchViewProps {
   anchor?: LocationType;
 }
 
-const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const RADII = [10, 20, 30, 40, 50, 60, 70, 80, 90];
 
 export default function AnchorWatchView(
   props: AnchorWatchViewProps
@@ -95,7 +95,7 @@ export default function AnchorWatchView(
     props.anchor
   );
 
-  const { redBkg } = useDarkMode();
+  const { redBkg } = useTheme();
 
   function toggleWatch() {
     if (watching) {

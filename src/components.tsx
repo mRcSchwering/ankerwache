@@ -7,7 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
-import { useDarkMode } from "./hooks";
+import { useTheme } from "./hooks";
 
 export function Txt(props: {
   children?: React.ReactNode;
@@ -19,7 +19,7 @@ export function Txt(props: {
   align?: "auto" | "left" | "right" | "center" | "justify";
   style?: StyleProp<TextStyle>;
 }): JSX.Element {
-  const { fontCol, disabledFont } = useDarkMode();
+  const { fontCol, disabledFont } = useTheme();
   return (
     <Text
       style={[
@@ -47,7 +47,7 @@ interface BtnProps {
 }
 
 export function Btn(props: BtnProps): JSX.Element {
-  const { disabledBkg } = useDarkMode();
+  const { disabledBkg } = useTheme();
   return (
     <Pressable
       onPress={props.onPress}
@@ -73,12 +73,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 4,
-    elevation: 3,
-  },
-  darkDisabledButton: {
-    backgroundColor: "#484848",
-  },
-  lightDisabledButton: {
-    backgroundColor: "#e9e9e9",
   },
 });

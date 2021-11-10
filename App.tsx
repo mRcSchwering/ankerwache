@@ -1,11 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
-import { Btn, ErrTxt } from "./src/components";
+import { Txt } from "./src/components";
 import PositionDistanceView from "./src/PositionDistanceView";
 import AnchorWatchView from "./src/AnchorWatchView";
 import { BkgLocationContextProvider } from "./src/bkgLocationContext";
-import { useCurrentLocation, useDarkMode, usePermissions } from "./src/hooks";
+import { useCurrentLocation, useTheme, usePermissions } from "./src/hooks";
 import { stopDanglingTasks } from "./src/bkgLocationService";
 import AnchorSettingView from "./src/AnchorSettingView";
 
@@ -32,23 +32,19 @@ function MainView(): JSX.Element {
 function PermissionsMissingView(): JSX.Element {
   return (
     <View style={styles.permissionsMsgContainer}>
-      <ErrTxt>
+      <Txt err={true}>
         This app needs location permissions. Please allow "location updates
         while using app". Location updates are used to determine the distance
         between you and the (virtual) anchor. All data stays on your phone.
-      </ErrTxt>
+      </Txt>
     </View>
   );
 }
 
 export default function App() {
   const { err, granted, loading } = usePermissions();
-  const darkMode = useDarkMode();
-
-  const themedCol = darkMode ? "white" : "black";
-  const themedContainer = darkMode
-    ? styles.darkContainer
-    : styles.lightContainer;
+  const { darkMode, bkgCol } = useTheme();
+  const fontCol = darkMode ? "white" : "black";
 
   React.useEffect(() => {
     stopDanglingTasks();
@@ -59,11 +55,11 @@ export default function App() {
 
   return (
     <BkgLocationContextProvider>
-      <View style={[styles.container, themedContainer]}>
-        {loading && <ActivityIndicator size="large" color={themedCol} />}
+      <View style={[styles.container, bkgCol]}>
+        {loading && <ActivityIndicator size="large" color={fontCol} />}
         {granted && !loading && <MainView />}
         {!granted && !loading && <PermissionsMissingView />}
-        {err && <ErrTxt>{err}</ErrTxt>}
+        {err && <Txt err={true}>{err}</Txt>}
         <StatusBar />
       </View>
     </BkgLocationContextProvider>
@@ -75,12 +71,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  lightContainer: {
-    backgroundColor: "#fff",
-  },
-  darkContainer: {
-    backgroundColor: "#000000",
   },
   permissionsMsgContainer: {
     alignItems: "center",

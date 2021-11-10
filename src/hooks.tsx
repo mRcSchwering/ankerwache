@@ -157,7 +157,7 @@ export function useAlarm(): useAlarmType {
   return { startAlarm, stopAlarm, err: state.err };
 }
 
-interface useDarkModeType {
+interface useThemeType {
   darkMode: boolean;
   fontCol: StyleProp<TextStyle>;
   bkgCol: StyleProp<ViewStyle>;
@@ -167,7 +167,7 @@ interface useDarkModeType {
   redBkg: StyleProp<ViewStyle>;
 }
 
-export function useDarkMode(): useDarkModeType {
+export function useTheme(): useThemeType {
   const colorScheme = useColorScheme();
   const darkMode = colorScheme !== "light";
   return {

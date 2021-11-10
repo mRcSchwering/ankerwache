@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Pressable, View, Modal, FlatList } from "react-native";
 import { BlurView } from "expo-blur";
 import { Txt, Btn } from "./components";
-import { useDarkMode } from "./hooks";
+import { useTheme } from "./hooks";
 
 interface DistanceSelectionProps {
   num: number;
@@ -15,13 +15,7 @@ export default function DistanceSelection(
   props: DistanceSelectionProps
 ): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
-  const darkMode = useDarkMode();
-
-  const themedInfoTxt = darkMode ? styles.darkInfoText : styles.lightInfoText;
-  const themedSelBtn = darkMode ? styles.darkSelectBtn : styles.lightSelectBtn;
-  const themedSelOpt = darkMode
-    ? styles.darkSelectOption
-    : styles.lightSelectOption;
+  const { bkgCol } = useTheme();
 
   function handleSelect(d: number) {
     props.onSelect(d);
@@ -30,10 +24,7 @@ export default function DistanceSelection(
 
   function renderItem({ item }: { item: number }): JSX.Element {
     return (
-      <Pressable
-        onPress={() => handleSelect(item)}
-        style={[styles.selectOption, themedSelOpt]}
-      >
+      <Pressable onPress={() => handleSelect(item)} style={styles.selectOpt}>
         <Txt>{`${item} m`}</Txt>
       </Pressable>
     );
@@ -47,28 +38,27 @@ export default function DistanceSelection(
         visible={isVisible}
         onRequestClose={() => setIsVisible((d) => !d)}
       >
-        <BlurView
-          intensity={70}
-          style={styles.modalBkg}
-          tint={darkMode ? "light" : "dark"}
-        >
-          <View style={styles.flatListContainer}>
-            <Txt style={themedInfoTxt}>
+        <View style={[styles.modalBkg, bkgCol]}>
+          <View style={styles.section}>
+            <Txt bold={true}>
               Take the length of your chain plus the distance error
             </Txt>
+          </View>
+          <View style={styles.section}>
             <FlatList
               data={props.nums}
               renderItem={renderItem}
               keyExtractor={(d) => d.toString()}
+              numColumns={3}
             />
           </View>
-        </BlurView>
+        </View>
       </Modal>
       <Btn
         disabled={props.disabled}
         onPress={() => setIsVisible((d) => !d)}
         label={`${props.num} m`}
-        style={themedSelBtn}
+        style={styles.selectBtn}
       />
     </>
   );
@@ -77,46 +67,21 @@ export default function DistanceSelection(
 const styles = StyleSheet.create({
   modalBkg: {
     flex: 1,
-    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 50,
   },
-  flatListContainer: {
+  section: {
+    marginVertical: 15,
     alignItems: "center",
   },
-  lightInfoText: {
-    maxWidth: 200,
-    textAlign: "center",
-    marginVertical: 20,
-    fontWeight: "bold",
-    color: "white",
-  },
-  darkInfoText: {
-    maxWidth: 200,
-    textAlign: "center",
-    marginVertical: 20,
-    fontWeight: "bold",
-    color: "black",
-  },
-  lightSelectBtn: {
+  selectBtn: {
     borderColor: "gray",
     borderStyle: "solid",
     borderWidth: 2,
-    backgroundColor: "white",
   },
-  darkSelectBtn: {
-    borderColor: "gray",
-    borderStyle: "solid",
-    borderWidth: 2,
-    backgroundColor: "black",
-  },
-  selectOption: {
+  selectOpt: {
     borderRadius: 4,
     margin: 5,
     padding: 10,
-  },
-  lightSelectOption: {
-    backgroundColor: "white",
-  },
-  darkSelectOption: {
-    backgroundColor: "black",
   },
 });

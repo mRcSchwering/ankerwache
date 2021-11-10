@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Pressable, View, Modal, FlatList } from "react-native";
 import { Txt, Btn } from "./components";
 import { formatHeading, getCoordsFromVector } from "./util";
-import { useDarkMode, useCurrentHeading } from "./hooks";
+import { useTheme, useCurrentHeading } from "./hooks";
 
 const DISTANCES = [0, 5, 10, 15, 20, 25, 30, 35, 40];
 
@@ -23,7 +23,7 @@ export default function AnchorSettingView(
 ): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
   const head = useCurrentHeading(isVisible);
-  const { bkgCol, blueBkg } = useDarkMode();
+  const { bkgCol, blueBkg } = useTheme();
 
   function handleSelect(d: number) {
     if (head && props.loc) {
