@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Pressable, View, Modal, FlatList } from "react-native";
-import { Txt, Btn, PreH2, H2, H4 } from "./components";
+import { Txt, Btn } from "./components";
 import { formatHeading, getCoordsFromVector } from "./util";
 import { useDarkMode, useCurrentHeading } from "./hooks";
 
@@ -66,24 +66,27 @@ export default function AnchorSettingView(
         onRequestClose={() => setIsVisible((d) => !d)}
       >
         <View style={styles.modalContent}>
-          <H2 style={[styles.infoText, fontCol]}>Where is your anchor?</H2>
+          <Txt size={20} bold={true} style={[styles.infoText, fontCol]}>
+            Where is your anchor?
+          </Txt>
           <View style={styles.sectionContainer}>
-            <H4 style={[styles.infoText, fontCol]}>
+            <Txt size={15} bold={true} style={[styles.infoText, fontCol]}>
               In which direction is your anchor?
-            </H4>
+            </Txt>
             <Txt style={[styles.infoText, fontCol]}>
               Point your cellphone into that direction. Check the headings
               below. Are they correct? (Some smartphones have a high deviation)
             </Txt>
           </View>
           <View style={styles.sectionContainer}>
-            <PreH2 style={fontCol}>{formatHeading(head?.mag)} (M)</PreH2>
-            <PreH2 style={fontCol}>{formatHeading(head?.tru)} (T)</PreH2>
+            <Txt size={20} bold={true} pre={true} style={fontCol}>
+              {formatHeading(head?.tru)} (T)
+            </Txt>
           </View>
           <View style={styles.sectionContainer}>
-            <H4 style={[styles.infoText, fontCol]}>
+            <Txt size={20} bold={true} style={[styles.infoText, fontCol]}>
               How far away is the anchor?
-            </H4>
+            </Txt>
             <Txt style={[styles.infoText, fontCol]}>
               Remember the water depth and catenary. We just need the horizontal
               distance. So, this should be less than the amount of chain/rode

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Btn, Txt, ErrTxt, ErrH2 } from "./components";
+import { Btn, Txt } from "./components";
 import DistanceSelection from "./DistanceSelection";
 import { useDarkMode, useAlarm } from "./hooks";
 import { getDistanceFromLatLonInM } from "./util";
@@ -134,8 +134,12 @@ export default function AnchorWatchView(
       <Txt style={{ fontWeight: "bold" }}>
         {watching ? "Watching..." : "Not watching."}
       </Txt>
-      {err && <ErrTxt>{err}</ErrTxt>}
-      {warn && <ErrH2>{warn}</ErrH2>}
+      {err && <Txt err={true}>{err}</Txt>}
+      {warn && (
+        <Txt err={true} size={20} bold={true}>
+          {warn}
+        </Txt>
+      )}
     </View>
   );
 }

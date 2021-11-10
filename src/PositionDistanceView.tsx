@@ -8,7 +8,7 @@ import {
   formatDistance,
   addErrs,
 } from "./util";
-import { Pre, H4 } from "./components";
+import { Txt } from "./components";
 
 export interface LocationType {
   lat: number;
@@ -23,10 +23,18 @@ function LocationView(props: {
 }): JSX.Element {
   return (
     <View style={styles.positionViewContainer}>
-      <H4>{props.label}</H4>
-      <Pre>Lat: {props.loc ? convertLatDMS(props.loc.lat) : "-"}</Pre>
-      <Pre>Lng: {props.loc ? convertLngDMS(props.loc.lng) : "-"}</Pre>
-      <Pre>Time: {props.loc?.ts ? formatLocationTs(props.loc?.ts) : "-"}</Pre>
+      <Txt size={15} bold={true}>
+        {props.label}
+      </Txt>
+      <Txt pre={true}>
+        Lat: {props.loc ? convertLatDMS(props.loc.lat) : "-"}
+      </Txt>
+      <Txt pre={true}>
+        Lng: {props.loc ? convertLngDMS(props.loc.lng) : "-"}
+      </Txt>
+      <Txt pre={true}>
+        Time: {props.loc?.ts ? formatLocationTs(props.loc?.ts) : "-"}
+      </Txt>
     </View>
   );
 }
@@ -56,7 +64,9 @@ function DistanceView(props: {
 
   return (
     <View style={styles.distanceViewContainer}>
-      <H4>Distance: {txt}</H4>
+      <Txt size={15} bold={true}>
+        Distance: {txt}
+      </Txt>
     </View>
   );
 }

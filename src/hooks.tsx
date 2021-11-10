@@ -1,5 +1,11 @@
 import React from "react";
-import { useColorScheme } from "react-native";
+import {
+  useColorScheme,
+  StyleSheet,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 import * as Location from "expo-location";
 import { Audio } from "expo-av";
 
@@ -157,7 +163,41 @@ export function useAlarm(): useAlarmType {
   return { startAlarm, stopAlarm, err: state.err };
 }
 
-export function useDarkMode(): boolean {
-  const colorScheme = useColorScheme();
-  return colorScheme !== "light";
+interface useDarkModeType {
+  darkMode: boolean;
+  fontCol: StyleProp<TextStyle>;
+  disabledFont: StyleProp<TextStyle>;
+  disabledBkg: StyleProp<ViewStyle>;
 }
+
+export function useDarkMode(): useDarkModeType {
+  const colorScheme = useColorScheme();
+  const darkMode = colorScheme !== "light";
+  return {
+    darkMode,
+    fontCol: darkMode ? styles.whiteFont : styles.blackFont,
+    disabledFont: darkMode ? styles.darkGrayFont : styles.lightGrayFont,
+    disabledBkg: darkMode ? styles.darkGrayBkg : styles.lightGrayBkg,
+  };
+}
+
+const styles = StyleSheet.create({
+  blackFont: {
+    color: "black",
+  },
+  whiteFont: {
+    color: "white",
+  },
+  darkGrayFont: {
+    color: "#898989",
+  },
+  lightGrayFont: {
+    color: "#9d9d9d",
+  },
+  darkGrayBkg: {
+    backgroundColor: "#484848",
+  },
+  lightGrayBkg: {
+    backgroundColor: "#e9e9e9",
+  },
+});

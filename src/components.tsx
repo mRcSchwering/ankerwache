@@ -12,57 +12,28 @@ import { useDarkMode } from "./hooks";
 export function Txt(props: {
   children?: React.ReactNode;
   disabled?: boolean;
+  err?: boolean;
+  bold?: boolean;
+  pre?: boolean;
+  size?: number;
   style?: StyleProp<TextStyle>;
 }): JSX.Element {
-  const darkMode = useDarkMode();
-  const themedText = darkMode ? styles.darkTxt : styles.lightTxt;
-
-  let disabledTheme = {};
-  if (props.disabled !== undefined ? props.disabled : false) {
-    disabledTheme = darkMode ? styles.darkDisabledTxt : styles.lightDisabledTxt;
-  }
-
+  const { fontCol, disabledFont } = useDarkMode();
   return (
-    <Text style={[themedText, props.style, disabledTheme]}>
+    <Text
+      style={[
+        fontCol,
+        props.style,
+        props.err && { color: "red" },
+        props.bold && { fontWeight: "bold" },
+        props.pre && { fontFamily: "monospace" },
+        props.size ? { fontSize: props.size } : undefined,
+        props.disabled && disabledFont,
+      ]}
+    >
       {props.children}
     </Text>
   );
-}
-
-export function H2(props: {
-  children?: React.ReactNode;
-  style?: StyleProp<TextStyle>;
-}): JSX.Element {
-  return <Txt style={[styles.h2, props.style]}>{props.children}</Txt>;
-}
-
-export function H4(props: {
-  children?: React.ReactNode;
-  style?: StyleProp<TextStyle>;
-}): JSX.Element {
-  return <Txt style={[styles.h4, props.style]}>{props.children}</Txt>;
-}
-
-export function ErrH2(props: { children?: React.ReactNode }): JSX.Element {
-  return <Txt style={styles.errh2}>{props.children}</Txt>;
-}
-
-export function Pre(props: {
-  children?: React.ReactNode;
-  style?: StyleProp<TextStyle>;
-}): JSX.Element {
-  return <Txt style={[styles.pre, props.style]}>{props.children}</Txt>;
-}
-
-export function PreH2(props: {
-  children?: React.ReactNode;
-  style?: StyleProp<TextStyle>;
-}): JSX.Element {
-  return <Txt style={[styles.preh2, props.style]}>{props.children}</Txt>;
-}
-
-export function ErrTxt(props: { children?: React.ReactNode }): JSX.Element {
-  return <Txt style={styles.errorMsg}>{props.children}</Txt>;
 }
 
 interface BtnProps {
@@ -95,42 +66,6 @@ export function Btn(props: BtnProps): JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  darkTxt: {
-    color: "#fff",
-  },
-  darkDisabledTxt: {
-    color: "#9d9d9d",
-  },
-  lightTxt: {
-    color: "#000000",
-  },
-  lightDisabledTxt: {
-    color: "#898989",
-  },
-  h2: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  errh2: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "red",
-  },
-  h4: {
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  pre: {
-    fontFamily: "monospace",
-  },
-  preh2: {
-    fontSize: 20,
-    fontWeight: "bold",
-    fontFamily: "monospace",
-  },
-  errorMsg: {
-    color: "red",
-  },
   numberSelection: {
     margin: 10,
   },
