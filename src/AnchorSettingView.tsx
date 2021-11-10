@@ -23,15 +23,7 @@ export default function AnchorSettingView(
 ): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
   const head = useCurrentHeading(isVisible);
-  const darkMode = useDarkMode();
-
-  const fontCol = darkMode ? styles.blackFont : styles.blackFont;
-  const themedSelOpt = darkMode
-    ? styles.darkSelectOption
-    : styles.lightSelectOption;
-  const themedAnchorBtn = darkMode
-    ? styles.darkAnchorBtn
-    : styles.lightAnchorBtn;
+  const { bkgCol, blueBkg } = useDarkMode();
 
   function handleSelect(d: number) {
     if (head && props.loc) {
@@ -48,52 +40,49 @@ export default function AnchorSettingView(
 
   function renderItem({ item }: { item: number }): JSX.Element {
     return (
-      <Pressable
-        onPress={() => handleSelect(item)}
-        style={[styles.selectOption, themedSelOpt]}
-      >
+      <Pressable onPress={() => handleSelect(item)} style={styles.selectOpt}>
         <Txt>{`${item} m`}</Txt>
       </Pressable>
     );
   }
 
   return (
-    <View style={styles.anchorButtonsContainer}>
+    <>
       <Modal
         animationType="fade"
         transparent={false}
         visible={isVisible}
         onRequestClose={() => setIsVisible((d) => !d)}
       >
-        <View style={styles.modalContent}>
-          <Txt size={20} bold={true} style={[styles.infoText, fontCol]}>
+        <View style={[styles.modalBkg, bkgCol]}>
+          <Txt size={20} bold={true}>
             Where is your anchor?
           </Txt>
-          <View style={styles.sectionContainer}>
-            <Txt size={15} bold={true} style={[styles.infoText, fontCol]}>
+          <View style={styles.section}>
+            <Txt size={15} bold={true}>
               In which direction is your anchor?
             </Txt>
-            <Txt style={[styles.infoText, fontCol]}>
+            <Txt>
               Point your cellphone into that direction. Check the headings
               below. Are they correct? (Some smartphones have a high deviation)
             </Txt>
           </View>
-          <View style={styles.sectionContainer}>
-            <Txt size={20} bold={true} pre={true} style={fontCol}>
+          <View style={styles.section}>
+            <Txt size={20} bold={true} pre={true}>
               {formatHeading(head?.tru)} (T)
             </Txt>
           </View>
-          <View style={styles.sectionContainer}>
-            <Txt size={20} bold={true} style={[styles.infoText, fontCol]}>
+          <View style={styles.section}>
+            <Txt size={20} bold={true}>
               How far away is the anchor?
             </Txt>
-            <Txt style={[styles.infoText, fontCol]}>
+            <Txt>
               Remember the water depth and catenary. We just need the horizontal
               distance. So, this should be less than the amount of chain/rode
               you payed out. Select one to "set" anchor position.
             </Txt>
           </View>
-          <View style={styles.sectionContainer}>
+          <View style={styles.section}>
             <FlatList
               data={DISTANCES}
               renderItem={renderItem}
@@ -103,46 +92,35 @@ export default function AnchorSettingView(
           </View>
         </View>
       </Modal>
-      <Btn
-        onPress={() => setIsVisible(true)}
-        disabled={props.loc === undefined}
-        label="Set"
-        style={themedAnchorBtn}
-      />
-      <Btn
-        onPress={() => props.onSetAnchor(undefined)}
-        disabled={props.loc === undefined}
-        label="Retrieve"
-        style={themedAnchorBtn}
-      />
-    </View>
+      <View style={styles.btnsContainer}>
+        <Btn
+          onPress={() => setIsVisible(true)}
+          disabled={props.loc === undefined}
+          label="Set"
+          style={blueBkg}
+        />
+        <Btn
+          onPress={() => props.onSetAnchor(undefined)}
+          disabled={props.loc === undefined}
+          label="Retrieve"
+          style={blueBkg}
+        />
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   modalBkg: {
     flex: 1,
-    justifyContent: "center",
-  },
-  modalContent: {
     alignItems: "center",
     paddingVertical: 50,
   },
-  infoText: {
-    maxWidth: 250,
-    textAlign: "center",
-  },
-  sectionContainer: {
+  section: {
     marginVertical: 15,
     alignItems: "center",
   },
-  blackFont: {
-    color: "black",
-  },
-  whiteFont: {
-    color: "white",
-  },
-  selectOption: {
+  selectOpt: {
     width: 50,
     height: 50,
     borderRadius: 4,
@@ -150,23 +128,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  lightSelectOption: {
-    backgroundColor: "white",
-  },
-  darkSelectOption: {
-    backgroundColor: "black",
-  },
-  anchorButtonsContainer: {
+  btnsContainer: {
     paddingVertical: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
-  },
-  lightAnchorBtn: {
-    backgroundColor: "#c5ceff",
-  },
-  darkAnchorBtn: {
-    backgroundColor: "#6f7bbf",
   },
 });

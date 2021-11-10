@@ -16,18 +16,21 @@ export function Txt(props: {
   bold?: boolean;
   pre?: boolean;
   size?: number;
+  align?: "auto" | "left" | "right" | "center" | "justify";
   style?: StyleProp<TextStyle>;
 }): JSX.Element {
   const { fontCol, disabledFont } = useDarkMode();
   return (
     <Text
       style={[
+        styles.txtDefault,
         fontCol,
         props.style,
         props.err && { color: "red" },
         props.bold && { fontWeight: "bold" },
         props.pre && { fontFamily: "monospace" },
         props.size ? { fontSize: props.size } : undefined,
+        props.align ? { textAlign: props.align } : undefined,
         props.disabled && disabledFont,
       ]}
     >
@@ -44,28 +47,23 @@ interface BtnProps {
 }
 
 export function Btn(props: BtnProps): JSX.Element {
-  const darkMode = useDarkMode();
-
-  const isDisabled = props.disabled !== undefined ? props.disabled : false;
-  let disabledTheme = {};
-  if (isDisabled) {
-    disabledTheme = darkMode
-      ? styles.darkDisabledButton
-      : styles.lightDisabledButton;
-  }
-
+  const { disabledBkg } = useDarkMode();
   return (
     <Pressable
       onPress={props.onPress}
-      disabled={isDisabled}
-      style={[styles.button, props.style, disabledTheme]}
+      disabled={props.disabled}
+      style={[styles.button, props.style, props.disabled && disabledBkg]}
     >
-      <Txt disabled={isDisabled}>{props.label}</Txt>
+      <Txt disabled={props.disabled}>{props.label}</Txt>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  txtDefault: {
+    textAlign: "center",
+    maxWidth: 250,
+  },
   numberSelection: {
     margin: 10,
   },

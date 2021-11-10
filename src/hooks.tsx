@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  useColorScheme,
-  StyleSheet,
-  StyleProp,
-  TextStyle,
-  ViewStyle,
-} from "react-native";
+import { useColorScheme, StyleProp, TextStyle, ViewStyle } from "react-native";
 import * as Location from "expo-location";
 import { Audio } from "expo-av";
 
@@ -166,8 +160,11 @@ export function useAlarm(): useAlarmType {
 interface useDarkModeType {
   darkMode: boolean;
   fontCol: StyleProp<TextStyle>;
+  bkgCol: StyleProp<ViewStyle>;
   disabledFont: StyleProp<TextStyle>;
   disabledBkg: StyleProp<ViewStyle>;
+  blueBkg: StyleProp<ViewStyle>;
+  redBkg: StyleProp<ViewStyle>;
 }
 
 export function useDarkMode(): useDarkModeType {
@@ -175,29 +172,11 @@ export function useDarkMode(): useDarkModeType {
   const darkMode = colorScheme !== "light";
   return {
     darkMode,
-    fontCol: darkMode ? styles.whiteFont : styles.blackFont,
-    disabledFont: darkMode ? styles.darkGrayFont : styles.lightGrayFont,
-    disabledBkg: darkMode ? styles.darkGrayBkg : styles.lightGrayBkg,
+    fontCol: { color: darkMode ? "white" : "black" },
+    bkgCol: { backgroundColor: darkMode ? "black" : "white" },
+    disabledFont: { color: darkMode ? "#898989" : "#9d9d9d" },
+    disabledBkg: { backgroundColor: darkMode ? "#484848" : "#e9e9e9" },
+    blueBkg: { backgroundColor: darkMode ? "#6f7bbf" : "#c5ceff" },
+    redBkg: { backgroundColor: darkMode ? "#c56565" : "#ff9f9f" },
   };
 }
-
-const styles = StyleSheet.create({
-  blackFont: {
-    color: "black",
-  },
-  whiteFont: {
-    color: "white",
-  },
-  darkGrayFont: {
-    color: "#898989",
-  },
-  lightGrayFont: {
-    color: "#9d9d9d",
-  },
-  darkGrayBkg: {
-    backgroundColor: "#484848",
-  },
-  lightGrayBkg: {
-    backgroundColor: "#e9e9e9",
-  },
-});

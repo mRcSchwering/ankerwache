@@ -95,8 +95,7 @@ export default function AnchorWatchView(
     props.anchor
   );
 
-  const darkMode = useDarkMode();
-  const themedBtn = darkMode ? styles.darkWatchBtn : styles.lightWatchBtn;
+  const { redBkg } = useDarkMode();
 
   function toggleWatch() {
     if (watching) {
@@ -116,13 +115,13 @@ export default function AnchorWatchView(
   }, [props.anchor]);
 
   return (
-    <View style={styles.anchorWatchContainer}>
-      <View style={styles.anchorWatchHandle}>
+    <View style={styles.container}>
+      <View style={styles.btnsContainer}>
         <Btn
           onPress={toggleWatch}
           label={watching ? "Stop" : "Start"}
           disabled={!props.anchor}
-          style={themedBtn}
+          style={[styles.watchBtn, redBkg]}
         />
         <DistanceSelection
           num={radius}
@@ -131,9 +130,7 @@ export default function AnchorWatchView(
           disabled={!props.anchor || watching}
         />
       </View>
-      <Txt style={{ fontWeight: "bold" }}>
-        {watching ? "Watching..." : "Not watching."}
-      </Txt>
+      <Txt bold={true}>{watching ? "Watching..." : "Not watching."}</Txt>
       {err && <Txt err={true}>{err}</Txt>}
       {warn && (
         <Txt err={true} size={20} bold={true}>
@@ -145,23 +142,16 @@ export default function AnchorWatchView(
 }
 
 const styles = StyleSheet.create({
-  lightWatchBtn: {
-    backgroundColor: "#ff9f9f",
+  watchBtn: {
     paddingHorizontal: 50,
     paddingVertical: 15,
   },
-  darkWatchBtn: {
-    backgroundColor: "#c56565",
-    paddingHorizontal: 50,
-    paddingVertical: 15,
-  },
-  anchorWatchContainer: {
-    paddingVertical: 10,
+  container: {
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
   },
-  anchorWatchHandle: {
+  btnsContainer: {
     flexDirection: "row",
   },
 });

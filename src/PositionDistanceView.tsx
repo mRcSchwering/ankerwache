@@ -23,16 +23,16 @@ function LocationView(props: {
 }): JSX.Element {
   return (
     <View style={styles.positionViewContainer}>
-      <Txt size={15} bold={true}>
+      <Txt size={15} bold={true} align="left">
         {props.label}
       </Txt>
-      <Txt pre={true}>
+      <Txt pre={true} align="left">
         Lat: {props.loc ? convertLatDMS(props.loc.lat) : "-"}
       </Txt>
-      <Txt pre={true}>
+      <Txt pre={true} align="left">
         Lng: {props.loc ? convertLngDMS(props.loc.lng) : "-"}
       </Txt>
-      <Txt pre={true}>
+      <Txt pre={true} align="left">
         Time: {props.loc?.ts ? formatLocationTs(props.loc?.ts) : "-"}
       </Txt>
     </View>
@@ -64,7 +64,7 @@ function DistanceView(props: {
 
   return (
     <View style={styles.distanceViewContainer}>
-      <Txt size={15} bold={true}>
+      <Txt size={15} bold={true} align="left">
         Distance: {txt}
       </Txt>
     </View>
