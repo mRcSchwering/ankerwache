@@ -2,7 +2,7 @@
   "expo": {
     "name": "ankerwache",
     "slug": "ankerwache",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vordeck.ankerwache",
-      "buildNumber": "0.0.2"
+      "buildNumber": "0.0.3"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +27,7 @@
       },
       "permissions": ["ACCESS_FINE_LOCATION"],
       "package": "com.vordeck.ankerwache",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"
