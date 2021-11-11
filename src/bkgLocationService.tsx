@@ -88,6 +88,7 @@ export async function subscribeBkgLocationUpdates({
       notificationTitle: "Regular location updates...",
       notificationBody:
         "Sounds alarm if drift is persistently higher than radius",
+      notificationColor: "#0c555d",
     },
     pausesUpdatesAutomatically: false,
     distanceInterval: 1,
