@@ -81,6 +81,7 @@ export interface LocationType {
 
 interface AnchorWatchViewProps {
   anchor?: LocationType;
+  std?: number;
 }
 
 export default function AnchorWatchView(
@@ -123,6 +124,7 @@ export default function AnchorWatchView(
           style={[styles.watchBtn, redBkg]}
         />
         <DistanceSelection
+          std={props.std}
           radius={radius}
           onSelect={setRadius}
           disabled={!props.anchor || watching}

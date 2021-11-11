@@ -5,6 +5,7 @@ import { Txt, Btn } from "./components";
 import { useTheme } from "./hooks";
 
 interface DistanceSelectionProps {
+  std?: number;
   radius: number;
   onSelect: (d: number) => void;
   disabled?: boolean;
@@ -29,11 +30,23 @@ export default function DistanceSelection(
         onRequestClose={() => setIsVisible((d) => !d)}
       >
         <View style={[styles.modalBkg, bkgCol]}>
+          <Txt size={20} bold={true}>
+            How big is the radius?
+          </Txt>
           <View style={styles.section}>
-            <Txt bold={true}>
-              Take the length of your chain plus the distance error
+            <Txt bold={true} size={15}>
+              chain length + 2 * accuracy
+            </Txt>
+            <Txt>
+              Consider the theoretical swinging circle and the GPS accuracy.
+              With a single anchor the theoretical swinging circle radius is
+              slightly less the chain/rode you payed out. To avoid false alarm
+              add twice the GPS accuracy.
             </Txt>
           </View>
+          <Txt bold={true} size={15}>
+            Accuracy: {props.std ? `${Math.round(props.std)} m` : "-"}
+          </Txt>
           <ThemedSelect
             items={RAD_ITEMS}
             onScroll={(d) => props.onSelect(d)}
@@ -43,7 +56,7 @@ export default function DistanceSelection(
             <Btn
               disabled={props.disabled}
               onPress={() => setIsVisible(false)}
-              label="Select"
+              label="Select radius"
               style={styles.selectBtn}
             />
           </View>

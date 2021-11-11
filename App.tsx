@@ -2,12 +2,14 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { Txt } from "./src/components";
-import PositionDistanceView from "./src/PositionDistanceView";
+import { getDistanceFromLatLonInM, addErrs } from "./src/util";
 import AnchorWatchView from "./src/AnchorWatchView";
 import { BkgLocationContextProvider } from "./src/bkgLocationContext";
 import { useCurrentLocation, useTheme, usePermissions } from "./src/hooks";
 import { stopDanglingTasks } from "./src/bkgLocationService";
 import AnchorSettingView from "./src/AnchorSettingView";
+import LocationView from "./src/LocationView";
+import DistanceView from "./src/DistanceView";
 
 interface LocationType {
   lat: number;
@@ -18,13 +20,41 @@ interface LocationType {
 
 function MainView(): JSX.Element {
   const loc = useCurrentLocation();
+  const [std, setStd] = React.useState<number>();
   const [anchor, setAnchor] = React.useState<LocationType>();
+
+  function getDist(
+    pos1?: LocationType,
+    pos2?: LocationType
+  ): number | undefined {
+    if (!pos1 || !pos2) return undefined;
+    return getDistanceFromLatLonInM(pos1.lat, pos1.lng, pos2.lat, pos2.lng);
+  }
+
+  function getStd(
+    acc1?: number | null,
+    acc2?: number | null
+  ): number | undefined {
+    if (acc1 && acc2) return addErrs(acc1, acc2);
+    if (acc1) return acc1;
+    if (acc2) return acc2;
+    return undefined;
+  }
+
+  React.useEffect(() => {
+    setStd(getStd(loc?.acc, anchor?.acc));
+  }, [loc, anchor]);
 
   return (
     <View>
-      <PositionDistanceView loc={loc} anchor={anchor} />
+      <LocationView loc={loc} label="Current" />
+      <LocationView loc={anchor} label="Anchor" />
+      <DistanceView
+        dist={getDist(loc, anchor)}
+        err={getStd(loc?.acc, anchor?.acc)}
+      />
       <AnchorSettingView loc={loc} onSetAnchor={setAnchor} />
-      <AnchorWatchView anchor={anchor} />
+      <AnchorWatchView anchor={anchor} std={std} />
     </View>
   );
 }

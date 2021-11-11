@@ -57,7 +57,7 @@ export function addErrs(e1: number, e2: number): number {
 }
 
 export function formatDistance(d: number | null, err: number | null): string {
-  if (d === null) return "-";
+  if (d === null) return " - ";
   const e = err !== null ? ` (+/- ${Math.round(err)})` : "";
   return `${Math.round(d)}${e} m`;
 }
