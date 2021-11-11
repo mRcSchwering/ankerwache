@@ -67,6 +67,13 @@ on the mobile go to _Wireless debugging_ and forget device,
 then remove special permissions **Wireless debugging** and **Install via USB** again.
 On the PC run `adb disconnect && adb kill-server`.
 
+## asd
+
+```
+expo build:android -t app-bundle
+wget <url>
+```
+
 ## Google Play Store
 
 This is a tool to help you sleep better while at anchor. Set your anchor position, define a radius, and start the anchor watch. If your phone is persistently outside the defined radius it will start to ring loudly.
