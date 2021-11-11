@@ -199,7 +199,7 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
       onScroll={(d) => props.onScroll(d.item.value)}
       width={200}
       height={200}
-      scrollTo={props.scrollTo || 2}
+      scrollTo={props.scrollTo === undefined ? 2 : props.scrollTo}
       transparentRows={3}
       itemCol={darkMode ? "white" : "black"}
       borderCol="gray"

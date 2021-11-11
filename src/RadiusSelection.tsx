@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, Pressable, View, Modal, FlatList } from "react-native";
+import { StyleSheet, View, Modal } from "react-native";
 import { ThemedSelect } from "./ScrollSelectionPicker";
 import { Txt, Btn } from "./components";
 import { useTheme } from "./hooks";
 
-interface DistanceSelectionProps {
+interface RadiuseSelectionProps {
   std?: number;
   radius: number;
   onSelect: (d: number) => void;
@@ -16,11 +16,12 @@ const RADII = [
 ];
 const RAD_ITEMS = RADII.map((d) => ({ value: d, label: `${d} m` }));
 
-export default function DistanceSelection(
-  props: DistanceSelectionProps
+export default function RadiusSelection(
+  props: RadiuseSelectionProps
 ): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
   const { bkgCol } = useTheme();
+
   return (
     <>
       <Modal

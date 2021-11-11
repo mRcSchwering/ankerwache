@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Btn, Txt } from "./components";
-import DistanceSelection from "./DistanceSelection";
+import RadiusSelection from "./RadiusSelection";
 import { useTheme, useAlarm } from "./hooks";
 import { getDistanceFromLatLonInM } from "./util";
 import { BkgLocationContext } from "./bkgLocationContext";
@@ -101,7 +101,6 @@ export default function AnchorWatchView(
       setWatching(false);
       stopWatch();
     } else if (props.anchor) {
-      console.log("start watch with radius", radius);
       setWatching(true);
       startWatch();
     }
@@ -123,7 +122,7 @@ export default function AnchorWatchView(
           disabled={!props.anchor}
           style={[styles.watchBtn, redBkg]}
         />
-        <DistanceSelection
+        <RadiusSelection
           std={props.std}
           radius={radius}
           onSelect={setRadius}
