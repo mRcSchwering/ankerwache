@@ -157,31 +157,31 @@ const styles = StyleSheet.create({
 });
 
 const LIGHT_TOP_GRAD = [
-  "rgba( 255, 255, 255, 1 )",
-  "rgba( 255, 255, 255, 0.9 )",
-  "rgba( 255, 255, 255, 0.7 )",
-  "rgba( 255, 255, 255, 0.5 )",
+  "#ffffffFF", // rgba( 255, 255, 255, 1 )
+  "#ffffffE6", // rgba( 255, 255, 255, 0.9 )
+  "#ffffffB3", // rgba( 255, 255, 255, 0.7 )
+  "#ffffff80", // rgba( 255, 255, 255, 0.5 )
 ];
 
 const LIGHT_BOT_GRAD = [
-  "rgba( 255, 255, 255, 0.5 )",
-  "rgba( 255, 255, 255, 0.7 )",
-  "rgba( 255, 255, 255, 0.9 )",
-  "rgba( 255, 255, 255, 1 )",
+  "#ffffff80", // rgba( 255, 255, 255, 0.5 )
+  "#ffffffB3", // rgba( 255, 255, 255, 0.7 )
+  "#ffffffE6", // rgba( 255, 255, 255, 0.9 )
+  "#ffffffFF", // rgba( 255, 255, 255, 1 )
 ];
 
 const DARK_TOP_GRAD = [
-  "rgba( 0, 0, 0, 1 )",
-  "rgba( 0, 0, 0, 0.9 )",
-  "rgba( 0, 0, 0, 0.7 )",
-  "rgba( 0, 0, 0, 0.5 )",
+  "#000000FF", // rgba( 0, 0, 0, 1 )
+  "#000000E6", // rgba( 0, 0, 0, 0.9 )
+  "#000000B3", // rgba( 0, 0, 0, 0.7 )
+  "#00000080", // rgba( 0, 0, 0, 0.5 )
 ];
 
 const DARK_BOT_GRAD = [
-  "rgba( 0, 0, 0, 0.5 )",
-  "rgba( 0, 0, 0, 0.7 )",
-  "rgba( 0, 0, 0, 0.9 )",
-  "rgba( 0, 0, 0, 1 )",
+  "#00000080", // rgba( 0, 0, 0, 0.5 )
+  "#000000B3", // rgba( 0, 0, 0, 0.7 )
+  "#000000E6", // rgba( 0, 0, 0, 0.9 )
+  "#000000FF", // rgba( 0, 0, 0, 1 )
 ];
 
 interface ThemedSelectProps {
