@@ -4,11 +4,17 @@ import {
   View,
   ScrollView,
   Text,
+  Image,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "./hooks";
+
+// hack because of https://stackoverflow.com/questions/69934764/standalone-apk-different-from-playstore-aab-lineargradient-uses-wrong-colors
+const GRAD_DARK_TOP = require("../assets/grad_dark_top.png");
+const GRAD_LIGHT_TOP = require("../assets/grad_light_top.png");
+const GRAD_DARK_BOT = require("../assets/grad_dark_bottom.png");
+const GRAD_LIGHT_BOT = require("../assets/grad_light_bottom.png");
 
 interface ItemType {
   value: number;
@@ -28,8 +34,8 @@ interface ScrollSelectionPickerProps {
   width: number;
   itemCol: string;
   borderCol: string;
-  topGradientColors: string[];
-  bottomGradientColors: string[];
+  topGradient: any;
+  bottomGradient: any;
   transparentRows?: number;
 }
 
@@ -112,9 +118,9 @@ export default function ScrollSelectionPicker(
           { borderColor: props.borderCol },
         ]}
       >
-        <LinearGradient
-          colors={props.topGradientColors}
+        <Image
           style={[styles.pickerGradient, { height: gradHeight }]}
+          source={props.topGradient}
         />
       </View>
       <View
@@ -125,9 +131,9 @@ export default function ScrollSelectionPicker(
           { borderColor: props.borderCol },
         ]}
       >
-        <LinearGradient
-          colors={props.bottomGradientColors}
+        <Image
           style={[styles.pickerGradient, { height: gradHeight }]}
+          source={props.bottomGradient}
         />
       </View>
     </View>
@@ -165,12 +171,12 @@ interface ThemedSelectProps {
 export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
   const { darkMode } = useTheme();
 
-  function getTopGrad(dark: boolean) {
-    return [dark ? "black" : "white", "transparent"];
+  function getTopGrad(dark: boolean): any {
+    return dark ? GRAD_DARK_TOP : GRAD_LIGHT_TOP;
   }
 
-  function getBotGrad(dark: boolean) {
-    return ["transparent", dark ? "black" : "white"];
+  function getBotGrad(dark: boolean): any {
+    return dark ? GRAD_DARK_BOT : GRAD_LIGHT_BOT;
   }
 
   return (
@@ -183,8 +189,8 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
       transparentRows={3}
       itemCol={darkMode ? "white" : "black"}
       borderCol="gray"
-      topGradientColors={["black", "transparent"]} // TODO: correct it back
-      bottomGradientColors={["transparent", "black"]} // TODO: correct it back
+      topGradient={getTopGrad(darkMode)}
+      bottomGradient={getBotGrad(darkMode)}
     />
   );
 }
