@@ -31,28 +31,34 @@ export default function RadiusSelection(
         onRequestClose={() => setIsVisible((d) => !d)}
       >
         <View style={[styles.modalBkg, bkgCol]}>
-          <Txt size={20} bold={true}>
-            How big is the radius?
-          </Txt>
+          <View style={styles.section}>
+            <Txt size={20} bold={true}>
+              How big is the radius?
+            </Txt>
+          </View>
           <View style={styles.section}>
             <Txt bold={true} size={15}>
               chain length + 2 * accuracy
             </Txt>
+          </View>
+          <View style={styles.section}>
             <Txt>
               Consider the theoretical swinging circle and the GPS accuracy.
               With a single anchor the theoretical swinging circle radius is
-              slightly less the chain/rode you payed out. To avoid false alarm
-              add twice the GPS accuracy.
+              slightly less than the chain/rode you payed out. To avoid false
+              alarm add twice the GPS accuracy.
             </Txt>
           </View>
-          <Txt bold={true} size={15}>
-            Accuracy: {props.std ? `${Math.round(props.std)} m` : "-"}
-          </Txt>
           <ThemedSelect
             items={RAD_ITEMS}
             onScroll={(d) => props.onSelect(d)}
             scrollTo={RADII.indexOf(props.radius)}
           />
+          <View style={styles.section}>
+            <Txt bold={true} size={15}>
+              Accuracy: {props.std ? `${Math.round(props.std)} m` : "-"}
+            </Txt>
+          </View>
           <View style={styles.section}>
             <Btn
               disabled={props.disabled}

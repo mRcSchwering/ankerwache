@@ -69,6 +69,7 @@ function PermissionsMissingView(): JSX.Element {
         This app needs location permissions. Please allow "location updates
         while using app". Location updates are used to determine the distance
         between you and the (virtual) anchor. All data stays on your phone.
+        Locations are not saved furthermore.
       </Txt>
     </View>
   );
