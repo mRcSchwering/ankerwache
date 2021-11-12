@@ -30,7 +30,7 @@ export PATH=$PATH:$ANDROID_SDK_ROOT/tools/
 export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools/
 ```
 
-### Standalone App with Expo-CLI
+### Standalone apk with Expo-CLI
 
 Creates an _.apk_ for testing on an Android device.
 See [Expo CLI build docs](https://docs.expo.dev/classic/building-standalone-apps/).
@@ -45,6 +45,22 @@ wget https://<URL-from-build-logs>.apk
 ```
 
 I auto-generated the key store and fetched it (`expo fetch:android:keystore`) afterwards as backup.
+
+### Playstore aab with Expo-CLI
+
+Creates an _.aab_ for upload to Google Playstore.
+Instead of downloading it there is also a way of pushing it directly
+to the Playstore (see `expo build:android --help`).
+But for that you need to [setup an API key](https://intercom.help/appinstitute/en/articles/1025206-how-to-get-your-google-play-json-key).
+
+```
+expo login
+
+# -t [app-bundle|apk]
+expo build:android -t app-bundle
+
+wget https://<URL-from-build-logs>.aab
+```
 
 ## Test on Device
 
@@ -66,13 +82,6 @@ After testing,
 on the mobile go to _Wireless debugging_ and forget device,
 then remove special permissions **Wireless debugging** and **Install via USB** again.
 On the PC run `adb disconnect && adb kill-server`.
-
-## asd
-
-```
-expo build:android -t app-bundle
-wget <url>
-```
 
 ## Google Play Store
 
