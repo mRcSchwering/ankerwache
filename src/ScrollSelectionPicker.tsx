@@ -9,6 +9,7 @@ import {
   NativeScrollEvent,
 } from "react-native";
 import { useTheme } from "./hooks";
+import { Txt } from "./components";
 
 // hack because of https://stackoverflow.com/questions/69934764/standalone-apk-different-from-playstore-aab-lineargradient-uses-wrong-colors
 const GRAD_DARK_TOP = require("../assets/grad_dark_top.png");
@@ -89,54 +90,106 @@ export default function ScrollSelectionPicker(
   }, []);
 
   return (
-    <View style={{ height: props.height, width: props.width }}>
-      <ScrollView
-        ref={scroll}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        onScroll={(event) => onScroll(event)}
-        snapToInterval={itemHeight}
-        snapToAlignment="center"
-        decelerationRate="fast"
-        scrollEventThrottle={0}
-      >
-        {extItems.map((d, i) => (
-          <PickerItem
-            key={i}
-            item={d}
-            index={i}
-            height={itemHeight}
-            color={props.itemCol}
+    <>
+      <Txt>dark</Txt>
+      <View style={{ height: props.height, width: props.width }}>
+        <ScrollView
+          ref={scroll}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          onScroll={(event) => onScroll(event)}
+          snapToInterval={itemHeight}
+          snapToAlignment="center"
+          decelerationRate="fast"
+          scrollEventThrottle={0}
+        >
+          {extItems.map((d, i) => (
+            <PickerItem
+              key={i}
+              item={d}
+              index={i}
+              height={itemHeight}
+              color={props.itemCol}
+            />
+          ))}
+        </ScrollView>
+        <View
+          pointerEvents="none"
+          style={[
+            styles.gradientWrapper,
+            styles.bottomBorder,
+            { borderColor: props.borderCol },
+          ]}
+        >
+          <Image
+            style={[styles.pickerGradient, { height: gradHeight }]}
+            source={GRAD_DARK_TOP}
           />
-        ))}
-      </ScrollView>
-      <View
-        pointerEvents="none"
-        style={[
-          styles.gradientWrapper,
-          styles.bottomBorder,
-          { borderColor: props.borderCol },
-        ]}
-      >
-        <Image
-          style={[styles.pickerGradient, { height: gradHeight }]}
-          source={props.topGradient}
-        />
+        </View>
+        <View
+          pointerEvents="none"
+          style={[
+            styles.gradientWrapper,
+            styles.topBorder,
+            { borderColor: props.borderCol },
+          ]}
+        >
+          <Image
+            style={[styles.pickerGradient, { height: gradHeight }]}
+            source={GRAD_DARK_BOT}
+          />
+        </View>
       </View>
-      <View
-        pointerEvents="none"
-        style={[
-          styles.gradientWrapper,
-          styles.topBorder,
-          { borderColor: props.borderCol },
-        ]}
-      >
-        <Image
-          style={[styles.pickerGradient, { height: gradHeight }]}
-          source={props.bottomGradient}
-        />
+      <Txt>light</Txt>
+      <View style={{ height: props.height, width: props.width }}>
+        <ScrollView
+          ref={scroll}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          onScroll={(event) => onScroll(event)}
+          snapToInterval={itemHeight}
+          snapToAlignment="center"
+          decelerationRate="fast"
+          scrollEventThrottle={0}
+        >
+          {extItems.map((d, i) => (
+            <PickerItem
+              key={i}
+              item={d}
+              index={i}
+              height={itemHeight}
+              color={props.itemCol}
+            />
+          ))}
+        </ScrollView>
+        <View
+          pointerEvents="none"
+          style={[
+            styles.gradientWrapper,
+            styles.bottomBorder,
+            { borderColor: props.borderCol },
+          ]}
+        >
+          <Image
+            style={[styles.pickerGradient, { height: gradHeight }]}
+            source={GRAD_LIGHT_TOP}
+          />
+        </View>
+        <View
+          pointerEvents="none"
+          style={[
+            styles.gradientWrapper,
+            styles.topBorder,
+            { borderColor: props.borderCol },
+          ]}
+        >
+          <Image
+            style={[styles.pickerGradient, { height: gradHeight }]}
+            source={GRAD_LIGHT_BOT}
+          />
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 
@@ -189,8 +242,8 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
       transparentRows={3}
       itemCol={darkMode ? "white" : "black"}
       borderCol="gray"
-      topGradient={GRAD_DARK_TOP} // TODO
-      bottomGradient={getBotGrad(darkMode)} // TODO
+      topGradient={getTopGrad(darkMode)}
+      bottomGradient={getBotGrad(darkMode)}
     />
   );
 }

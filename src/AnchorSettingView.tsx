@@ -50,6 +50,31 @@ export default function AnchorSettingView(
         onRequestClose={() => setIsVisible((d) => !d)}
       >
         <View style={[styles.modalBkg, bkgCol]}>
+          <ThemedSelect items={DIST_ITEMS} onScroll={(d) => setDist(d)} />
+          <View style={styles.section}>
+            <Btn onPress={handleSet} label="Set Anchor" style={blueBkg} />
+          </View>
+        </View>
+      </Modal>
+      <View style={styles.btnsContainer}>
+        <Btn
+          onPress={() => setIsVisible(true)}
+          disabled={props.loc === undefined}
+          label="Set"
+          style={blueBkg}
+        />
+        <Btn
+          onPress={() => props.onSetAnchor(undefined)}
+          disabled={props.loc === undefined}
+          label="Retrieve"
+          style={blueBkg}
+        />
+      </View>
+    </>
+  );
+}
+
+/*
           <Txt size={20} bold={true}>
             Where is your anchor?
           </Txt>
@@ -77,29 +102,7 @@ export default function AnchorSettingView(
               you payed out. Select one to "set" anchor position.
             </Txt>
           </View>
-          <ThemedSelect items={DIST_ITEMS} onScroll={(d) => setDist(d)} />
-          <View style={styles.section}>
-            <Btn onPress={handleSet} label="Set Anchor" style={blueBkg} />
-          </View>
-        </View>
-      </Modal>
-      <View style={styles.btnsContainer}>
-        <Btn
-          onPress={() => setIsVisible(true)}
-          disabled={props.loc === undefined}
-          label="Set"
-          style={blueBkg}
-        />
-        <Btn
-          onPress={() => props.onSetAnchor(undefined)}
-          disabled={props.loc === undefined}
-          label="Retrieve"
-          style={blueBkg}
-        />
-      </View>
-    </>
-  );
-}
+*/
 
 const styles = StyleSheet.create({
   modalBkg: {
