@@ -168,34 +168,34 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
   function getTopGrad(dark: boolean) {
     if (dark) {
       return [
-        "#000000FF", // rgba( 0, 0, 0, 1 )
-        "#000000E6", // rgba( 0, 0, 0, 0.9 )
-        "#000000B3", // rgba( 0, 0, 0, 0.7 )
-        "#00000080", // rgba( 0, 0, 0, 0.5 )
+        "#FF000000", // rgba( 0, 0, 0, 1 )
+        "#E6000000", // rgba( 0, 0, 0, 0.9 )
+        "#B3000000", // rgba( 0, 0, 0, 0.7 )
+        "#80000000", // rgba( 0, 0, 0, 0.5 )
       ];
     }
     return [
-      "#ffffffFF", // rgba( 255, 255, 255, 1 )
-      "#ffffffE6", // rgba( 255, 255, 255, 0.9 )
-      "#ffffffB3", // rgba( 255, 255, 255, 0.7 )
-      "#ffffff80", // rgba( 255, 255, 255, 0.5 )
+      "#FFffffff", // rgba( 255, 255, 255, 1 )
+      "#E6ffffff", // rgba( 255, 255, 255, 0.9 )
+      "#B3ffffff", // rgba( 255, 255, 255, 0.7 )
+      "#80ffffff", // rgba( 255, 255, 255, 0.5 )
     ];
   }
 
   function getBotGrad(dark: boolean) {
     if (dark) {
       return [
-        "#00000080", // rgba( 0, 0, 0, 0.5 )
-        "#000000B3", // rgba( 0, 0, 0, 0.7 )
-        "#000000E6", // rgba( 0, 0, 0, 0.9 )
-        "#000000FF", // rgba( 0, 0, 0, 1 )
+        "#80000000", // rgba( 0, 0, 0, 0.5 )
+        "#B3000000", // rgba( 0, 0, 0, 0.7 )
+        "#E6000000", // rgba( 0, 0, 0, 0.9 )
+        "#FF000000", // rgba( 0, 0, 0, 1 )
       ];
     }
     return [
-      "#ffffff80", // rgba( 255, 255, 255, 0.5 )
-      "#ffffffB3", // rgba( 255, 255, 255, 0.7 )
-      "#ffffffE6", // rgba( 255, 255, 255, 0.9 )
-      "#ffffffFF", // rgba( 255, 255, 255, 1 )
+      "#80ffffff", // rgba( 255, 255, 255, 0.5 )
+      "#B3ffffff", // rgba( 255, 255, 255, 0.7 )
+      "#E6ffffff", // rgba( 255, 255, 255, 0.9 )
+      "#FFffffff", // rgba( 255, 255, 255, 1 )
     ];
   }
 
