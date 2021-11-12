@@ -166,37 +166,11 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
   const { darkMode } = useTheme();
 
   function getTopGrad(dark: boolean) {
-    if (dark) {
-      return [
-        "#FF000000", // rgba( 0, 0, 0, 1 )
-        "#E6000000", // rgba( 0, 0, 0, 0.9 )
-        "#B3000000", // rgba( 0, 0, 0, 0.7 )
-        "#80000000", // rgba( 0, 0, 0, 0.5 )
-      ];
-    }
-    return [
-      "#FFffffff", // rgba( 255, 255, 255, 1 )
-      "#E6ffffff", // rgba( 255, 255, 255, 0.9 )
-      "#B3ffffff", // rgba( 255, 255, 255, 0.7 )
-      "#80ffffff", // rgba( 255, 255, 255, 0.5 )
-    ];
+    return [dark ? "black" : "white", "transparent"];
   }
 
   function getBotGrad(dark: boolean) {
-    if (dark) {
-      return [
-        "#80000000", // rgba( 0, 0, 0, 0.5 )
-        "#B3000000", // rgba( 0, 0, 0, 0.7 )
-        "#E6000000", // rgba( 0, 0, 0, 0.9 )
-        "#FF000000", // rgba( 0, 0, 0, 1 )
-      ];
-    }
-    return [
-      "#80ffffff", // rgba( 255, 255, 255, 0.5 )
-      "#B3ffffff", // rgba( 255, 255, 255, 0.7 )
-      "#E6ffffff", // rgba( 255, 255, 255, 0.9 )
-      "#FFffffff", // rgba( 255, 255, 255, 1 )
-    ];
+    return ["transparent", dark ? "black" : "white"];
   }
 
   return (
