@@ -47,6 +47,9 @@ function MainView(): JSX.Element {
 
   return (
     <View>
+      <Txt bold={true} size={20} style={styles.title}>
+        Ankerwache
+      </Txt>
       <LocationView loc={loc} label="Current" />
       <LocationView loc={anchor} label="Anchor" />
       <DistanceView
@@ -101,6 +104,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  title: {
+    paddingBottom: 20,
   },
   permissionsMsgContainer: {
     alignItems: "center",

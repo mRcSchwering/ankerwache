@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   btnsContainer: {
+    marginTop: 10,
     paddingVertical: 10,
     flexDirection: "row",
     alignItems: "center",
