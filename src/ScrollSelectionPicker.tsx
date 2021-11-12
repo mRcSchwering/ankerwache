@@ -183,8 +183,8 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
       transparentRows={3}
       itemCol={darkMode ? "white" : "black"}
       borderCol="gray"
-      topGradientColors={getTopGrad(darkMode)}
-      bottomGradientColors={getBotGrad(darkMode)}
+      topGradientColors={["black", "transparent"]} // TODO: correct it back
+      bottomGradientColors={["transparent", "black"]} // TODO: correct it back
     />
   );
 }
