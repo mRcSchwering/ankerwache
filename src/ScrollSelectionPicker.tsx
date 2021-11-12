@@ -165,33 +165,39 @@ interface ThemedSelectProps {
 export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
   const { darkMode } = useTheme();
 
-  const LIGHT_TOP_GRAD = [
-    "#ffffffFF", // rgba( 255, 255, 255, 1 )
-    "#ffffffE6", // rgba( 255, 255, 255, 0.9 )
-    "#ffffffB3", // rgba( 255, 255, 255, 0.7 )
-    "#ffffff80", // rgba( 255, 255, 255, 0.5 )
-  ];
+  function getTopGrad(dark: boolean) {
+    if (dark) {
+      return [
+        "#000000FF", // rgba( 0, 0, 0, 1 )
+        "#000000E6", // rgba( 0, 0, 0, 0.9 )
+        "#000000B3", // rgba( 0, 0, 0, 0.7 )
+        "#00000080", // rgba( 0, 0, 0, 0.5 )
+      ];
+    }
+    return [
+      "#ffffffFF", // rgba( 255, 255, 255, 1 )
+      "#ffffffE6", // rgba( 255, 255, 255, 0.9 )
+      "#ffffffB3", // rgba( 255, 255, 255, 0.7 )
+      "#ffffff80", // rgba( 255, 255, 255, 0.5 )
+    ];
+  }
 
-  const LIGHT_BOT_GRAD = [
-    "#ffffff80", // rgba( 255, 255, 255, 0.5 )
-    "#ffffffB3", // rgba( 255, 255, 255, 0.7 )
-    "#ffffffE6", // rgba( 255, 255, 255, 0.9 )
-    "#ffffffFF", // rgba( 255, 255, 255, 1 )
-  ];
-
-  const DARK_TOP_GRAD = [
-    "#000000FF", // rgba( 0, 0, 0, 1 )
-    "#000000E6", // rgba( 0, 0, 0, 0.9 )
-    "#000000B3", // rgba( 0, 0, 0, 0.7 )
-    "#00000080", // rgba( 0, 0, 0, 0.5 )
-  ];
-
-  const DARK_BOT_GRAD = [
-    "#00000080", // rgba( 0, 0, 0, 0.5 )
-    "#000000B3", // rgba( 0, 0, 0, 0.7 )
-    "#000000E6", // rgba( 0, 0, 0, 0.9 )
-    "#000000FF", // rgba( 0, 0, 0, 1 )
-  ];
+  function getBotGrad(dark: boolean) {
+    if (dark) {
+      return [
+        "#00000080", // rgba( 0, 0, 0, 0.5 )
+        "#000000B3", // rgba( 0, 0, 0, 0.7 )
+        "#000000E6", // rgba( 0, 0, 0, 0.9 )
+        "#000000FF", // rgba( 0, 0, 0, 1 )
+      ];
+    }
+    return [
+      "#ffffff80", // rgba( 255, 255, 255, 0.5 )
+      "#ffffffB3", // rgba( 255, 255, 255, 0.7 )
+      "#ffffffE6", // rgba( 255, 255, 255, 0.9 )
+      "#ffffffFF", // rgba( 255, 255, 255, 1 )
+    ];
+  }
 
   return (
     <ScrollSelectionPicker
@@ -203,8 +209,8 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
       transparentRows={3}
       itemCol={darkMode ? "white" : "black"}
       borderCol="gray"
-      topGradientColors={darkMode ? DARK_TOP_GRAD : LIGHT_TOP_GRAD}
-      bottomGradientColors={darkMode ? DARK_BOT_GRAD : LIGHT_BOT_GRAD}
+      topGradientColors={getTopGrad(darkMode)}
+      bottomGradientColors={getBotGrad(darkMode)}
     />
   );
 }
