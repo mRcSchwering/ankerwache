@@ -1,3 +1,8 @@
+/**
+ * - Defines background location task (5s locations with foreground notice)
+ * - initializes Publisher object for background location subscriptions
+ * - related convenience functions
+ */
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 
@@ -28,7 +33,7 @@ TaskManager.defineTask(
   }
 );
 
-export interface LocationType {
+interface LocationType {
   lat: number;
   lng: number;
   ts: number | null;
@@ -56,7 +61,7 @@ function BkgLocationService(): BkgLocationServiceType {
   };
 }
 
-export const bkgLocationService = BkgLocationService();
+const bkgLocationService = BkgLocationService();
 
 interface subscribeBkgLocationUpdatesProps {
   locationSubscription: (location: LocationType) => void;
@@ -113,6 +118,9 @@ export async function unsubscribeBkgLocationUpdates(
   }
 }
 
+/**
+ * cleans up possible left-over background location tasks
+ */
 export async function stopDanglingTasks() {
   if (await TaskManager.isTaskRegisteredAsync(WATCH_LOCATION_TASK)) {
     await TaskManager.unregisterTaskAsync(WATCH_LOCATION_TASK);

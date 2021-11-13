@@ -1,3 +1,6 @@
+/**
+ * Collection of small generic components
+ */
 import React from "react";
 import {
   Text,

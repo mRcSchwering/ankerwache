@@ -1,3 +1,6 @@
+/**
+ * Collection of hooks
+ */
 import React from "react";
 import { useColorScheme, StyleProp, TextStyle, ViewStyle } from "react-native";
 import * as Location from "expo-location";
@@ -16,6 +19,9 @@ interface usePermissionsState {
   err?: string;
 }
 
+/**
+ * central hook to ask for all required permissions
+ */
 export function usePermissions(): usePermissionsState {
   const [state, setState] = React.useState<usePermissionsState>({
     granted: false,
@@ -53,6 +59,9 @@ export function usePermissions(): usePermissionsState {
   return state;
 }
 
+/**
+ * reports current location in 5s intervals while app in foreground
+ */
 export function useCurrentLocation(): LocationType | undefined {
   const [loc, setLoc] = React.useState<LocationType>();
 
@@ -81,6 +90,9 @@ interface HeadingType {
   tru: number;
 }
 
+/**
+ * reports current heading in 1s intervals while app in foreground
+ */
 export function useCurrentHeading(active: boolean): HeadingType | undefined {
   const [head, setHead] = React.useState<HeadingType>();
   const [id, setId] = React.useState<NodeJS.Timer>();
@@ -119,6 +131,9 @@ interface useAlarmStateType {
   sound?: Audio.Sound;
 }
 
+/**
+ * hook for starting/stopping alarm audio playback
+ */
 export function useAlarm(): useAlarmType {
   const [state, setState] = React.useState<useAlarmStateType>({});
 
@@ -167,6 +182,9 @@ interface useThemeType {
   redBkg: StyleProp<ViewStyle>;
 }
 
+/**
+ * convenience hook for switching themes between dark/light mode
+ */
 export function useTheme(): useThemeType {
   const colorScheme = useColorScheme();
   const darkMode = colorScheme !== "light";
