@@ -4,10 +4,6 @@ Anchor watch app. Set an anchor somewhere, define a radius, and let it wake you 
 This app is similar to [AnkerAlarm](https://ankeralarm.app/en/) but I will not add many features and instead focus on reliability.
 Built with [React Native](https://reactnative.dev/) and [Expo](https://expo.dev/).
 
-|                                                day                                                |                                              night                                               |                                          set anchor                                           |
-| :-----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
-| ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_light_main.jpg) | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_dark_main.jpg) | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_anchor.jpg) |
-
 ## Privacy Policy
 
 No data is collected or send anywhere. Period
@@ -23,6 +19,10 @@ In contrast to other anchor apps this one comes without any other feature and wi
 **Reliability** This is partly out of my hand. Many android devices suspend apps after several minutes of inactivity. This website explains these problems for different manufacturers: dontkillmyapp.com. Notably, you need to make sure that the _Battery Saver_ does not suspend this app after some minutes of inactivity. Apart from that, the app will show a notification as long as its anchor watch is active.
 
 **Privacy** This app does not download anything and does not send anything. It only requests the geolocation every 5s and compares it. Nothing is saved.
+
+|                                               home                                                |                                          set anchor                                           |                                             set radius                                              |
+| :-----------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------: |
+| ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_light_main.jpg) | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_anchor.jpg) | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_light_radius.jpg) |
 
 ## Develop
 
