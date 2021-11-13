@@ -50,6 +50,33 @@ export default function AnchorSettingView(
         onRequestClose={() => setIsVisible((d) => !d)}
       >
         <View style={[styles.modalBkg, bkgCol]}>
+          <Txt size={20} bold={true}>
+            Where is your anchor?
+          </Txt>
+          <View style={styles.section}>
+            <Txt size={15} bold={true}>
+              In which direction is your anchor?
+            </Txt>
+            <Txt>
+              Point your cellphone into that direction. Check the headings
+              below. Are they correct? (Some smartphones have a high deviation)
+            </Txt>
+          </View>
+          <View style={styles.section}>
+            <Txt size={20} bold={true} pre={true}>
+              {formatHeading(head?.tru)} (T)
+            </Txt>
+          </View>
+          <View style={styles.section}>
+            <Txt size={15} bold={true}>
+              How far away is the anchor?
+            </Txt>
+            <Txt>
+              Remember the water depth and catenary. We just need the horizontal
+              distance. So, this should be less than the amount of chain/rode
+              you payed out. Select one to "set" anchor position.
+            </Txt>
+          </View>
           <ThemedSelect items={DIST_ITEMS} onScroll={(d) => setDist(d)} />
           <View style={styles.section}>
             <Btn onPress={handleSet} label="Set Anchor" style={blueBkg} />
@@ -73,36 +100,6 @@ export default function AnchorSettingView(
     </>
   );
 }
-
-/*
-          <Txt size={20} bold={true}>
-            Where is your anchor?
-          </Txt>
-          <View style={styles.section}>
-            <Txt size={15} bold={true}>
-              In which direction is your anchor?
-            </Txt>
-            <Txt>
-              Point your cellphone into that direction. Check the headings
-              below. Are they correct? (Some smartphones have a high deviation)
-            </Txt>
-          </View>
-          <View style={styles.section}>
-            <Txt size={20} bold={true} pre={true}>
-              {formatHeading(head?.tru)} (T)
-            </Txt>
-          </View>
-          <View style={styles.section}>
-            <Txt size={20} bold={true}>
-              How far away is the anchor?
-            </Txt>
-            <Txt>
-              Remember the water depth and catenary. We just need the horizontal
-              distance. So, this should be less than the amount of chain/rode
-              you payed out. Select one to "set" anchor position.
-            </Txt>
-          </View>
-*/
 
 const styles = StyleSheet.create({
   modalBkg: {

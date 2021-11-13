@@ -4,40 +4,14 @@ import {
   View,
   ScrollView,
   Text,
-  Image,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
 import { useTheme } from "./hooks";
-import { Txt } from "./components";
-
-// hack because of https://stackoverflow.com/questions/69934764/standalone-apk-different-from-playstore-aab-lineargradient-uses-wrong-colors
-const GRAD_DARK_TOP = require("../assets/grad_dark_top.png");
-const GRAD_LIGHT_TOP = require("../assets/grad_light_top.png");
-const GRAD_DARK_BOT = require("../assets/grad_dark_bottom.png");
-const GRAD_LIGHT_BOT = require("../assets/grad_light_bottom.png");
 
 interface ItemType {
   value: number;
   label: string;
-}
-
-interface OnScrollType {
-  index: number;
-  item: ItemType;
-}
-
-interface ScrollSelectionPickerProps {
-  items: ItemType[];
-  onScroll: ({ index, item }: OnScrollType) => void;
-  scrollTo?: number;
-  height: number;
-  width: number;
-  itemCol: string;
-  borderCol: string;
-  topGradient: any;
-  bottomGradient: any;
-  transparentRows?: number;
 }
 
 interface PickerItemProps {
@@ -61,14 +35,54 @@ function dummyFact(n: number): ItemType[] {
   return Array(n).fill({ value: -1, label: "" });
 }
 
+function StepGradient(props: {
+  height: number;
+  layerCol: string;
+  top: boolean;
+}): JSX.Element {
+  const n = 20;
+  const just = props.top ? "flex-start" : "flex-end";
+
+  let div = <></>;
+  for (let i = 1; i <= n; i++) {
+    div = (
+      <View
+        style={[
+          styles.gradient,
+          { justifyContent: just },
+          { backgroundColor: props.layerCol },
+          { height: (props.height * i) / n },
+        ]}
+      >
+        {div}
+      </View>
+    );
+  }
+  return div;
+}
+
+interface ScrollSelectionPickerProps {
+  items: ItemType[];
+  onScroll: ({}: { d: ItemType; i: number }) => void;
+  scrollTo?: number;
+  height: number;
+  width: number;
+  itemCol: string;
+  borderCol: string;
+  backgroundCol: string;
+  gradientCol: string;
+  transparentRows?: number;
+}
+
 export default function ScrollSelectionPicker(
   props: ScrollSelectionPickerProps
 ): JSX.Element {
   const scroll = React.useRef<ScrollView>(null);
   const [idx, setIdx] = React.useState(0);
 
+  const seal = 1;
   const n = props.transparentRows || 3;
-  const itemHeight = props.height / (n * 2 + 1);
+  const itemHeight = (props.height - 2 * seal) / (n * 2 + 1);
   const gradHeight = n * itemHeight;
   const extItems = [...dummyFact(n), ...props.items, ...dummyFact(n)];
 
@@ -76,7 +90,7 @@ export default function ScrollSelectionPicker(
     const tmpIdx = Math.round(event.nativeEvent.contentOffset.y / itemHeight);
     if (idx !== tmpIdx && tmpIdx >= 0 && tmpIdx < props.items.length) {
       setIdx(tmpIdx);
-      props.onScroll({ index: tmpIdx, item: props.items[tmpIdx] });
+      props.onScroll({ i: tmpIdx, d: props.items[tmpIdx] });
     }
   }
 
@@ -90,9 +104,8 @@ export default function ScrollSelectionPicker(
   }, []);
 
   return (
-    <>
-      <Txt>dark</Txt>
-      <View style={{ height: props.height, width: props.width }}>
+    <View style={{ height: props.height, width: props.width }}>
+      <View style={{ borderColor: props.backgroundCol, borderWidth: seal }}>
         <ScrollView
           ref={scroll}
           showsVerticalScrollIndicator={false}
@@ -113,83 +126,38 @@ export default function ScrollSelectionPicker(
             />
           ))}
         </ScrollView>
-        <View
-          pointerEvents="none"
-          style={[
-            styles.gradientWrapper,
-            styles.bottomBorder,
-            { borderColor: props.borderCol },
-          ]}
-        >
-          <Image
-            style={[styles.pickerGradient, { height: gradHeight }]}
-            source={GRAD_DARK_TOP}
-          />
-        </View>
-        <View
-          pointerEvents="none"
-          style={[
-            styles.gradientWrapper,
-            styles.topBorder,
-            { borderColor: props.borderCol },
-          ]}
-        >
-          <Image
-            style={[styles.pickerGradient, { height: gradHeight }]}
-            source={GRAD_DARK_BOT}
-          />
-        </View>
       </View>
-      <Txt>light</Txt>
-      <View style={{ height: props.height, width: props.width }}>
-        <ScrollView
-          ref={scroll}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          onScroll={(event) => onScroll(event)}
-          snapToInterval={itemHeight}
-          snapToAlignment="center"
-          decelerationRate="fast"
-          scrollEventThrottle={0}
-        >
-          {extItems.map((d, i) => (
-            <PickerItem
-              key={i}
-              item={d}
-              index={i}
-              height={itemHeight}
-              color={props.itemCol}
-            />
-          ))}
-        </ScrollView>
-        <View
-          pointerEvents="none"
-          style={[
-            styles.gradientWrapper,
-            styles.bottomBorder,
-            { borderColor: props.borderCol },
-          ]}
-        >
-          <Image
-            style={[styles.pickerGradient, { height: gradHeight }]}
-            source={GRAD_LIGHT_TOP}
-          />
-        </View>
-        <View
-          pointerEvents="none"
-          style={[
-            styles.gradientWrapper,
-            styles.topBorder,
-            { borderColor: props.borderCol },
-          ]}
-        >
-          <Image
-            style={[styles.pickerGradient, { height: gradHeight }]}
-            source={GRAD_LIGHT_BOT}
-          />
-        </View>
+      <View
+        pointerEvents="none"
+        style={[
+          styles.gradientWrapper,
+          styles.gradientWrapperTop,
+          { borderColor: props.borderCol },
+          { height: gradHeight },
+        ]}
+      >
+        <StepGradient
+          height={gradHeight}
+          top={true}
+          layerCol={props.gradientCol}
+        />
       </View>
-    </>
+      <View
+        pointerEvents="none"
+        style={[
+          styles.gradientWrapper,
+          styles.gradientWrapperBottom,
+          { borderColor: props.borderCol },
+          { height: gradHeight },
+        ]}
+      >
+        <StepGradient
+          height={gradHeight}
+          top={false}
+          layerCol={props.gradientCol}
+        />
+      </View>
+    </View>
   );
 }
 
@@ -202,15 +170,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
   },
-  bottomBorder: {
+  gradientWrapperTop: {
     top: 0,
     borderBottomWidth: 1,
   },
-  topBorder: {
+  gradientWrapperBottom: {
     bottom: 0,
     borderTopWidth: 1,
   },
-  pickerGradient: {
+  gradient: {
     width: "100%",
   },
 });
@@ -223,27 +191,18 @@ interface ThemedSelectProps {
 
 export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
   const { darkMode } = useTheme();
-
-  function getTopGrad(dark: boolean): any {
-    return dark ? GRAD_DARK_TOP : GRAD_LIGHT_TOP;
-  }
-
-  function getBotGrad(dark: boolean): any {
-    return dark ? GRAD_DARK_BOT : GRAD_LIGHT_BOT;
-  }
-
   return (
     <ScrollSelectionPicker
       items={props.items}
-      onScroll={(d) => props.onScroll(d.item.value)}
+      onScroll={(d) => props.onScroll(d.d.value)}
       width={200}
       height={200}
       scrollTo={props.scrollTo === undefined ? 2 : props.scrollTo}
       transparentRows={3}
       itemCol={darkMode ? "white" : "black"}
       borderCol="gray"
-      topGradient={getTopGrad(darkMode)}
-      bottomGradient={getBotGrad(darkMode)}
+      backgroundCol={darkMode ? "black" : "white"}
+      gradientCol={darkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)"}
     />
   );
 }
