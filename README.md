@@ -4,6 +4,10 @@ Anchor watch app. Set an anchor somewhere, define a radius, and let it wake you 
 This app is similar to [AnkerAlarm](https://ankeralarm.app/en/) but I will not add many features and instead focus on reliability.
 Built with [React Native](https://reactnative.dev/) and [Expo](https://expo.dev/).
 
+|                                                day                                                |                                              night                                               |                                          set anchor                                           |
+| :-----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
+| ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_light_main.jpg) | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_dark_main.jpg) | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_anchor.jpg) |
+
 ## Privacy Policy
 
 No data is collected or send anywhere. Period
