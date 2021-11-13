@@ -74,6 +74,13 @@ interface ScrollSelectionPickerProps {
   transparentRows?: number;
 }
 
+/**
+ * Normal gradients and even images (png) will be converted to
+ * some bright color whenever the dark mode is switched on (only visible on aab)
+ * The background-color style does not seem to be affected by this.
+ * That's why I'm using this to simulate a gradient.
+ * See: https://stackoverflow.com/questions/69934764/standalone-apk-different-from-playstore-aab-lineargradient-uses-wrong-colors/69955769#69955769
+ */
 export default function ScrollSelectionPicker(
   props: ScrollSelectionPickerProps
 ): JSX.Element {
