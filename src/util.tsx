@@ -101,18 +101,20 @@ export function getCoordsFromVector(
   const rbearing = deg2rad(bear);
   const rdist = dist / R_EARTH; // normalize linear distance to radian angle
 
+  const s = Math.sin;
+  const c = Math.cos;
+
   const rlat2 = Math.asin(
-    Math.sin(rlat) * Math.cos(rdist) +
-      Math.cos(rlat) * Math.sin(rdist) * Math.cos(rbearing)
+    s(rlat) * c(rdist) + c(rlat) * s(rdist) * c(rbearing)
   );
 
   let rlng2;
-  const rlat2Cos = Math.cos(rlat2);
+  const rlat2Cos = c(rlat2);
   if (floatNull(rlat2Cos)) {
     rlng2 = rlng; // Endpoint a pole
   } else {
-    const asin = Math.asin((Math.sin(rbearing) * Math.sin(rdist)) / rlat2Cos);
-    rlng2 = ((rlng - asin + Math.PI) % (2 * Math.PI)) - Math.PI;
+    const d = Math.asin((s(rbearing) * s(rdist)) / rlat2Cos);
+    rlng2 = ((rlng - d + Math.PI) % (2 * Math.PI)) - Math.PI;
   }
 
   return { lat: rad2deg(rlat2), lng: rad2deg(rlng2) };
