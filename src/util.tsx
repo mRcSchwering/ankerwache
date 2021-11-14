@@ -52,7 +52,7 @@ export function convertLngDMS(lng: number): string {
 }
 
 /**
- * Get distance (along earth surface) between 2 points on earth (all degrees)
+ * Get distance (along a great circle) between 2 points on earth (all degrees)
  *
  * From: https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
  */
@@ -81,6 +81,7 @@ export function addErrs(e1: number, e2: number): number {
 /**
  * get coordinates of location B when moving from location A
  * a certain distance (dist) into a certain direction (bear)
+ * (along a great circle)
  *
  * bear in degrees, dist in km, lat/lng in degrees (of A)
  *
