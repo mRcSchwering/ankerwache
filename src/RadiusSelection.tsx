@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
   modalBkg: {
     flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 50,
   },
   section: {

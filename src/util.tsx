@@ -2,21 +2,10 @@
  * Functions that haven't found a better place yet
  */
 
-const R_EARTH = 6371.01; // Earth's average radius in km
-const EPS = 0.000001; // threshold for floating-point equality
-
 function floatNull(d: number): boolean {
   if (d == 0) return true;
-  if (Math.abs(d) < EPS) return true;
+  if (Math.abs(d) < 0.000001) return true;
   return false;
-}
-
-export function deg2rad(deg: number): number {
-  return deg * (Math.PI / 180);
-}
-
-export function rad2deg(rad: number): number {
-  return rad * (180 / Math.PI);
 }
 
 /**
@@ -96,28 +85,29 @@ export function getCoordsFromVector(
   lat: number;
   lng: number;
 } {
-  const rlat = deg2rad(lat);
-  const rlng = deg2rad(lng);
-  const rbearing = deg2rad(bear);
-  const rdist = dist / R_EARTH; // normalize linear distance to radian angle
-
   const s = Math.sin;
   const c = Math.cos;
+  const deg2rad = 0.017453292519943295; // Math.PI / 180
+  const rad2deg = 57.29577951308232; // 180 / Math.PI
+  const R_EARTH = 6371.01; // Earth's average radius in km
+
+  const rlat = deg2rad * lat;
+  const rlng = deg2rad * lng;
+  const rbearing = deg2rad * bear;
+  const rdist = dist / R_EARTH; // normalize linear distance to radian angle
 
   const rlat2 = Math.asin(
     s(rlat) * c(rdist) + c(rlat) * s(rdist) * c(rbearing)
   );
 
-  let rlng2;
-  const rlat2Cos = c(rlat2);
-  if (floatNull(rlat2Cos)) {
-    rlng2 = rlng; // Endpoint a pole
-  } else {
-    const d = Math.asin((s(rbearing) * s(rdist)) / rlat2Cos);
+  let rlng2 = rlng;
+  // if Endpoint not a pole
+  if (!floatNull(c(rlat2))) {
+    const d = Math.asin((s(rbearing) * s(rdist)) / c(rlat2));
     rlng2 = ((rlng - d + Math.PI) % (2 * Math.PI)) - Math.PI;
   }
 
-  return { lat: rad2deg(rlat2), lng: rad2deg(rlng2) };
+  return { lat: rad2deg * rlat2, lng: rad2deg * rlng2 };
 }
 
 export function formatLocationAcc(acc: number | null): string {

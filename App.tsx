@@ -10,6 +10,7 @@ import { stopDanglingTasks } from "./src/bkgLocationService";
 import AnchorSettingView from "./src/AnchorSettingView";
 import LocationView from "./src/LocationView";
 import DistanceView from "./src/DistanceView";
+import InfoModal from "./src/InfoModal";
 
 interface LocationType {
   lat: number;
@@ -47,6 +48,7 @@ function MainView(): JSX.Element {
 
   return (
     <View>
+      <InfoModal />
       <Txt bold={true} size={20} style={styles.title}>
         Ankerwache
       </Txt>
