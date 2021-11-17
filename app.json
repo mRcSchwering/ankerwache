@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ankerwache",
     "slug": "ankerwache",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -22,7 +22,7 @@
       },
       "permissions": ["ACCESS_FINE_LOCATION"],
       "package": "com.vordeck.ankerwache",
-      "versionCode": 100
+      "versionCode": 101
     },
     "web": {
       "favicon": "./assets/favicon.png"
