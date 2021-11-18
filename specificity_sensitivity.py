@@ -4,77 +4,81 @@ I am estimating the specificity (don't wake me up if the anchor is not really dr
 and the sensitivity (if the anchor is really dragging, wake me up).
 Naturally, while one goes up, the other tends to go down.
 
+Run as:
+
     python specificity_sensitivity.py
 
-100 trials, 5,760 requests (that's 1 request every 5s for 8h)
+Results from last run:
+
+    100 trials, 5,760 requests (that's 1 request every 5s for 8h)
 
 
-Counter: counter1
+    Counter: counter1
 
-Raising false alarms
-Count to 3: Alarm raised 49.00% of the time
-Count to 4: Alarm raised 6.00% of the time
-Count to 5: Alarm raised 0.00% of the time
+    Raising false alarms
+    Count to 3: Alarm raised 49.00% of the time
+    Count to 4: Alarm raised 6.00% of the time
+    Count to 5: Alarm raised 0.00% of the time
 
-Raising True Alarms at the 2SD border
-Count to 3: Alarm raised 100.00% of the time
-Count to 4: Alarm raised 100.00% of the time
-Count to 5: Alarm raised 100.00% of the time
-Count to 3: Alarm raised after 35.0+/-15.0s
-Count to 4: Alarm raised after 67.5+/-37.5s
-Count to 5: Alarm raised after 105.0+/-50.0s
+    Raising True Alarms at the 2SD border
+    Count to 3: Alarm raised 100.00% of the time
+    Count to 4: Alarm raised 100.00% of the time
+    Count to 5: Alarm raised 100.00% of the time
+    Count to 3: Alarm raised after 35.0+/-15.0s
+    Count to 4: Alarm raised after 67.5+/-37.5s
+    Count to 5: Alarm raised after 105.0+/-50.0s
 
-Raising True Alarms at the 3SD border
-Count to 3: Alarm raised 100.00% of the time
-Count to 4: Alarm raised 100.00% of the time
-Count to 5: Alarm raised 100.00% of the time
-Count to 3: Alarm raised after 15.0+/-0.0s
-Count to 4: Alarm raised after 20.0+/-0.0s
-Count to 5: Alarm raised after 30.0+/-5.0s
+    Raising True Alarms at the 3SD border
+    Count to 3: Alarm raised 100.00% of the time
+    Count to 4: Alarm raised 100.00% of the time
+    Count to 5: Alarm raised 100.00% of the time
+    Count to 3: Alarm raised after 15.0+/-0.0s
+    Count to 4: Alarm raised after 20.0+/-0.0s
+    Count to 5: Alarm raised after 30.0+/-5.0s
 
-Drift until alarm with rate of 0.01SD
-Count to 3: drifted 1.58+/-0.18SD, that's 32+/-4m with SD=20m
-Count to 4: drifted 1.74+/-0.20SD, that's 35+/-4m with SD=20m
-Count to 5: drifted 1.98+/-0.13SD, that's 40+/-3m with SD=20m
+    Drift until alarm with rate of 0.01SD
+    Count to 3: drifted 1.58+/-0.18SD, that's 32+/-4m with SD=20m
+    Count to 4: drifted 1.74+/-0.20SD, that's 35+/-4m with SD=20m
+    Count to 5: drifted 1.98+/-0.13SD, that's 40+/-3m with SD=20m
 
-Drift until alarm with rate of 0.001SD
-Count to 3: drifted 0.99+/-0.16SD, that's 20+/-3m with SD=20m
-Count to 4: drifted 1.29+/-0.12SD, that's 26+/-2m with SD=20m
-Count to 5: drifted 1.50+/-0.13SD, that's 30+/-3m with SD=20m
+    Drift until alarm with rate of 0.001SD
+    Count to 3: drifted 0.99+/-0.16SD, that's 20+/-3m with SD=20m
+    Count to 4: drifted 1.29+/-0.12SD, that's 26+/-2m with SD=20m
+    Count to 5: drifted 1.50+/-0.13SD, that's 30+/-3m with SD=20m
 
 
-Counter: counter2
+    Counter: counter2
 
-Raising false alarms
-Count to 3: Alarm raised 50.00% of the time
-Count to 4: Alarm raised 5.00% of the time
-Count to 5: Alarm raised 0.00% of the time
+    Raising false alarms
+    Count to 3: Alarm raised 50.00% of the time
+    Count to 4: Alarm raised 5.00% of the time
+    Count to 5: Alarm raised 0.00% of the time
 
-Raising True Alarms at the 2SD border
-Count to 3: Alarm raised 100.00% of the time
-Count to 4: Alarm raised 100.00% of the time
-Count to 5: Alarm raised 100.00% of the time
-Count to 3: Alarm raised after 45.0+/-20.0s
-Count to 4: Alarm raised after 57.5+/-27.5s
-Count to 5: Alarm raised after 115.0+/-45.0s
+    Raising True Alarms at the 2SD border
+    Count to 3: Alarm raised 100.00% of the time
+    Count to 4: Alarm raised 100.00% of the time
+    Count to 5: Alarm raised 100.00% of the time
+    Count to 3: Alarm raised after 45.0+/-20.0s
+    Count to 4: Alarm raised after 57.5+/-27.5s
+    Count to 5: Alarm raised after 115.0+/-45.0s
 
-Raising True Alarms at the 3SD border
-Count to 3: Alarm raised 100.00% of the time
-Count to 4: Alarm raised 100.00% of the time
-Count to 5: Alarm raised 100.00% of the time
-Count to 3: Alarm raised after 15.0+/-0.0s
-Count to 4: Alarm raised after 25.0+/-5.0s
-Count to 5: Alarm raised after 30.0+/-5.0s
+    Raising True Alarms at the 3SD border
+    Count to 3: Alarm raised 100.00% of the time
+    Count to 4: Alarm raised 100.00% of the time
+    Count to 5: Alarm raised 100.00% of the time
+    Count to 3: Alarm raised after 15.0+/-0.0s
+    Count to 4: Alarm raised after 25.0+/-5.0s
+    Count to 5: Alarm raised after 30.0+/-5.0s
 
-Drift until alarm with rate of 0.01SD
-Count to 3: drifted 1.52+/-0.24SD, that's 30+/-5m with SD=20m
-Count to 4: drifted 1.73+/-0.22SD, that's 35+/-4m with SD=20m
-Count to 5: drifted 2.00+/-0.14SD, that's 40+/-3m with SD=20m
+    Drift until alarm with rate of 0.01SD
+    Count to 3: drifted 1.52+/-0.24SD, that's 30+/-5m with SD=20m
+    Count to 4: drifted 1.73+/-0.22SD, that's 35+/-4m with SD=20m
+    Count to 5: drifted 2.00+/-0.14SD, that's 40+/-3m with SD=20m
 
-Drift until alarm with rate of 0.001SD
-Count to 3: drifted 0.96+/-0.20SD, that's 19+/-4m with SD=20m
-Count to 4: drifted 1.29+/-0.13SD, that's 26+/-3m with SD=20m
-Count to 5: drifted 1.51+/-0.11SD, that's 30+/-2m with SD=20m
+    Drift until alarm with rate of 0.001SD
+    Count to 3: drifted 0.96+/-0.20SD, that's 19+/-4m with SD=20m
+    Count to 4: drifted 1.29+/-0.13SD, that's 26+/-3m with SD=20m
+    Count to 5: drifted 1.51+/-0.11SD, that's 30+/-2m with SD=20m
 """
 from typing import Callable
 from scipy.stats import bernoulli, norm, median_abs_deviation  # type:ignore
