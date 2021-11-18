@@ -1,8 +1,17 @@
 """
-Here, I am trying out some settings for the anchor watch. 
+Here, I am trying out some settings for the anchor watch.
 I am estimating the specificity (don't wake me up if the anchor is not really dragging)
 and the sensitivity (if the anchor is really dragging, wake me up).
 Naturally, while one goes up, the other tends to go down.
+
+When Android requests a geolocation the `accuracy` key is supposed to be the
+68% confidence interval. A normal distribution is considered.
+Twice that accuracy would represent the 95% confidence interval.
+
+I want to estimate (1) how likely it is that an alarm is raised at all,
+(2) how long it would take for an alarm to be raised, and (3) how far
+a boat could drift until an alarm is raised.
+For that I want to compare a few ideas how the counter could work.
 
 Run as:
 
