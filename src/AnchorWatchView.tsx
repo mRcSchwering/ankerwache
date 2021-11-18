@@ -10,7 +10,7 @@ import {
   unsubscribeBkgLocationUpdates,
 } from "./bkgLocationService";
 
-const ANCHOR_WATCH_MARGIN = 3;
+const ANCHOR_WATCH_MARGIN = 5;
 
 interface useAnchorWatchType {
   err?: string;
