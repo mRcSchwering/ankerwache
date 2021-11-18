@@ -4,6 +4,9 @@ Anchor watch app. Set an anchor somewhere, define a radius, and let it wake you 
 This app is similar to [AnkerAlarm](https://ankeralarm.app/en/) but I will not add many features and instead focus on reliability.
 Built with [React Native](https://reactnative.dev/) and [Expo](https://expo.dev/).
 
+I did some simulations regarding false alarm rates, the likely time for an alarm to be raised, and likely distance a boat has drifted after an alarm was raised.
+See [specificity_sensitivity.py](./specificity_sensitivity.py).
+
 ## Privacy Policy
 
 No data is collected or send anywhere. Period
