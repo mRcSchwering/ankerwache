@@ -33,7 +33,7 @@ export default function RadiusSelection(
         <View style={[styles.modalBkg, bkgCol]}>
           <View style={styles.section}>
             <Txt size={20} bold={true}>
-              How big is the radius?
+              How big is the watch radius?
             </Txt>
           </View>
           <View style={styles.section}>
@@ -46,7 +46,7 @@ export default function RadiusSelection(
               Consider the theoretical swinging circle and the GPS accuracy.
               With a single anchor the theoretical swinging circle radius is
               slightly less than the chain/rode you payed out. To avoid false
-              alarm add twice the GPS accuracy.
+              alarms add twice the GPS accuracy.
             </Txt>
           </View>
           <ThemedSelect
