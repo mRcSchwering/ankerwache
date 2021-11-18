@@ -17,9 +17,12 @@ This is a tool to help you sleep better while at anchor. Set your anchor positio
 
 In contrast to other anchor apps this one comes without any other feature and without ads. It also doesn't need internet connection. The only focus here is having a reliable anchor watch.
 
-**No false alarms** Your phone's GPS is not always as accurate as you think. You will see your current accuracy and can take it into consideration when setting the radius. Additionally, the app doesn't ring on the first out-of-bounds reading. The phone's GPS position can jump back and forth quite a lot. There is a counter. Only if there are multiple out-of-bounds readings in a row the phone will ring.
+**No false alarms** Your phone's GPS is not always as accurate as you think. When you set the alarm radius you will see the GPS error.
+Use the length of your chain/rode plus twice the error to avoid false alarms.
+To further reduce the chances of false alarms I implemented a counter which will count up on out-of-bounds readings.
+Only with multiple consecutive out-of-bounds readings the alarm will start.
 
-**Reliability** This is partly out of my hand. Many android devices suspend apps after several minutes of inactivity. This website explains these problems for different manufacturers: dontkillmyapp.com. Notably, you need to make sure that the _Battery Saver_ does not suspend this app after some minutes of inactivity. Apart from that, the app will show a notification as long as its anchor watch is active.
+**Reliability** The active anchor watch shows a notification on your screen. However, many android devices suspend apps after several minutes of inactivity. This website explains these problems for different manufacturers: dontkillmyapp.com. Notably, you need to make sure that the _Battery Saver_ does not suspend this app after some minutes of inactivity. Apart from that, the app will show a notification as long as its anchor watch is active.
 
 **Privacy** This app does not download anything and does not send anything. It only requests the geolocation every 5s and compares it. Nothing is saved.
 
