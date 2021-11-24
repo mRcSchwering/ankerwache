@@ -79,6 +79,9 @@ Instead of downloading it there is also a way of pushing it directly
 to the Playstore (see `expo build:android --help`).
 But for that you need to [setup an API key](https://intercom.help/appinstitute/en/articles/1025206-how-to-get-your-google-play-json-key).
 
+Make sure to increment `"version":` and `"versionCode":` in [app.json](./app.json) before building.
+The playstore only understands _versionCode_ to identify an update.
+
 ```
 expo login
 
