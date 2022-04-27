@@ -78,6 +78,23 @@ export default function InfoModal(): JSX.Element {
               </Txt>
             </View>
             <View style={styles.section}>
+              <Txt size={20} bold={true}>
+                Donate
+              </Txt>
+            </View>
+            <View style={styles.section}>
+              <Txt>
+                All my apps are free, I never use ads, or sell data to third
+                parties. If you still want to support me somehow, you can donate
+                with this link:{" "}
+                <Anchor
+                  title="donate"
+                  href="https://www.paypal.com/donate/?hosted_button_id=W9R9KQYFCESAS"
+                />
+                . Thanks in advance.
+              </Txt>
+            </View>
+            <View style={styles.section}>
               <Btn
                 onPress={() => setIsVisible(false)}
                 label="Close"

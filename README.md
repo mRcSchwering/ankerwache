@@ -26,6 +26,8 @@ Only with multiple consecutive out-of-bounds readings the alarm will start.
 
 **Privacy** This app does not download anything and does not send anything. It only requests the geolocation every 5s and compares it. Nothing is saved.
 
+**Donate** All my apps are free, I never use ads, or sell data to third parties. If you still want to support me somehow, you can donate with this link: [donate](https://www.paypal.com/donate/?hosted_button_id=W9R9KQYFCESAS). Thanks in advance.
+
 |                                               home                                                |                                          set anchor                                           |                                             set radius                                              |
 | :-----------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------: |
 | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_light_main.jpg) | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_anchor.jpg) | ![](https://raw.githubusercontent.com/mRcSchwering/ankerwache/main/img/screenshot_light_radius.jpg) |
