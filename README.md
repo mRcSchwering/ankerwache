@@ -26,7 +26,13 @@ Only with multiple consecutive out-of-bounds readings the alarm will start.
 
 **Privacy** This app does not download anything and does not send anything. It only requests the geolocation every 5s and compares it. Nothing is saved.
 
-**Donate** All my apps are free, I never use ads, or sell data to third parties. If you still want to support me somehow, you can donate with this link: [donate](https://www.paypal.com/donate/?hosted_button_id=W9R9KQYFCESAS). Thanks in advance.
+**Donate** All my apps are free, I never use ads, or sell data to third parties. If you want to support me somehow, you can donate with this link on [buymeacoffee.com](https://www.buymeacoffee.com/mRcSchwering). Thanks in advance.
+
+---
+
+[![buymeacoffee](https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-1.svg)](https://www.buymeacoffee.com/mRcSchwering)
+
+---
 
 |                                               home                                                |                                          set anchor                                           |                                             set radius                                              |
 | :-----------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------: |

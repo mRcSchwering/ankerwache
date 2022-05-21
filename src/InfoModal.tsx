@@ -85,11 +85,11 @@ export default function InfoModal(): JSX.Element {
             <View style={styles.section}>
               <Txt>
                 All my apps are free, I never use ads, or sell data to third
-                parties. If you still want to support me somehow, you can donate
-                with this link:{" "}
+                parties. If you want to support me somehow, you can donate with
+                this link on{" "}
                 <Anchor
-                  title="donate"
-                  href="https://www.paypal.com/donate/?hosted_button_id=W9R9KQYFCESAS"
+                  title="buymeacoffee.com"
+                  href="https://www.buymeacoffee.com/mRcSchwering"
                 />
                 . Thanks in advance.
               </Txt>
