@@ -9,11 +9,7 @@ When Android requests a geolocation the `accuracy` key is supposed to be the
 Twice that accuracy would represent the 95% confidence interval.
 
 I want to estimate (1) how likely it is that an alarm is raised at all,
-(2) how long it would take for an alarm to be raised, and (3) how far
-a boat could drift until an alarm is raised.
-For that I want to compare a few ideas on how to decide whether a location reading
-is really out-of-bounds and on how to integrate in-bounds and out-of-bounds readings
-over time.
+(2) how long it would take for an alarm to be raised / how far would the boat have dragged?
 
 Run as:
 
@@ -21,77 +17,84 @@ Run as:
 
 Results from last run:
 
-    ...
+    Simulating anchor watch with different settings
+    Constants: N_TRIALS=100, ON=5760, DRIFT_VELO=1.25
+    Testing 6 conditions
 
+    chain_length=20 geoloc_acc=20
+    18 initial sets...test sens...18 left...test spec...3 left
+    - n10-d180-r10: 0.02 FPR, dragged 38 m (+/- 5 m)
+    - n10-d090-r10: 0.02 FPR, dragged 39 m (+/- 5 m)
+    - n10-d045-r10: 0.02 FPR, dragged 38 m (+/- 5 m)
+
+    chain_length=20 geoloc_acc=50
+    18 initial sets...test sens...18 left...test spec...3 left
+    - n10-d180-r10: 0.01 FPR, dragged 69 m (+/- 13 m)
+    - n10-d090-r10: 0.01 FPR, dragged 69 m (+/- 12 m)
+    - n10-d045-r10: 0.02 FPR, dragged 70 m (+/- 11 m)
+
+    chain_length=20 geoloc_acc=100
+    18 initial sets...test sens...15 left...test spec...0 left
+
+    chain_length=50 geoloc_acc=20
+    18 initial sets...test sens...18 left...test spec...3 left
+    - n10-d180-r10: 0.01 FPR, dragged 38 m (+/- 5 m)
+    - n10-d090-r10: 0.01 FPR, dragged 39 m (+/- 6 m)
+    - n10-d045-r10: 0.00 FPR, dragged 39 m (+/- 5 m)
+
+    chain_length=50 geoloc_acc=50
+    18 initial sets...test sens...18 left...test spec...3 left
+    - n10-d180-r10: 0.00 FPR, dragged 72 m (+/- 12 m)
+    - n10-d090-r10: 0.02 FPR, dragged 70 m (+/- 11 m)
+    - n10-d045-r10: 0.02 FPR, dragged 70 m (+/- 10 m)
+
+    chain_length=50 geoloc_acc=100
+    18 initial sets...test sens...15 left...test spec...0 left
+
+=> acc should be < 100m or FPs, bearings don't help, exp-mov-avg is ok, n10-r10
 """
-from typing import Callable
+from typing import Optional, Callable
 from itertools import product
+from multiprocessing import Pool
 from scipy.stats import norm
 import numpy as np
 
 
-def sample_location(mu: np.array, std=500) -> np.array:
+# constants
+N_TRIALS = 100
+ON = int(8 * 60 * 60 / 5)  # over night (every 5s for 8h)
+CHAIN_LENGTHS = [20, 50]  # length of chain in m
+GEOLOC_ACCS = [20, 50, 100]  # StDev of geolocation measurements (m)
+DRIFT_VELO = 1.25  # while dragging anchor (0.5kt = 0.25 m/s = 1.25 m/5s)
+NPROC = 5
+ZERO_LOC = np.array([0.0, 0.0])
+
+
+def _sample_location(mu: np.ndarray, sd: float) -> np.ndarray:
     """Sample arbitrary 2D location normally distributed around mu (x,y)"""
-    x = norm.rvs(loc=mu[0], scale=std, size=1)
-    y = norm.rvs(loc=mu[1], scale=std, size=1)
+    x = norm.rvs(loc=mu[0], scale=sd, size=1)
+    y = norm.rvs(loc=mu[1], scale=sd, size=1)
     return np.concatenate([x, y])
 
 
-def distance(loc1: np.array, loc2: np.array) -> float:
+def _distance(loc1: np.ndarray, loc2: np.ndarray) -> float:
     """Distance between two 2D locations (x1,y1), (x2,y2)"""
-    return ((loc2[0] - loc1[0]) ** 2 + (loc2[1] - loc1[1]) ** 2) ** 0.5
+    return np.linalg.norm(loc2 - loc1)
 
 
-def bearing(loc1: np.array, loc2: np.array) -> float:
-    """Calculate angle in degrees between two 2D locations (x1,y1), (x2,y2)"""
-    rad = np.arctan2((loc2[0] - loc1[0]), (loc2[1] - loc1[1]))
-    deg = rad * 180 / (np.pi)
-    return deg + 360 if deg < 360 else deg
+def _bearing(v1: np.ndarray, v2: np.ndarray) -> float:
+    """Calculate angle between 2 vectors (x1,y1), (x2,y2) in degrees"""
+    rad = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
+    return rad * 180 / np.pi
 
 
-def bearing_diff(b1: float, b2: float) -> float:
-    """Calculate difference between 2 bearings (0-360°) as smallest angle in degrees"""
-    angles = sorted([b1, b2])
-    diff = angles[1] - angles[0]
-    if diff > 180:
-        return 360 - diff
-    return diff
-
-
-class Counter:
-    """Baseclass for counting out-of-bounds readings"""
+class DecrementCounter:
+    """Decrement count if in-bound reading"""
 
     def __init__(self, max_n: int):
         self.n = 0
-        self.max_n = max_n
-
-    def increment(self):
-        """out-of-bounds reading"""
-
-    def decrement(self):
-        """in-bounds reading"""
-
-    def is_alarm(self) -> bool:
-        """whether alarm be raised according to count"""
-        return self.n > self.max_n
-
-
-class ResetCounter(Counter):
-    """Reset count to 0 if in-bounds reading"""
-
-    def increment(self):
-        self.n += 1
-
-    def decrement(self):
-        self.n = 0
-
-
-class DecrementCounter(Counter):
-    """Decrement count if in-bound reading"""
-
-    def __init__(self, c=1, **kwargs):
-        super().__init__(**kwargs)
-        self._c = c
+        self._max_n = max_n
+        self._c = 1
 
     def increment(self):
         self.n += 1
@@ -99,152 +102,157 @@ class DecrementCounter(Counter):
     def decrement(self):
         self.n = max(0, self.n - self._c)
 
-
-class Classifier:
-    """Classifying whether a location reading is out-of-bounds"""
-
-    def __init__(self, target_loc: np.array) -> None:
-        self._locs = []
-        self._target_loc = target_loc
-
-    def is_oob(self, loc: np.array, radius: float) -> bool:
-        """Should out-of-bounds be logged?"""
-        return distance(self._target_loc, loc) > radius
+    def is_alarm(self) -> bool:
+        """whether alarm be raised according to count"""
+        return self.n > self._max_n
 
 
-class RunAvgBrgClass(Classifier):
+class RunAvgBrgClass:
     """Running average over last w locations and last 2 bearings must differ less than d"""
 
-    def __init__(self, d: float, w: int, **kwargs):
-        super().__init__(**kwargs)
-        self._w = w
+    def __init__(self, d: float, target_loc: np.ndarray):
+        self._target_loc = target_loc
         self._d = d
-        self._brg = float("nan")
+        self._loc: Optional[np.ndarray] = None
 
-    def is_oob(self, loc: np.array, radius: float) -> bool:
-        self._locs.append(loc)
-        if len(self._locs) < self._w or np.isnan(self._brg):
-            self._brg = bearing(self._target_loc, loc)
+    def is_oob(self, loc: np.ndarray, radius: float) -> bool:
+        if self._loc is None:
+            self._loc = loc
             return False
-        brg = bearing(self._target_loc, loc)
-        brg_diff = bearing_diff(self._brg, brg)
-        self._brg = brg
-        if brg_diff > self._d:
+        v1 = self._target_loc - self._loc
+        self._loc = (self._loc + loc) / 2
+        v2 = self._target_loc - self._loc
+        if _bearing(v1, v2) > self._d:
             return False
-        avg = np.array(self._locs[-self._w :]).mean(axis=0)
-        return distance(self._target_loc, avg) > radius
+        return _distance(self._target_loc, self._loc) > radius
 
 
-# constants
-N = 100
-ON = int(8 * 60 * 60 / 5)  # every 5s for 8h
-IDENT_LOC = np.array([0, 0])
-GEOLOC_ACC = 500
+# maximum counts:
+# amount of out-of-bounds counts for alarm to be raised
+cntr_maxns: dict[str, int] = {"n05": 5, "n10": 10}
 
-# counter factories:
-# different strategies integrating in-bounds and out-of-bounds
-# readings over time
-cntr_facts = {
-    "res05": lambda _: ResetCounter(max_n=5),
-    "res10": lambda _: ResetCounter(max_n=10),
-    "res20": lambda _: ResetCounter(max_n=20),
-    "dec05": lambda _: DecrementCounter(max_n=5),
-    "dec10": lambda _: DecrementCounter(max_n=10),
-    "dec20": lambda _: DecrementCounter(max_n=20),
-}
+# classifier angles:
+# angle differences in degrees within which successive out-of-bounds
+# readings are counted as out-of-bounds
+clsfr_ds: dict[str, int] = {"d180": 180, "d090": 90, "d045": 45}
 
-# classifier factories:
-# different strategies of deciding whether a location reading is
-# in-bounds or out-of-bounds
-clsfr_facts = {
-    "w05d90": lambda _: RunAvgBrgClass(w=5, target_loc=IDENT_LOC, d=90),
-    "w05d45": lambda _: RunAvgBrgClass(w=5, target_loc=IDENT_LOC, d=45),
-    "w05d30": lambda _: RunAvgBrgClass(w=5, target_loc=IDENT_LOC, d=30),
-    "w10d90": lambda _: RunAvgBrgClass(w=10, target_loc=IDENT_LOC, d=90),
-    "w10d45": lambda _: RunAvgBrgClass(w=10, target_loc=IDENT_LOC, d=45),
-    "w10d30": lambda _: RunAvgBrgClass(w=10, target_loc=IDENT_LOC, d=30),
-    "w20d90": lambda _: RunAvgBrgClass(w=20, target_loc=IDENT_LOC, d=90),
-    "w20d45": lambda _: RunAvgBrgClass(w=20, target_loc=IDENT_LOC, d=45),
-    "w20d30": lambda _: RunAvgBrgClass(w=20, target_loc=IDENT_LOC, d=30),
-}
-
-# excess radius (margin):
-# assuming true location stays constant how much extra radius do I add
-# to the radius that would result from ancor location and chain length alone
-radii = {
-    "p10": GEOLOC_ACC * 0.1,
-    "p25": GEOLOC_ACC * 0.25,
-    "p50": GEOLOC_ACC * 0.5,
+# watch radius margin:
+# by how much the watch radius is enlarged in m as
+# function of the geolocation accuracy
+radii: dict[str, Callable[[float], float]] = {
+    "r10": lambda d: max(d * 1.0, 10),
+    "r20": lambda d: max(d * 1.0, 10),
 }
 
 
-def simulate_anchor_watch(
-    n_trials: int,
-    n_time_steps: int,
-    true_loc: np.array,
+def _simulate_night_at_anchor(
+    start_loc: np.ndarray,
+    drag: np.ndarray,
+    watch_radius: float,
     geoloc_acc: float,
-    radius: float,
-    cntr_fact: Callable[[], Counter],
-    clsfr_fact: Callable[[], Classifier],
-) -> list[dict]:
-    alarms = []
-    for _ in range(n_trials):
-        cntr = cntr_fact()
-        clsfr = clsfr_fact()
-        for time_step_i in range(n_time_steps):
-            msrd_loc = sample_location(mu=true_loc, std=geoloc_acc)
-            if clsfr.is_oob(loc=msrd_loc, radius=radius):
-                cntr.increment()
-            else:
-                cntr.decrement()
-            if cntr.is_alarm():
-                alarms.append({"time_step": time_step_i})
-                break
-    return alarms
+    cntr: DecrementCounter,
+    clsfr: RunAvgBrgClass,
+) -> Optional[int]:
+    """
+    Simulate boat at night swinging and optionally dragging at anchor
+    with anchor watch active
+    """
+    true_loc = start_loc.copy()
+    for time_step_i in range(ON):
+        msrd_loc = _sample_location(mu=true_loc, sd=geoloc_acc)
+        if clsfr.is_oob(loc=msrd_loc, radius=watch_radius):
+            cntr.increment()
+        else:
+            cntr.decrement()
+        if cntr.is_alarm():
+            return time_step_i
+        x = true_loc[0] + drag[0]
+        y = true_loc[1] + drag[1]
+        true_loc = np.array([x, y])
+    return None
 
 
-# TODO: test drifting away
+def _trial(
+    args: tuple[str, str, str, str, str, float, float, bool]
+) -> tuple[list[Optional[int]], tuple[str, str, str, str, str]]:
+    """
+    Boat is at the edge of the anchor chain radius (chain being completely streched out).
+    Args are: `n, d, r, chain, acc, drag`.
+    If `drag` the boat will start dragging away at anchor with
+    constant speed into one direction. Otherwise it doesn't drag, and just swings about
+    at this location.
+    """
+    collection = []
+    start_loc = ZERO_LOC + np.array([args[3], 0.0])
+    if args[5]:
+        drag = np.array([1.0, 0.0]) * DRIFT_VELO
+    else:
+        drag = np.array([0.0, 0.0])
+    watch_radius = args[3] + radii[args[2]](args[4])
+    for _ in range(N_TRIALS):
+        res = _simulate_night_at_anchor(
+            start_loc=start_loc,
+            drag=drag,
+            watch_radius=watch_radius,
+            geoloc_acc=args[4],
+            cntr=DecrementCounter(max_n=cntr_maxns[args[0]]),
+            clsfr=RunAvgBrgClass(d=clsfr_ds[args[1]], target_loc=ZERO_LOC),
+        )
+        collection.append(res)
+    return (collection, args[:3])
+
 
 if __name__ == "__main__":
-    print("\nTesting specificity...")
-    hparam_set = product(clsfr_facts, cntr_facts, radii)
-    print(f"{len(hparam_set)} hparam combinations, {N} trials each")
-    for clsfr_name, cntr_name, radius_name in hparam_set:
-        res = simulate_anchor_watch(
-            n_trials=N,
-            n_time_steps=ON,
-            true_loc=IDENT_LOC,
-            geoloc_acc=GEOLOC_ACC,
-            radius=radii[radius_name],
-            cntr_fact=cntr_facts[cntr_name],
-            clsfr_fact=clsfr_facts[clsfr_name],
-        )
-        fpr = len(res) / N
-        if fpr < 0.1:
-            hparams_name = f"{clsfr_name}-{cntr_name}-{radius_name}"
-            mnts = np.array([d["time_step"] * 5 / 60 for d in res])
-            print(
-                f"- {hparams_name}: {fpr:.2f} FPR, {mnts.mean() / 60:.0f}h (+/-{mnts.std():.0f}m) TtFP"
-            )
+    print("Simulating anchor watch with different settings")
+    print(f"Constants: N_TRIALS={N_TRIALS}, ON={ON}, DRIFT_VELO={DRIFT_VELO}")
 
-    print("\nTesting sensitivity...")
-    hparam_set = product(clsfr_facts, cntr_facts)
-    print(f"{len(hparam_set)} hparam combinations, {N} trials each")
-    for clsfr_name, cntr_name in hparam_set:
-        res = simulate_anchor_watch(
-            n_trials=N,
-            n_time_steps=ON,
-            true_loc=IDENT_LOC,
-            geoloc_acc=GEOLOC_ACC,
-            radius=0,
-            cntr_fact=cntr_facts[cntr_name],
-            clsfr_fact=clsfr_facts[clsfr_name],
-        )
-        tpr = len(res) / N
-        if tpr > 0.99:
-            hparams_name = f"{clsfr_name}-{cntr_name}"
-            mnts = np.array([d["time_step"] * 5 / 60 for d in res])
-            print(
-                f"- {hparams_name}: {tpr:.0f} TPR, {mnts.mean() / 60:.0f}h (+/-{mnts.std():.0f}m) TtTP"
-            )
+    conditions = list(product(CHAIN_LENGTHS, GEOLOC_ACCS))
+    print(f"Testing {len(conditions)} conditions")
 
+    for chain, acc in conditions:
+        print(f"\nchain_length={chain} geoloc_acc={acc}")
+
+        hparam_sets = list(product(cntr_maxns, clsfr_ds, radii))
+        print(f"{len(hparam_sets)} initial sets", end="...")
+
+        print("test sens", end="...")
+        with Pool(NPROC) as pool:
+            trial_args = [(*d, chain, acc, True) for d in hparam_sets]
+            results = pool.map(_trial, trial_args)
+
+        sens_results = {}
+        for alarms, hparams in results:
+            true_alarms = [d for d in alarms if d is not None]
+            if len(true_alarms) < len(alarms):
+                hparam_sets = [d for d in hparam_sets if d != hparams]
+            else:
+                meters = np.array([d * DRIFT_VELO for d in true_alarms])
+                if meters.mean() > 100:
+                    hparam_sets = [d for d in hparam_sets if d != hparams]
+                else:
+                    sens_results[hparams] = {"mu": meters.mean(), "sd": meters.std()}
+        print(f"{len(hparam_sets)} left", end="...")
+
+        print("test spec", end="...")
+        with Pool(NPROC) as pool:
+            trial_args = [(*d, chain, acc, False) for d in hparam_sets]
+            results = pool.map(_trial, trial_args)
+
+        spec_results = {}
+        for alarms, hparams in results:
+            false_alarms = [d for d in alarms if d is not None]
+            fpr = len(false_alarms) / len(alarms)
+            if fpr > 0.1:
+                hparam_sets = [d for d in hparam_sets if d != hparams]
+            else:
+                spec_results[hparams] = {"fpr": fpr}
+        print(f"{len(hparam_sets)} left")
+
+        if len(hparam_sets) > 0:
+            for hparams in hparam_sets:
+                spec = spec_results[hparams]
+                sens = sens_results[hparams]
+                hparams_name = "-".join(hparams)
+                fpr_text = f"{spec['fpr']:.2f} FPR"
+                drag_text = f"{sens['mu']:.0f} m (+/- {sens['sd']:.0f} m)"
+                print(f"- {hparams_name}: {fpr_text}, dragged {drag_text}")
