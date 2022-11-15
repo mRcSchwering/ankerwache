@@ -4,11 +4,8 @@ import { Txt, Btn } from "./components";
 import { ThemedSelect } from "./ScrollSelectionPicker";
 import { formatHeading, getCoordsFromVector } from "./util";
 import { useTheme, useCurrentHeading } from "./hooks";
+import { DISTANCES } from "./constants";
 
-const DISTANCES = [
-  0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95,
-  100,
-];
 const DIST_ITEMS = DISTANCES.map((d) => ({ value: d, label: `${d} m` }));
 
 interface LocationType {
@@ -75,8 +72,7 @@ export default function AnchorSettingView(
               How far away is the anchor?
             </Txt>
             <Txt>
-              Remember the water depth and catenary. We just need the horizontal
-              distance. So, this should be less than the amount of chain/rode
+              This is probably slightly less than the length of chain or rode
               you payed out. Select one to "set" anchor position.
             </Txt>
           </View>

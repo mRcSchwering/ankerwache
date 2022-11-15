@@ -21,7 +21,6 @@ interface LocationType {
 
 function MainView(): JSX.Element {
   const loc = useCurrentLocation();
-  const [std, setStd] = React.useState<number>();
   const [anchor, setAnchor] = React.useState<LocationType>();
 
   function getDist(
@@ -42,9 +41,7 @@ function MainView(): JSX.Element {
     return undefined;
   }
 
-  React.useEffect(() => {
-    setStd(getStd(loc?.acc, anchor?.acc));
-  }, [loc, anchor]);
+  const std = getStd(loc?.acc, anchor?.acc);
 
   return (
     <View>
@@ -54,10 +51,7 @@ function MainView(): JSX.Element {
       </Txt>
       <LocationView loc={loc} label="Current" />
       <LocationView loc={anchor} label="Anchor" />
-      <DistanceView
-        dist={getDist(loc, anchor)}
-        err={getStd(loc?.acc, anchor?.acc)}
-      />
+      <DistanceView dist={getDist(loc, anchor)} err={std} />
       <AnchorSettingView loc={loc} onSetAnchor={setAnchor} />
       <AnchorWatchView anchor={anchor} std={std} />
     </View>

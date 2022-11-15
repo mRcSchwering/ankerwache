@@ -3,22 +3,23 @@ import { StyleSheet, View } from "react-native";
 import { Btn, Txt } from "./components";
 import RadiusSelection from "./RadiusSelection";
 import { useTheme, useAlarm } from "./hooks";
-import { getDistanceFromLatLonInM } from "./util";
+import { ANCHOR_WATCH_MARGIN, ACC_THRESH } from "./constants";
+import { getDistanceFromLatLonInM, addErrs } from "./util";
 import { BkgLocationContext } from "./bkgLocationContext";
 import {
   subscribeBkgLocationUpdates,
   unsubscribeBkgLocationUpdates,
 } from "./bkgLocationService";
 
-const ANCHOR_WATCH_MARGIN = 10;
+const STD_THRESH = addErrs(ACC_THRESH, ACC_THRESH);
 
 /**
  * Running average over measured location;
  * I.e. exponential moving average of locations
  */
 function averageLocation(
-  prev: null | [number, number],
-  curr: [number, number]
+  curr: [number, number],
+  prev?: [number, number]
 ): [number, number] {
   if (!prev) return curr;
   return [(prev[0] + curr[0]) / 2, (prev[1] + curr[1]) / 2];
@@ -46,11 +47,11 @@ function useAnchorWatch(
   const { loc, setLoc } = React.useContext(BkgLocationContext);
 
   // smoothed location used for distance calculation
-  const [smthdLoc, setSmthdLoc] = React.useState<null | [number, number]>(null);
+  const [smthdLoc, setSmthdLoc] = React.useState<[number, number]>();
 
   async function stopWatch() {
     setCount(0);
-    setSmthdLoc(null);
+    setSmthdLoc(undefined);
     stopAlarm();
     unsubscribeBkgLocationUpdates(setLoc);
   }
@@ -66,7 +67,7 @@ function useAnchorWatch(
 
   React.useEffect(() => {
     if (loc && target) {
-      const newLoc = averageLocation(smthdLoc, [loc.lat, loc.lng]);
+      const newLoc = averageLocation([loc.lat, loc.lng], smthdLoc);
       const d = getDistanceFromLatLonInM(
         newLoc[0],
         newLoc[1],
@@ -159,6 +160,7 @@ export default function AnchorWatchView(
           {warn}
         </Txt>
       )}
+      {props.std && props.std > STD_THRESH && <Txt err>Bad GPS accuracy</Txt>}
     </View>
   );
 }

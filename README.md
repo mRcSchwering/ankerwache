@@ -65,21 +65,23 @@ export PATH=$PATH:$ANDROID_SDK_ROOT/tools/
 export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools/
 ```
 
+At some point I needed a key store to sign this project.
+I auto-generated it and fetched it (`expo fetch:android:keystore`) afterwards as backup.
+
 ### Standalone apk with Expo-CLI
 
-Creates an _.apk_ for testing on an Android device.
-See [Expo CLI build docs](https://docs.expo.dev/classic/building-standalone-apps/).
+I have configured the [eas.json](./eas.json) to _.apk_.
+I can build it iwth [EAS](https://docs.expo.dev/build/setup/).
 
 ```
-expo login
+eas login
 
-# -t [app-bundle|apk]
-expo build:android -t apk
+eas build --platform android --profile preview
 
 wget https://<URL-from-build-logs>.apk
 ```
 
-I auto-generated the key store and fetched it (`expo fetch:android:keystore`) afterwards as backup.
+See below for testing on device.
 
 ### Playstore aab with Expo-CLI
 
@@ -101,6 +103,8 @@ wget https://<URL-from-build-logs>.aab
 ```
 
 ## Test on Device
+
+> I needed [this answer](https://android.stackexchange.com/a/229242) to enable "install via USB" without needing to create a Mi account
 
 For running a standalone build **myapp.apk** on Redmi Note 8 Pro.
 See [android docs](https://developer.android.com/studio/run/device#device-developer-options) and [adb docs](https://developer.android.com/studio/command-line/adb).

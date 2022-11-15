@@ -73,7 +73,7 @@ export default function InfoModal(): JSX.Element {
                 GPS readings are not perfectly accurate. They jump back and
                 forth quite a lot. Always include the GPS accuracy when you set
                 your radius. Use the length of your chain/rode{" "}
-                <Txt bold={true}>plus 2 * accuracy</Txt>
+                <Txt bold={true}>plus GPS accuracy</Txt>
                 to avoid false alarms.
               </Txt>
             </View>
