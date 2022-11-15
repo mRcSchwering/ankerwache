@@ -5,7 +5,10 @@ import { ThemedSelect } from "./ScrollSelectionPicker";
 import { formatHeading, getCoordsFromVector } from "./util";
 import { useTheme, useCurrentHeading } from "./hooks";
 
-const DISTANCES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70];
+const DISTANCES = [
+  0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95,
+  100,
+];
 const DIST_ITEMS = DISTANCES.map((d) => ({ value: d, label: `${d} m` }));
 
 interface LocationType {

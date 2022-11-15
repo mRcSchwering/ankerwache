@@ -10,7 +10,19 @@ import {
   unsubscribeBkgLocationUpdates,
 } from "./bkgLocationService";
 
-const ANCHOR_WATCH_MARGIN = 5;
+const ANCHOR_WATCH_MARGIN = 10;
+
+/**
+ * Running average over measured location;
+ * I.e. exponential moving average of locations
+ */
+function averageLocation(
+  prev: null | [number, number],
+  curr: [number, number]
+): [number, number] {
+  if (!prev) return curr;
+  return [(prev[0] + curr[0]) / 2, (prev[1] + curr[1]) / 2];
+}
 
 interface useAnchorWatchType {
   err?: string;
@@ -25,18 +37,27 @@ function useAnchorWatch(
 ): useAnchorWatchType {
   const [locErr, setLocErr] = React.useState<string>();
   const [warn, setWarn] = React.useState<string>();
-  const [hit, setHit] = React.useState(0);
-  const { loc, setLoc } = React.useContext(BkgLocationContext);
   const { startAlarm, stopAlarm, err: alarmErr } = useAlarm();
 
+  // counter counting up/down in-/out-of-bound readings
+  const [count, setCount] = React.useState(0);
+
+  // raw location from
+  const { loc, setLoc } = React.useContext(BkgLocationContext);
+
+  // smoothed location used for distance calculation
+  const [smthdLoc, setSmthdLoc] = React.useState<null | [number, number]>(null);
+
   async function stopWatch() {
-    setHit(0);
+    setCount(0);
+    setSmthdLoc(null);
     stopAlarm();
     unsubscribeBkgLocationUpdates(setLoc);
   }
 
   async function startWatch() {
-    setHit(0);
+    setCount(0);
+    loc && setSmthdLoc([loc.lat, loc.lng]);
     subscribeBkgLocationUpdates({
       locationSubscription: setLoc,
       errorMsgSubscription: setLocErr,
@@ -45,29 +66,31 @@ function useAnchorWatch(
 
   React.useEffect(() => {
     if (loc && target) {
+      const newLoc = averageLocation(smthdLoc, [loc.lat, loc.lng]);
       const d = getDistanceFromLatLonInM(
-        loc.lat,
-        loc.lng,
+        newLoc[0],
+        newLoc[1],
         target.lat,
         target.lng
       );
+      setSmthdLoc(newLoc);
       if (d > radius) {
-        setHit((d) => d + 1);
+        setCount((d) => d + 1);
       } else {
-        setHit((d) => Math.max(d - 1, 0));
+        setCount((d) => Math.max(d - 1, 0));
       }
     }
   }, [loc, target, radius]);
 
   React.useEffect(() => {
-    if (hit >= ANCHOR_WATCH_MARGIN) {
+    if (count >= ANCHOR_WATCH_MARGIN) {
       setWarn("Anchor dragging!");
       startAlarm();
     } else {
       setWarn(undefined);
       stopAlarm();
     }
-  }, [hit]);
+  }, [count]);
 
   return { err: alarmErr || locErr, warn, startWatch, stopWatch };
 }

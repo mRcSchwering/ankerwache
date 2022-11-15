@@ -44,7 +44,8 @@ See [React Native docs](https://reactnative.dev/docs/components-and-apis) and [E
 for APIs and components.
 
 ```
-yarn start
+npm install
+npm start
 ```
 
 ## Build
