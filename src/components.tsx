@@ -10,6 +10,7 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
+import * as Linking from "expo-linking";
 import { useTheme } from "./hooks";
 
 export function Txt(props: {
@@ -62,6 +63,17 @@ export function Btn(props: BtnProps): JSX.Element {
   );
 }
 
+export function Anchor(props: { href: string; title: string }): JSX.Element {
+  return (
+    <Pressable
+      style={styles.anchor}
+      onPress={() => Linking.openURL(props.href)}
+    >
+      <Txt style={{ color: "blue" }}>{props.title}</Txt>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   txtDefault: {
     textAlign: "center",
@@ -76,5 +88,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 4,
+  },
+  anchor: {
+    alignItems: "center",
   },
 });

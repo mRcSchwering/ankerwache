@@ -11,6 +11,7 @@ import AnchorSettingView from "./src/AnchorSettingView";
 import LocationView from "./src/LocationView";
 import DistanceView from "./src/DistanceView";
 import InfoModal from "./src/InfoModal";
+import ReminderModal from "./src/ReminderModal";
 
 interface LocationType {
   lat: number;
@@ -90,6 +91,7 @@ export default function App() {
         {granted && !loading && <MainView />}
         {!granted && !loading && <PermissionsMissingView />}
         {err && <Txt err={true}>{err}</Txt>}
+        <ReminderModal />
         <StatusBar />
       </View>
     </BkgLocationContextProvider>

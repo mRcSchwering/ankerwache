@@ -85,6 +85,8 @@ See below for testing on device.
 
 ### Playstore aab with Expo-CLI
 
+TODO: das hier updaten
+
 Creates an _.aab_ for upload to Google Playstore.
 Instead of downloading it there is also a way of pushing it directly
 to the Playstore (see `expo build:android --help`).

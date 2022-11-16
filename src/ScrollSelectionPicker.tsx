@@ -61,17 +61,27 @@ function StepGradient(props: {
   return div;
 }
 
+const BORDER = 1;
+
+function getOffsets(n: number, h: number): number[] {
+  const offsets = [];
+  for (let i = 0; i < n; i++) {
+    offsets.push(BORDER + i * h);
+  }
+  return offsets;
+}
+
 interface ScrollSelectionPickerProps {
   items: ItemType[];
   onScroll: ({}: { d: ItemType; i: number }) => void;
   scrollTo?: number;
-  height: number;
-  width: number;
   itemCol: string;
   borderCol: string;
   backgroundCol: string;
   gradientCol: string;
-  transparentRows?: number;
+  nTransparentRows?: number;
+  width: number;
+  height: number;
 }
 
 /**
@@ -87,25 +97,15 @@ export default function ScrollSelectionPicker(
   const scroll = React.useRef<ScrollView>(null);
   const [idx, setIdx] = React.useState(props.scrollTo || 0);
 
-  const seal = 1;
-  const n = props.transparentRows || 3;
-  const itemHeight = (props.height - 2 * seal) / (n * 2 + 1);
+  const n = props.nTransparentRows || 3;
+  const itemHeight = (props.height - 2 * BORDER) / (n * 2 + 1);
   const gradHeight = n * itemHeight;
   const extItems = [...dummyFact(n), ...props.items, ...dummyFact(n)];
-  const initScroll = props.scrollTo ? seal + itemHeight * props.scrollTo : 0;
-
-  // TODO: Memo?
-  const offsets = [];
-  for (let i = 0; i < props.items.length; i++) {
-    offsets.push(seal + i * itemHeight);
-  }
-
-  // TODO: scroller jumping back and forth
+  const initScroll = props.scrollTo ? BORDER + itemHeight * props.scrollTo : 0;
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const tmpIdx = Math.round(event.nativeEvent.contentOffset.y / itemHeight);
     if (idx !== tmpIdx && tmpIdx >= 0 && tmpIdx < props.items.length) {
-      console.log("scroll", tmpIdx, props.items[tmpIdx]); // TODO: rm
       setIdx(tmpIdx);
       props.onScroll({ i: tmpIdx, d: props.items[tmpIdx] });
     }
@@ -113,13 +113,13 @@ export default function ScrollSelectionPicker(
 
   return (
     <View style={{ height: props.height, width: props.width }}>
-      <View style={{ borderColor: props.backgroundCol, borderWidth: seal }}>
+      <View style={{ borderColor: props.backgroundCol, borderWidth: BORDER }}>
         <ScrollView
           ref={scroll}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           onScroll={onScroll}
-          snapToOffsets={offsets}
+          snapToOffsets={getOffsets(extItems.length, itemHeight)}
           contentOffset={{ y: initScroll, x: 0 }}
         >
           {extItems.map((d, i) => (
@@ -201,14 +201,13 @@ export function ThemedSelect(props: ThemedSelectProps): JSX.Element {
     <ScrollSelectionPicker
       items={props.items}
       onScroll={(d) => props.onScroll(d.d.value)}
-      width={200}
-      height={200}
       scrollTo={props.scrollTo === undefined ? 2 : props.scrollTo}
-      transparentRows={3}
       itemCol={darkMode ? "white" : "black"}
       borderCol="gray"
       backgroundCol={darkMode ? "black" : "white"}
       gradientCol={darkMode ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)"}
+      width={200}
+      height={200}
     />
   );
 }

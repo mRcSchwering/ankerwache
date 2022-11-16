@@ -1,20 +1,8 @@
 import React from "react";
-import { StyleSheet, View, Modal, Pressable, ScrollView } from "react-native";
+import { StyleSheet, View, Modal, ScrollView } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import * as Linking from "expo-linking";
-import { Txt, Btn } from "./components";
+import { Txt, Btn, Anchor } from "./components";
 import { useTheme } from "./hooks";
-
-function Anchor(props: { href: string; title: string }): JSX.Element {
-  return (
-    <Pressable
-      style={styles.anchor}
-      onPress={() => Linking.openURL(props.href)}
-    >
-      <Txt style={{ color: "blue" }}>{props.title}</Txt>
-    </Pressable>
-  );
-}
 
 export default function InfoModal(): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -37,9 +25,10 @@ export default function InfoModal(): JSX.Element {
             </View>
             <View style={styles.section}>
               <Txt>
-                The active anchor watch shows a notification on your screen. It
-                stays active in the background even if you lock your phone.
-                However, many android devices suspend inactive apps.
+                The active anchor watch shows a notification on your screen.
+                Don't close the app, just move it to the background. It stays
+                active in the background even if you lock your phone. However,
+                many android devices suspend inactive apps after a while.
               </Txt>
             </View>
             <View style={styles.section}>
@@ -71,10 +60,20 @@ export default function InfoModal(): JSX.Element {
             <View style={styles.section}>
               <Txt>
                 GPS readings are not perfectly accurate. They jump back and
-                forth quite a lot. Always include the GPS accuracy when you set
-                your radius. Use the length of your chain/rode{" "}
-                <Txt bold={true}>plus GPS accuracy</Txt>
-                to avoid false alarms.
+                forth quite a lot. Always include the GPS accuracy when setting
+                the watch radius. Use the length of your chain/rode{" "}
+                <Txt bold={true}>plus GPS accuracy</Txt> to avoid false alarms.
+              </Txt>
+            </View>
+            <View style={styles.section}>
+              <Txt>
+                The app actually calculates an exponential moving average (EMA)
+                of GPS readings and only starts the alarm if this EMA is out of
+                range for many consecutive readings. This insures that even with
+                bad GPS accuracy, you shouldn't get false alarms but still be
+                able to detect a dragging anchor. However, with GPS{" "}
+                <Txt bold={true}>accuracy higher than 70m</Txt> the app becomes
+                useless.
               </Txt>
             </View>
             <View style={styles.section}>

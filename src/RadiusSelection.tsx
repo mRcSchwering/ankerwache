@@ -57,11 +57,7 @@ export default function RadiusSelection(
           <View style={styles.section}>
             {!!props.std && props.std > ACC_THRESH ? accText : normalText}
           </View>
-          <ThemedSelect
-            items={RAD_ITEMS}
-            onScroll={props.onSelect}
-            scrollTo={RADII.indexOf(props.radius)}
-          />
+          <ThemedSelect items={RAD_ITEMS} onScroll={props.onSelect} />
           <View style={styles.section}>
             <Txt bold={true} size={15}>
               GPS accuracy: {props.std ? `${Math.round(props.std)} m` : "-"}
