@@ -85,30 +85,31 @@ export default function ScrollSelectionPicker(
   props: ScrollSelectionPickerProps
 ): JSX.Element {
   const scroll = React.useRef<ScrollView>(null);
-  const [idx, setIdx] = React.useState(0);
+  const [idx, setIdx] = React.useState(props.scrollTo || 0);
 
   const seal = 1;
   const n = props.transparentRows || 3;
   const itemHeight = (props.height - 2 * seal) / (n * 2 + 1);
   const gradHeight = n * itemHeight;
   const extItems = [...dummyFact(n), ...props.items, ...dummyFact(n)];
+  const initScroll = props.scrollTo ? seal + itemHeight * props.scrollTo : 0;
+
+  // TODO: Memo?
+  const offsets = [];
+  for (let i = 0; i < props.items.length; i++) {
+    offsets.push(seal + i * itemHeight);
+  }
+
+  // TODO: scroller jumping back and forth
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const tmpIdx = Math.round(event.nativeEvent.contentOffset.y / itemHeight);
     if (idx !== tmpIdx && tmpIdx >= 0 && tmpIdx < props.items.length) {
+      console.log("scroll", tmpIdx, props.items[tmpIdx]); // TODO: rm
       setIdx(tmpIdx);
       props.onScroll({ i: tmpIdx, d: props.items[tmpIdx] });
     }
   }
-
-  React.useEffect(() => {
-    if (props.scrollTo) {
-      scroll.current?.scrollTo({
-        y: props.scrollTo * itemHeight,
-        animated: true,
-      });
-    }
-  }, []);
 
   return (
     <View style={{ height: props.height, width: props.width }}>
@@ -117,11 +118,9 @@ export default function ScrollSelectionPicker(
           ref={scroll}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          onScroll={(event) => onScroll(event)}
-          snapToInterval={itemHeight}
-          snapToAlignment="center"
-          decelerationRate="fast"
-          scrollEventThrottle={0}
+          onScroll={onScroll}
+          snapToOffsets={offsets}
+          contentOffset={{ y: initScroll, x: 0 }}
         >
           {extItems.map((d, i) => (
             <PickerItem

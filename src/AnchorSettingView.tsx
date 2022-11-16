@@ -24,7 +24,7 @@ export default function AnchorSettingView(
   props: AnchorSettingViewProps
 ): JSX.Element {
   const [isVisible, setIsVisible] = React.useState(false);
-  const [dist, setDist] = React.useState(0);
+  const [dist, setDist] = React.useState(2);
   const head = useCurrentHeading(isVisible);
   const { bkgCol, blueBkg } = useTheme();
 
@@ -76,7 +76,7 @@ export default function AnchorSettingView(
               you payed out. Select one to "set" anchor position.
             </Txt>
           </View>
-          <ThemedSelect items={DIST_ITEMS} onScroll={(d) => setDist(d)} />
+          <ThemedSelect items={DIST_ITEMS} onScroll={setDist} />
           <View style={styles.section}>
             <Btn onPress={handleSet} label="Set Anchor" style={blueBkg} />
           </View>

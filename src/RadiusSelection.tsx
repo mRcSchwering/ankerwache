@@ -59,7 +59,7 @@ export default function RadiusSelection(
           </View>
           <ThemedSelect
             items={RAD_ITEMS}
-            onScroll={(d) => props.onSelect(d)}
+            onScroll={props.onSelect}
             scrollTo={RADII.indexOf(props.radius)}
           />
           <View style={styles.section}>
