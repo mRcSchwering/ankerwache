@@ -112,7 +112,7 @@ export default function AnchorWatchView(
   props: AnchorWatchViewProps
 ): JSX.Element {
   const [watching, setWatching] = React.useState(false);
-  const [radius, setRadius] = React.useState(0);
+  const [radius, setRadius] = React.useState(30);
   const { err, warn, startWatch, stopWatch } = useAnchorWatch(
     radius,
     props.anchor

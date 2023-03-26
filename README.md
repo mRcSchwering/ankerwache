@@ -77,31 +77,21 @@ I can build it iwth [EAS](https://docs.expo.dev/build/setup/).
 eas login
 
 eas build --platform android --profile preview
-
-wget https://<URL-from-build-logs>.apk
 ```
 
+Download _.apk_ from output URL.
 See below for testing on device.
 
 ### Playstore aab with Expo-CLI
 
-TODO: das hier updaten
-
 Creates an _.aab_ for upload to Google Playstore.
-Instead of downloading it there is also a way of pushing it directly
-to the Playstore (see `expo build:android --help`).
-But for that you need to [setup an API key](https://intercom.help/appinstitute/en/articles/1025206-how-to-get-your-google-play-json-key).
-
 Make sure to increment `"version":` and `"versionCode":` in [app.json](./app.json) before building.
 The playstore only understands _versionCode_ to identify an update.
 
 ```
-expo login
+eas login
 
-# -t [app-bundle|apk]
-expo build:android -t app-bundle
-
-wget https://<URL-from-build-logs>.aab
+eas build --platform android --profile production
 ```
 
 ## Test on Device
